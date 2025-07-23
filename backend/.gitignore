@@ -1,0 +1,5 @@
+venv
+.env
+migrate
+.venv
+__pycache__
