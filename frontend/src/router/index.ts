@@ -1,10 +1,18 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteRecordRaw } from 'vue-router'
-import DatosCliente from '../pages/DatosCliente.vue'
+import Home from '@/pages/Home.vue'
+import About from '@/pages/About.vue'
 
-const routes: RouteRecordRaw[] = [
-  { path: '/', redirect: '/cliente' },
-  { path: '/cliente', component: DatosCliente },
+const routes = [
+  {
+    path: '/',
+    name: 'home',
+    component: Home,
+  },
+  {
+    path: '/about',
+    name: 'about',
+    component: About,
+  },
 ]
 
 const router = createRouter({
