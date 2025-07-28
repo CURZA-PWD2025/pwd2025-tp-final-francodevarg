@@ -43,12 +43,16 @@ class VeterinarioModel:
         result = ConnectDB.read(VeterinarioModel.SQL_SELECT_BY_ID, (id,))
         return result[0] if result else None
 
-    def create(self) -> bool | None:
-        result = ConnectDB.write(
-            VeterinarioModel.SQL_INSERT,
-            (self.nombre, self.especialidad, self.email, self.telefono)
-        )
-        return result > 0 or None
+    def create(self) -> int | None:
+        try:
+            self.id = ConnectDB.write(
+                VeterinarioModel.SQL_INSERT,
+                (self.nombre, self.especialidad, self.email, self.telefono)
+            )
+            return self.id
+        except Exception as e:
+            print(f"Error creating Veterinario: {e}")
+            return None
 
     def update(self) -> bool | None:
         result = ConnectDB.write(

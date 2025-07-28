@@ -5,8 +5,28 @@ class VeterinarioController:
 
     @staticmethod
     def get_all():
-        rows = VeterinarioModel.get_all()
-        return rows, 200 if rows else ({"mensaje": "No se encontraron veterinarios"}, 404)
+        veterinarios = VeterinarioModel.get_all()
+        if not veterinarios:
+            return {"mensaje": "No se encontraron veterinarios"}, 404
+
+        resultado = []
+        for vet in veterinarios:
+            horarios = HorarioModel.get_by_veterinario_id(vet["id"])
+
+            dias_unicos = sorted(set([h["dia_semana"] for h in horarios]))
+            horas_unicas = sorted(set([h["hora"] for h in horarios]))
+
+            resultado.append({
+                "id": vet["id"],
+                "nombre": vet["nombre"],
+                "especialidad": vet["especialidad"],
+                "email": vet["email"],
+                "telefono": vet["telefono"],
+                "dias": dias_unicos,
+                "horarios": horas_unicas,
+            })
+
+        return resultado, 200
 
     @staticmethod
     def get_one(id: int):

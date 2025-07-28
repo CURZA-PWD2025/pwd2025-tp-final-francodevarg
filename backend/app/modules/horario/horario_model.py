@@ -7,41 +7,6 @@ class HorarioModel:
         INSERT INTO horarios_laborales (veterinario_id, dia_semana, hora)
         VALUES (%s, %s, %s)
     """
-
-    SQL_DISPONIBILIDAD_POR_FECHA = """
-        SELECT 
-            hl.hora,
-            CASE 
-                WHEN t.id IS NULL THEN 0
-                ELSE 1
-            END AS ocupado
-        FROM horarios_laborales hl
-        LEFT JOIN turnos t 
-            ON hl.veterinario_id = t.veterinario_id 
-            AND hl.hora = t.hora
-            AND t.fecha = %s
-        WHERE hl.veterinario_id = %s
-          AND hl.dia_semana = %s
-        ORDER BY hl.hora
-    """
-
-    # Insertar varios horarios por día
-    @staticmethod
-    def insert_bulk(veterinario_id: int, dias_horas: dict[str, list[str]]):
-        # días_horas = {"Lunes": ["08:00", "09:00"], "Martes": ["10:00"]}
-        count = 0
-        for dia, horas in dias_horas.items():
-            dia_lower = dia.lower()
-            for hora in horas:
-                result = ConnectDB.write(HorarioModel.SQL_INSERT, (veterinario_id, dia_lower, hora))
-                if result:
-                    count += 1
-        return count
-
-from datetime import datetime
-from app.database.connect_db import ConnectDB
-
-class HorarioModel:
     SQL_DISPONIBILIDAD_POR_FECHA = """
         SELECT 
             hl.hora,
@@ -55,6 +20,46 @@ class HorarioModel:
           AND hl.dia_semana = %s
         ORDER BY hl.hora;
     """
+    # Insertar varios horarios por día
+    @staticmethod
+    def insert_bulk(veterinario_id: int, dias_horas: dict[str, list[str]]):
+        # días_horas = {"Lunes": ["08:00", "09:00"], "Martes": ["10:00"]}
+        count = 0
+        for dia, horas in dias_horas.items():
+            dia_lower = dia.lower()
+            for hora in horas:
+                result = ConnectDB.write(HorarioModel.SQL_INSERT, (veterinario_id, dia_lower, hora))
+                if result:
+                    count += 1
+        return count
+
+    @staticmethod
+    def get_by_veterinario_id(veterinario_id: int):
+        """
+        Devuelve los horarios laborales de un veterinario específico.
+        Formato de respuesta:
+            [{"dia_semana": "lunes", "hora": "09:00"}, ...]
+        """
+        SQL_GET_BY_VETERINARIO_ID = """
+            SELECT dia_semana, hora
+            FROM horarios_laborales
+            WHERE veterinario_id = %s
+            ORDER BY FIELD(dia_semana, 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo'), hora;
+        """
+        try:
+            rows = ConnectDB.read(SQL_GET_BY_VETERINARIO_ID, (veterinario_id,))
+        except Exception as e:
+            raise Exception(f"Error al consultar los horarios: {str(e)}")
+
+        if not rows:
+            return []  # No hay horarios definidos para este veterinario
+
+        return [
+            {
+                "dia_semana": row["dia_semana"],
+                "hora": row["hora"].strftime("%H:%M") if hasattr(row["hora"], 'strftime') else str(row["hora"])
+            } for row in rows
+        ]
 
     @staticmethod
     def get_disponibilidad_por_fecha(veterinario_id: int, fecha_str: str):

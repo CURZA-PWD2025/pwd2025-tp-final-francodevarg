@@ -6,7 +6,7 @@ from app.modules.horario.horario_controller import HorarioController
 veterinario_bp = Blueprint("veterinario_bp", __name__, url_prefix="/veterinarios")
 
 @veterinario_bp.route("/", methods=["GET"])
-@jwt_required()
+# @jwt_required()
 def get_all():
     response, status = VeterinarioController.get_all()
     return jsonify(response), status
@@ -24,7 +24,7 @@ def get_one(id):
     return jsonify(response), status
 
 @veterinario_bp.route("/", methods=["POST"])
-@jwt_required()
+# @jwt_required()
 def create():
     data = request.get_json()
     response, status = VeterinarioController.create(data)
