@@ -6,28 +6,8 @@ class VeterinarioController:
     @staticmethod
     def get_all():
         veterinarios = VeterinarioModel.get_all()
-        if not veterinarios:
-            return {"mensaje": "No se encontraron veterinarios"}, 404
-
-        resultado = []
-        for vet in veterinarios:
-            horarios = HorarioModel.get_by_veterinario_id(vet["id"])
-
-            dias_unicos = sorted(set([h["dia_semana"] for h in horarios]))
-            horas_unicas = sorted(set([h["hora"] for h in horarios]))
-
-            resultado.append({
-                "id": vet["id"],
-                "nombre": vet["nombre"],
-                "especialidad": vet["especialidad"],
-                "email": vet["email"],
-                "telefono": vet["telefono"],
-                "dias": dias_unicos,
-                "horarios": horas_unicas,
-            })
-
-        return resultado, 200
-
+        return [v.serializar() for v in veterinarios], 200
+    
     @staticmethod
     def get_one(id: int):
         row = VeterinarioModel.get_one(id)
@@ -35,27 +15,34 @@ class VeterinarioController:
 
     @staticmethod
     def create(data: dict):
-        try:
-            info = data.get("veterinario", {})
-            horarios = data.get("horarios", {})  # {"Lunes": ["08:00", "09:00"], ...}
+        v = data["veterinario"]
 
-            vet = VeterinarioModel(
-                nombre=info["nombre"],
-                especialidad=info["especialidad"],
-                email=info["email"],
-                telefono=info["telefono"]
-            )
+        vet = VeterinarioModel(
+            nombre=v["nombre"],
+            especialidad=v["especialidad"],
+            email=v["email"],
+            telefono=v["telefono"]
+        )
 
-            vet_id = vet.create()
-            if not vet_id:
-                return {"mensaje": "Error al crear veterinario"}, 500
+        result = vet.create()  # Este método NO recibe parámetros
 
-            HorarioModel.insert_bulk(vet_id, horarios)
+        if not result:
+            return {"mensaje": "Error al insertar veterinario"}, 400
 
-            return {"mensaje": "Veterinario creado con horarios", "veterinario_id": vet_id}, 201
+        # Insertar horarios si vienen
+        horarios = data.get("horarios", {})
+        for dia, horas in horarios.items():
+            for hora in horas:
+                horario = HorarioModel(
+                    dia_semana=dia,
+                    hora=hora,
+                    veterinario_id=result
+                )
+                horario_result = horario.create()
+                if horario_result is None:
+                    return {"mensaje": "Error al insertar horario"}, 500
 
-        except Exception as e:
-            return {"mensaje": str(e)}, 500
+        return {"mensaje": "Veterinario creado correctamente"}, 200
 
 
     @staticmethod

@@ -18,7 +18,7 @@ def get_horarios_disponibles():
     return jsonify(response), status
 
 @veterinario_bp.route("/<int:id>", methods=["GET"])
-@jwt_required()
+# @jwt_required()
 def get_one(id):
     response, status = VeterinarioController.get_one(id)
     return jsonify(response), status
@@ -31,14 +31,14 @@ def create():
     return jsonify(response), status
 
 @veterinario_bp.route("/<int:id>", methods=["PUT"])
-@jwt_required()
+#@jwt_required()
 def update(id):
     data = request.get_json()
     response, status = VeterinarioController.update(id, data)
     return jsonify(response), status
 
 @veterinario_bp.route("/<int:id>", methods=["DELETE"])
-@jwt_required()
+#@jwt_required()
 def delete(id):
     response, status = VeterinarioController.delete(id)
     return jsonify(response), status

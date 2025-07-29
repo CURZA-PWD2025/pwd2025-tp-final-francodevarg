@@ -1,4 +1,5 @@
 from app.database.connect_db import ConnectDB
+from app.modules.horario.horario_model import HorarioModel
 
 class VeterinarioModel:
     SQL_SELECT_ALL = "SELECT * FROM veterinarios"
@@ -7,12 +8,21 @@ class VeterinarioModel:
     SQL_UPDATE = "UPDATE veterinarios SET nombre = %s, especialidad = %s, email = %s, telefono = %s WHERE id = %s"
     SQL_DELETE = "DELETE FROM veterinarios WHERE id = %s"
 
-    def __init__(self, id: int = 0, nombre: str = "", especialidad: str = "", email: str = "", telefono: str = ""):
+    def __init__(
+        self,
+        id: int = 0,
+        nombre: str = "",
+        especialidad: str = "",
+        email: str = "",
+        telefono: str = "",
+        horarios: list[HorarioModel] = []
+    ):
         self.id = id
         self.nombre = nombre
         self.especialidad = especialidad
         self.email = email
         self.telefono = telefono
+        self.horarios = horarios
 
     def serializar(self) -> dict:
         return {
@@ -20,51 +30,61 @@ class VeterinarioModel:
             'nombre': self.nombre,
             'especialidad': self.especialidad,
             'email': self.email,
-            'telefono': self.telefono
+            'telefono': self.telefono,
+            'horarios': [h.serializar() for h in self.horarios]
         }
 
     @staticmethod
-    def deserializar(data: dict):
+    def deserializar(data: dict) -> "VeterinarioModel":
         return VeterinarioModel(
             id=data['id'],
             nombre=data['nombre'],
             especialidad=data['especialidad'],
             email=data['email'],
-            telefono=data['telefono']
+            telefono=data['telefono'],
+            horarios=[HorarioModel(**h) for h in data.get("horarios", [])]
         )
 
     @staticmethod
-    def get_all() -> list[dict]:
+    def get_all() -> list["VeterinarioModel"]:
         rows = ConnectDB.read(VeterinarioModel.SQL_SELECT_ALL)
-        return rows if rows else []
+        if not rows:
+            return []
 
-    @staticmethod
-    def get_one(id: int) -> dict | None:
-        result = ConnectDB.read(VeterinarioModel.SQL_SELECT_BY_ID, (id,))
-        return result[0] if result else None
-
-    def create(self) -> int | None:
-        try:
-            self.id = ConnectDB.write(
-                VeterinarioModel.SQL_INSERT,
-                (self.nombre, self.especialidad, self.email, self.telefono)
+        veterinarios = []
+        for row in rows:
+            horarios = HorarioModel.get_by_veterinario_id(row["id"])
+            veterinario = VeterinarioModel(
+                id=row["id"],
+                nombre=row["nombre"],
+                especialidad=row["especialidad"],
+                email=row["email"],
+                telefono=row["telefono"],
+                horarios=horarios
             )
-            return self.id
-        except Exception as e:
-            print(f"Error creating Veterinario: {e}")
-            return None
-
-    def update(self) -> bool | None:
-        result = ConnectDB.write(
-            VeterinarioModel.SQL_UPDATE,
-            (self.nombre, self.especialidad, self.email, self.telefono, self.id)
-        )
-        return result > 0 or None
-
+            veterinarios.append(veterinario)
+        return veterinarios
+    
     @staticmethod
-    def delete(id: int) -> bool | None:
-        try:
-            result = ConnectDB.write(VeterinarioModel.SQL_DELETE, (id,))
-            return result > 0 if result is not None else None
-        except Exception as e:
+    def get_one(id: int) -> dict:
+        result = ConnectDB.read(VeterinarioModel.SQL_SELECT_BY_ID, (id,))
+        if not result:
             return None
+
+        row = result[0]
+        horarios = HorarioModel.get_by_veterinario_id(row["id"])
+
+        return VeterinarioModel(
+            id=row["id"],
+            nombre=row["nombre"],
+            especialidad=row["especialidad"],
+            email=row["email"],
+            telefono=row["telefono"],
+            horarios=horarios
+        ).serializar()
+    
+    def create(self) -> bool | None:
+        params = (self.nombre, self.especialidad, self.email, self.telefono)
+        result = ConnectDB.write(VeterinarioModel.SQL_INSERT, params)
+        return result if result else False
+
