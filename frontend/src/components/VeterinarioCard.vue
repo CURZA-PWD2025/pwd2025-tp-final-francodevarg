@@ -11,9 +11,10 @@
         </p>
       </div>
       <div class="flex gap-2">
-        <Button size="icon" variant="outline">
+        <Button size="icon" variant="outline" @click="$emit('editar', veterinario)">
           <PenLineIcon class="w-4 h-4" />
         </Button>
+
         <Button size="icon" variant="destructive">
           <TrashIcon class="w-4 h-4" />
         </Button>
@@ -61,17 +62,17 @@ const props = defineProps<{
   veterinario: Veterinario
 }>()
 
+defineEmits(['editar'])
+
+
 const diasUnicos = computed(() => {
-  const dias = props.veterinario.horarios.map(h => h.dia_semana)
-  return [...new Set(dias)]
+  const horarios = props.veterinario.horarios ?? []
+  return [...new Set(horarios.map(h => h.dia_semana))]
 })
 
 const horariosUnicos = computed(() => {
-  const horasSet = new Set(
-    props.veterinario.horarios.map((h) => h.hora)
-  )
-
-  return [...horasSet].sort((a, b) => a.localeCompare(b))
+  const horarios = props.veterinario.horarios ?? []
+  return [...new Set(horarios.map(h => h.hora))].sort((a, b) => a.localeCompare(b))
 })
 
 </script>

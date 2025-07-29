@@ -9,14 +9,18 @@
         <p class="text-muted-foreground">Gestiona los profesionales, sus horarios y servicios</p>
       </div>
 
-      <Dialog>
+      <Dialog v-model:open="isDialogOpen">
         <DialogTrigger as-child>
-          <Button class="bg-emerald-600 hover:bg-emerald-700 text-white">
+          <Button  @click="crearVeterinario" class="bg-emerald-600 hover:bg-emerald-700 text-white">
             + Agregar Veterinario
           </Button>
         </DialogTrigger>
         <DialogContent class="max-w-3xl">
-          <VeterinarioForm @submit="agregarVeterinario" />
+        <VeterinarioForm
+          :veterinario="selectedVeterinario"
+          @success="onFormSuccess"
+        />
+
         </DialogContent>
       </Dialog>
     </div>
@@ -26,6 +30,7 @@
         v-for="(vet, i) in veterinarios"
         :key="i"
         :veterinario="vet"
+        @editar="editarVeterinario"
         />
 
     </div>
@@ -48,6 +53,8 @@ import type { Veterinario } from '@/types/Veterinario'
 import VeterinarioService from '@/services/VeterinarioService'
 
 const veterinarios = ref<Veterinario[]>([])
+const isDialogOpen = ref(false)
+const selectedVeterinario = ref<Veterinario | null>(null)
 
 async function fetchVeterinarios() {
   try {
@@ -58,11 +65,26 @@ async function fetchVeterinarios() {
   }
 }
 
-function agregarVeterinario(data: any) {
-  veterinarios.value.push(data)
-}
 
 onMounted(() => {
   fetchVeterinarios()
 })
+
+
+function crearVeterinario() {
+  selectedVeterinario.value = null
+  isDialogOpen.value = true
+}
+
+function editarVeterinario(vet: Veterinario) {
+  selectedVeterinario.value = vet
+  isDialogOpen.value = true
+}
+
+function onFormSuccess() {
+  isDialogOpen.value = false
+  selectedVeterinario.value = null
+  fetchVeterinarios()
+}
+
 </script>
