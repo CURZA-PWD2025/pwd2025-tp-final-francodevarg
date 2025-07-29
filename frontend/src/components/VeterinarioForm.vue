@@ -17,6 +17,26 @@ import {
 } from '@/components/ui/form'
 import { toast } from 'vue-sonner'
 
+// Tipos para el payload
+type DiaSemana =
+  | 'Lunes'
+  | 'Martes'
+  | 'Miércoles'
+  | 'Jueves'
+  | 'Viernes'
+  | 'Sábado'
+  | 'Domingo'
+
+interface FormHorarioPayload {
+  veterinario: {
+    nombre: string
+    especialidad: string
+    email: string
+    telefono: string
+  },
+  horarios: Partial<Record<DiaSemana, string[]>>
+}
+
 const diasSemana = [
   { id: 'Lunes', label: 'Lunes' },
   { id: 'Martes', label: 'Martes' },
@@ -45,8 +65,7 @@ const formSchema = toTypedSchema(z.object({
   }),
 }))
 
-
-const { handleSubmit, values,defineField } = useForm({
+const { handleSubmit, values, defineField } = useForm({
   validationSchema: formSchema,
   initialValues: {
     nombre: '',
@@ -58,14 +77,13 @@ const { handleSubmit, values,defineField } = useForm({
   },
 })
 
-
 const [nombreField] = defineField('nombre')
 const [especialidadField] = defineField('especialidad')
 const [emailField] = defineField('email')
 const [telefonoField] = defineField('telefono')
 
 const onSubmit = handleSubmit(async (formValues) => {
-  const payload = {
+  const payload: FormHorarioPayload = {
     veterinario: {
       nombre: formValues.nombre,
       especialidad: formValues.especialidad,
@@ -73,21 +91,21 @@ const onSubmit = handleSubmit(async (formValues) => {
       telefono: formValues.telefono,
     },
     horarios: Object.fromEntries(
-      formValues.dias.map(dia => [dia, formValues.horarios])
-    )
+      formValues.dias.map(dia => [dia as DiaSemana, formValues.horarios])
+    ),
   }
 
   try {
     const res = await fetch('http://localhost:5000/veterinarios/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
     })
 
     if (!res.ok) throw new Error('Error al crear el veterinario')
     toast({ title: 'Veterinario creado con éxito' })
   } catch (e) {
-    toast({ title: 'Error', description: e.message })
+    toast({ title: 'Error', description: (e as Error).message })
   }
 })
 </script>
@@ -95,31 +113,30 @@ const onSubmit = handleSubmit(async (formValues) => {
 <template>
   <form @submit="onSubmit" class="grid gap-6">
     <FormField name="nombre" v-slot="{ value, handleChange }">
-        <FormItem>
-            <FormLabel>Nombre</FormLabel>
-            <FormControl>
-            <Input :model-value="value" @update:model-value="handleChange" placeholder="Dr. Juan Pérez" />
-            </FormControl>
-            <FormMessage />
-        </FormItem>
-    </FormField>
-
-
-    <FormField name="especialidad"  v-slot="{ value, handleChange }">
       <FormItem>
-        <FormLabel>Especialidad</FormLabel>
+        <FormLabel>Nombre</FormLabel>
         <FormControl>
-            <Input :model-value="value" @update:model-value="handleChange"  placeholder="Medicina General" />
+          <Input :model-value="value" @update:model-value="handleChange" placeholder="Dr. Juan Pérez" />
         </FormControl>
         <FormMessage />
       </FormItem>
     </FormField>
 
-    <FormField name="email"  v-slot="{ value, handleChange }">
+    <FormField name="especialidad" v-slot="{ value, handleChange }">
+      <FormItem>
+        <FormLabel>Especialidad</FormLabel>
+        <FormControl>
+          <Input :model-value="value" @update:model-value="handleChange" placeholder="Medicina General" />
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
+
+    <FormField name="email" v-slot="{ value, handleChange }">
       <FormItem>
         <FormLabel>Email</FormLabel>
         <FormControl>
-            <Input :model-value="value" @update:model-value="handleChange" placeholder="correo@ejemplo.com" />
+          <Input :model-value="value" @update:model-value="handleChange" placeholder="correo@ejemplo.com" />
         </FormControl>
         <FormMessage />
       </FormItem>
@@ -129,73 +146,70 @@ const onSubmit = handleSubmit(async (formValues) => {
       <FormItem>
         <FormLabel>Teléfono</FormLabel>
         <FormControl>
-            <Input :model-value="value" @update:model-value="handleChange" placeholder="+54 11 1234-5678" />
+          <Input :model-value="value" @update:model-value="handleChange" placeholder="+54 11 1234-5678" />
         </FormControl>
         <FormMessage />
       </FormItem>
     </FormField>
 
-        <FormField name="dias">
-            <FormItem>
-                <FormLabel>Días de trabajo</FormLabel>
-                <FormDescription>Selecciona al menos un día</FormDescription>
-                <div class="grid grid-cols-3 gap-2">
-
-                    <FormField
-                    v-for="dia in diasSemana"
-                    v-slot="{ value, handleChange }"
-          :key="dia.id"
-          type="checkbox"
-          :value="dia.id"
-          :unchecked-value="false"
-          name="dias"
-        >
-          <FormItem class="flex flex-row items-start space-x-3 space-y-0">
-            <FormControl>
-              <Checkbox
-                :model-value="value.includes(dia.id)"
-                @update:model-value="handleChange"
+    <FormField name="dias">
+      <FormItem>
+        <FormLabel>Días de trabajo</FormLabel>
+        <FormDescription>Selecciona al menos un día</FormDescription>
+        <div class="grid grid-cols-3 gap-2">
+          <FormField
+            v-for="dia in diasSemana"
+            v-slot="{ value, handleChange }"
+            :key="dia.id"
+            type="checkbox"
+            :value="dia.id"
+            :unchecked-value="false"
+            name="dias"
+          >
+            <FormItem class="flex flex-row items-start space-x-3 space-y-0">
+              <FormControl>
+                <Checkbox
+                  :model-value="value.includes(dia.id)"
+                  @update:model-value="handleChange"
                 />
-            </FormControl>
-            <FormLabel class="font-normal">
+              </FormControl>
+              <FormLabel class="font-normal">
                 {{ dia.label }}
-            </FormLabel>
-        </FormItem>
+              </FormLabel>
+            </FormItem>
+          </FormField>
+        </div>
+        <FormMessage />
+      </FormItem>
     </FormField>
-    </div>
-    <FormMessage />
-</FormItem>
-</FormField>
 
     <FormField name="horarios">
       <FormItem>
         <FormLabel>Horarios aplicados a todos los días</FormLabel>
         <FormDescription>Selecciona al menos un horario</FormDescription>
         <div class="grid grid-cols-2 gap-2">
-            
-        <FormField
-          v-for="hora in horariosDisponibles"
-          v-slot="{ value, handleChange }"
-          :key="hora"
-          type="checkbox"
-          :value="hora"
-          :unchecked-value="false"
-          name="horarios"
-        >
-          <FormItem class="flex flex-row items-start space-x-3 space-y-0">
-            <FormControl>
-              <Checkbox
-                :model-value="value.includes(hora)"
-                @update:model-value="handleChange"
-              />
-            </FormControl>
-            <FormLabel class="font-normal">
-              {{ hora }}
-            </FormLabel>
-          </FormItem>
-        </FormField>
-
-    </div>
+          <FormField
+            v-for="hora in horariosDisponibles"
+            v-slot="{ value, handleChange }"
+            :key="hora"
+            type="checkbox"
+            :value="hora"
+            :unchecked-value="false"
+            name="horarios"
+          >
+            <FormItem class="flex flex-row items-start space-x-3 space-y-0">
+              <FormControl>
+                <Checkbox
+                  :model-value="value.includes(hora)"
+                  @update:model-value="handleChange"
+                />
+              </FormControl>
+              <FormLabel class="font-normal">
+                {{ hora }}
+              </FormLabel>
+            </FormItem>
+          </FormField>
+        </div>
         <FormMessage />
       </FormItem>
     </FormField>

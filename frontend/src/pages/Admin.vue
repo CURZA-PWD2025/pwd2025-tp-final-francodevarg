@@ -25,13 +25,9 @@
       <VeterinarioCard
         v-for="(vet, i) in veterinarios"
         :key="i"
-        :nombre="vet.nombre"
-        :especialidad="vet.especialidad"
-        :email="vet.email"
-        :telefono="vet.telefono"
-        :dias="vet.dias"
-        :horarios="vet.horarios"
-      />
+        :veterinario="vet"
+        />
+
     </div>
   </section>
 </template>
@@ -39,23 +35,23 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import axios from 'axios'
-
 import { Button } from '@/components/ui/button'
-import VeterinarioForm from '@/components/VeterinarioForm.vue'
-import VeterinarioCard from '@/components/VeterinarioCard.vue'
 import {
   Dialog,
   DialogTrigger,
   DialogContent,
 } from '@/components/ui/dialog'
 import { UsersIcon } from 'lucide-vue-next'
+import VeterinarioForm from '@/components/VeterinarioForm.vue'
+import VeterinarioCard from '@/components/VeterinarioCard.vue'
+import type { Veterinario } from '@/types/Veterinario'
+import VeterinarioService from '@/services/VeterinarioService'
 
-const veterinarios = ref<any[]>([])
+const veterinarios = ref<Veterinario[]>([])
 
 async function fetchVeterinarios() {
   try {
-    const response = await axios.get('http://localhost:5000/veterinarios')
+    const response = await VeterinarioService.getAll();
     veterinarios.value = response.data
   } catch (error) {
     console.error('Error al cargar veterinarios:', error)
