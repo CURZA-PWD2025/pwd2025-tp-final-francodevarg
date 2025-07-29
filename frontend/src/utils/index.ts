@@ -1,6 +1,8 @@
 export function normalizarHora(hora: string): string {
-  // Convierte '08:00:00' -> '08:00', deja '08:00' igual
-  return hora?.length === 8 ? hora.slice(0, 5) : hora
+  // Asegura siempre HH:MM
+  const [h, m] = hora.split(':')
+  const hh = h.padStart(2, '0')
+  return `${hh}:${m}`
 }
 
 import { horariosDisponibles, type Horario } from '@/constants/diasSemana'
