@@ -6,8 +6,8 @@
         <Select
           v-bind="componentField"
           :disabled="loading || veterinarios.length === 0"
-          @update:modelValue="(id) => $emit('seleccionar', id)"
-        >
+          @update:modelValue="onUpdateModelValue"
+          >
           <SelectTrigger>
             <SelectValue placeholder="Selecciona un veterinario" />
           </SelectTrigger>
@@ -42,21 +42,29 @@ import {
   SelectContent,
   SelectItem
 } from '@/components/ui/select'
+
 import { onMounted, computed } from 'vue'
 import { useVeterinarioStore } from '@/store/useVeterinarioStore'
-
-const emit = defineEmits<{
-  (e: 'seleccionar', id: any | null): void
-}>()
+import type { Veterinario } from '@/types/Veterinario'
 
 const store = useVeterinarioStore()
-
-const veterinarios = computed(() => store.veterinarios)
-const loading = computed(() => store.loading)
+const veterinarios = computed<Veterinario[]>(() => store.veterinarios)
+const loading = computed<boolean>(() => store.loading)
 
 onMounted(() => {
-  if (store.veterinarios.length === 0) {
+  if (veterinarios.value.length === 0) {
     store.fetchVeterinarios()
   }
 })
+
+const emit = defineEmits<{
+  (e: 'seleccionar', id: number | null): void
+}>()
+
+
+function onUpdateModelValue(value: unknown) {
+  const id = typeof value === 'string' ? parseInt(value) : null
+  emit('seleccionar', id)
+}
+
 </script>
