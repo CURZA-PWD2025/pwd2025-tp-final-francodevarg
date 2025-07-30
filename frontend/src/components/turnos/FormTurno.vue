@@ -6,6 +6,11 @@
       v-if="veterinarioSeleccionado"
       :veterinario="veterinarioSeleccionado"
     />
+    <DatePicker       
+      v-if="veterinarioSeleccionado"
+      :horarios="veterinarioSeleccionado.horarios" 
+      v-model="fecha" />
+    
   </div>
 </template>
 
@@ -19,13 +24,17 @@ import type { Veterinario } from '@/types/Veterinario'
 import VeterinarioSelect from './VeterinarioSelect.vue'
 import VeterinarioDetalle from './VeterinarioDetalle.vue'
 import { useVeterinarioStore } from '@/store/useVeterinarioStore'
+import { getLocalTimeZone,today, type DateValue } from '@internationalized/date'
+import DatePicker from '../DatePicker.vue'
 
 const store = useVeterinarioStore()
+const fecha = ref<DateValue>(today(getLocalTimeZone()))
 
 const { setFieldValue } = useForm({
   validationSchema: toTypedSchema(formSchemaTurno),
   initialValues: {
-    veterinario_id: ''
+    veterinario_id: '',
+    fecha: undefined
   }
 })
 
@@ -37,5 +46,3 @@ function onSeleccionarVeterinario(id: number | null) {
     store.veterinarios.find((v) => v.id === id) ?? null
 }
 </script>
-
-

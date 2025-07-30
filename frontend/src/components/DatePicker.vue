@@ -3,8 +3,9 @@ import {
   DateFormatter,
   type DateValue,
   getLocalTimeZone,
+  today
 } from '@internationalized/date'
-import { Calendar as CalendarIcon } from 'lucide-vue-next'
+import { CalendarIcon } from 'lucide-vue-next'
 
 import { ref } from 'vue'
 import { cn } from '@/lib/utils'
@@ -17,6 +18,33 @@ const df = new DateFormatter('en-US', {
 })
 
 const value = ref<DateValue>()
+
+function isDateUnavailable(date: DateValue): boolean {
+  const d = date.toDate(getLocalTimeZone())
+  return !diasHabilitados.has(d.getDay())
+}
+
+const diasMap: Record<string, number> = {
+  'Domingo': 0,
+  'Lunes': 1,
+  'Martes': 2,
+  'Miércoles': 3,
+  'Jueves': 4,
+  'Viernes': 5,
+  'Sábado': 6
+}
+
+
+import type { Horario } from '@/types/Veterinario'
+
+const props = defineProps<{
+  horarios: Horario[]
+}>()
+
+const diasHabilitados = new Set<number>(
+  props.horarios.map(h => diasMap[h.dia_semana])
+)
+
 </script>
 
 <template>
@@ -30,11 +58,16 @@ const value = ref<DateValue>()
         )"
       >
         <CalendarIcon class="mr-2 h-4 w-4" />
-        {{ value ? df.format(value.toDate(getLocalTimeZone())) : "Pick a date" }}
+        {{ value ? df.format(value.toDate(getLocalTimeZone())) : "Seleccionar una Fecha" }}
       </Button>
     </PopoverTrigger>
     <PopoverContent class="w-auto p-0">
-      <Calendar v-model="value" initial-focus />
+      <Calendar 
+        v-model="value" 
+        initial-focus
+        :min-value="today(getLocalTimeZone())"
+        :is-date-unavailable="isDateUnavailable"
+        />
     </PopoverContent>
   </Popover>
 </template>
