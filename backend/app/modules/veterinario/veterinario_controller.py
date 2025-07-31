@@ -14,6 +14,11 @@ class VeterinarioController:
         return (row, 200) if row else ({"mensaje": "Veterinario no encontrado"}, 404)
 
     @staticmethod
+    def get_disponibilidad(veterinario_id: int , fecha: str):
+        row = HorarioModel.get_disponibilidad_por_fecha(veterinario_id, fecha)
+        return (row, 200) if row else ({"mensaje": "Disponibilidad no encontrado"}, 404)
+    
+    @staticmethod
     def create(data: dict):
         v = data["veterinario"]
 

@@ -1,4 +1,6 @@
 from app.database.connect_db import ConnectDB
+from ..turno.turno_model import TurnoModel
+from datetime import datetime
 
 class HorarioModel:
     SQL_SELECT_BY_VET_ID = """
@@ -6,7 +8,12 @@ class HorarioModel:
         FROM horarios_laborales
         WHERE veterinario_id = %s
     """
-
+    SQL_SELECT_HORARIOS_POR_DIA = """
+        SELECT hora
+        FROM horarios_laborales
+        WHERE veterinario_id = %s AND dia_semana = %s
+    """
+    
     SQL_INSERT = """
         INSERT INTO horarios_laborales (veterinario_id, dia_semana, hora)
         VALUES (%s, %s, %s)
@@ -59,3 +66,37 @@ class HorarioModel:
         except Exception as e:
             print(f"[ERROR] No se pudo crear el horario: {str(e)}")
             return None
+    
+    @staticmethod
+    def get_dia_semana(fecha: str) -> str:
+        dias_map = {
+            "Monday": "Lunes",
+            "Tuesday": "Martes",
+            "Wednesday": "Miércoles",
+            "Thursday": "Jueves",
+            "Friday": "Viernes",
+            "Saturday": "Sábado",
+            "Sunday": "Domingo",
+        }
+        fecha_dt = datetime.strptime(fecha, "%Y-%m-%d")
+        return dias_map[fecha_dt.strftime('%A')]
+
+    @classmethod
+    def get_horarios_por_dia(cls, veterinario_id: int, fecha: str) -> list[str]:
+        dia_semana = cls.get_dia_semana(fecha)
+        rows = ConnectDB.read(cls.SQL_SELECT_HORARIOS_POR_DIA, (veterinario_id, dia_semana))
+        print(f"[DEBUG] Horarios para {veterinario_id} en {fecha} ({dia_semana}): {rows}")
+        return [str(row["hora"])[:5] for row in rows] if rows else []
+
+    @classmethod
+    def get_disponibilidad_por_fecha(cls, veterinario_id: int, fecha: str) -> list[dict]:
+        horarios = cls.get_horarios_por_dia(veterinario_id, fecha)
+        horas_ocupadas = TurnoModel.get_horas_ocupadas(veterinario_id, fecha)
+
+        return [
+            {
+                "hora": hora,
+                "disponible": hora not in horas_ocupadas
+            }
+            for hora in horarios
+        ]

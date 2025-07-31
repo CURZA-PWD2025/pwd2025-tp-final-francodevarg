@@ -1,7 +1,6 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 from app.modules.veterinario.veterinario_controller import VeterinarioController
-from app.modules.horario.horario_controller import HorarioController
 
 veterinario_bp = Blueprint("veterinario_bp", __name__, url_prefix="/veterinarios")
 
@@ -12,10 +11,6 @@ def get_all():
     return jsonify(response), status
 
 @jwt_required()
-@veterinario_bp.route("/horarios-disponibles", methods=["GET"])
-def get_horarios_disponibles():
-    response, status = HorarioController.get_disponibilidad()
-    return jsonify(response), status
 
 @veterinario_bp.route("/<int:id>", methods=["GET"])
 # @jwt_required()
@@ -42,3 +37,17 @@ def update(id):
 def delete(id):
     response, status = VeterinarioController.delete(id)
     return jsonify(response), status
+
+@veterinario_bp.route("/disponibilidad", methods=["GET"])
+def get_disponibilidad():
+    veterinario_id = request.args.get("veterinario_id", type=int)
+    fecha = request.args.get("fecha")
+
+    if not veterinario_id or not fecha:
+        return jsonify({"error": "veterinario_id y fecha son requeridos"}), 400
+    
+    try:
+        return VeterinarioController.get_disponibilidad(veterinario_id, fecha)
+    
+    except ValueError as e:
+        return jsonify({"error": str(e)}), 400
