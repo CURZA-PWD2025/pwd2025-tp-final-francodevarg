@@ -16,20 +16,32 @@ class AuthModel:
 
         jwt = create_access_token(
             identity=usuario.email,
-            additional_claims={'tipo': usuario.tipo}
+            additional_claims={'tipo': usuario.tipo, 'user_id': usuario.id}
         )
         return {
             **usuario.serializar(),
-            'jwt': jwt,
+            'token': jwt,
         },200
         
     @staticmethod
     def register(email: str, nombre: str, password: str, tipo: str) -> dict:
         existente = Usuario.get_user_by_email(email)
         if existente:
-            return {"mensaje": "No se puede registrar: El usuario ya registrado con el email." + email}, 409
+            return {"mensaje": f"No se puede registrar: El usuario ya está registrado con el email {email}"}, 409
 
         password_hash = generate_password_hash(password)
 
-        Usuario.insert_user(nombre, email, password_hash, tipo)
-        return {"mensaje": "Usuario registrado correctamente"}, 201
+        usuario = Usuario(nombre=nombre, email=email, password=password_hash, tipo=tipo)
+        creado = usuario.create()
+        if not creado:
+            return {"mensaje": "Error al registrar usuario"}, 500
+
+        token = create_access_token(
+            identity=usuario.email,
+            additional_claims={'tipo': usuario.tipo, 'user_id': usuario.id}
+        )
+
+        return {
+            **usuario.serializar(),
+            'token': token
+        }, 201

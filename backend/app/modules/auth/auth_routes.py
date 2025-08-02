@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from .auth_controller import AuthController
+from app.middlewares.roles import role_required
 
 auth_bp = Blueprint("auth_bp", __name__, url_prefix="/auth")
 
@@ -16,6 +17,7 @@ def login():
     return jsonify(result), status
 
 @auth_bp.route("/profile", methods=["GET"])
+@role_required('admin','cliente')
 def profile():
     response, status = AuthController.profile()
     return jsonify(response), status
