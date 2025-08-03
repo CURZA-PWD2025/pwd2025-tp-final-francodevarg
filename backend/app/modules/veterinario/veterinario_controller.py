@@ -20,6 +20,24 @@ class VeterinarioController:
     
     @staticmethod
     def create(data: dict):
+        if not isinstance(data, dict) or "veterinario" not in data:
+            return {"mensaje": "Falta la clave 'veterinario' en el cuerpo de la solicitud"}, 400
+
+        v = data["veterinario"]
+
+        # Validar Campos de Veterinario
+        campos_requeridos = ["nombre", "especialidad", "email", "telefono"]
+        for campo in campos_requeridos:
+            if campo not in v or not v[campo]:
+                return {"mensaje": f"Falta el campo obligatorio '{campo}' en 'veterinario'"}, 400
+
+        #Validar Horarios
+        if "horarios" not in data:
+            return {"mensaje": "Falta la clave 'horarios' en el cuerpo de la solicitud"}, 400
+        
+        if not data["horarios"].items():
+            return {"mensaje": "Debes proporcionar al menos un día con horarios"}, 400
+
         v = data["veterinario"]
 
         vet = VeterinarioModel(
@@ -29,12 +47,11 @@ class VeterinarioController:
             telefono=v["telefono"]
         )
 
-        result = vet.create()  # Este método NO recibe parámetros
+        result = vet.create()
 
         if not result:
             return {"mensaje": "Error al insertar veterinario"}, 400
 
-        # Insertar horarios si vienen
         horarios = data.get("horarios", {})
         for dia, horas in horarios.items():
             for hora in horas:
