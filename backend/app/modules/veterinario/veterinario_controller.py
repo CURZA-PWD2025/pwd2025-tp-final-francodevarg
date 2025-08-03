@@ -115,7 +115,7 @@ class VeterinarioController:
 
     @staticmethod
     def delete(id: int):
-        eliminado = VeterinarioModel.delete(id)
+        eliminado = VeterinarioModel(id).delete()
         if eliminado:
             return {"mensaje": "Veterinario eliminado"}, 200
         elif eliminado is False:

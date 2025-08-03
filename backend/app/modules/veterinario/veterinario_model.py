@@ -101,3 +101,9 @@ class VeterinarioModel:
             return ConnectDB.write(VeterinarioModel.SQL_UPDATE, params)
         except Exception as e:
             raise e
+    
+    def delete(self):
+        try:
+            return ConnectDB.write(VeterinarioModel.SQL_DELETE, (self.id,))
+        except Exception as e:
+            raise e
