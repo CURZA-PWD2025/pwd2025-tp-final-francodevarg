@@ -33,6 +33,7 @@ class ConnectDB:
               return result if result else False
         except Exception as exc:
           print(f"error {str(exc)}")
+          raise exc
         finally:
             cxn.close()
           
@@ -51,6 +52,7 @@ class ConnectDB:
           return result
         except Exception as exc:
           print(f"error {str(exc)}")
+          raise exc 
         finally:
              cxn.close()
              
