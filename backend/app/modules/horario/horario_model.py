@@ -19,6 +19,10 @@ class HorarioModel:
         VALUES (%s, %s, %s)
     """
 
+    SQL_DELETE_BY_VETERINARIO_ID = """
+        DELETE FROM horarios_laborales WHERE veterinario_id = %s
+    """
+
     def __init__(
         self,
         id: int = 0,
@@ -100,3 +104,7 @@ class HorarioModel:
             }
             for hora in horarios
         ]
+
+    @staticmethod
+    def delete_by_veterinario_id(veterinario_id: int) -> bool:
+        return ConnectDB.write(HorarioModel.SQL_DELETE_BY_VETERINARIO_ID, (veterinario_id,))

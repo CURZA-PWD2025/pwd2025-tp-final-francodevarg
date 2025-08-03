@@ -69,19 +69,49 @@ class VeterinarioController:
 
     @staticmethod
     def update(id: int, data: dict):
+        # Validación mínima
+        if not data or "veterinario" not in data:
+            return {"mensaje": "Falta la clave 'veterinario'"}, 400
+
+        v = data["veterinario"]
+        campos = ["nombre", "especialidad", "email", "telefono"]
+        for campo in campos:
+            if campo not in v or not isinstance(v[campo], str) or not v[campo].strip():
+                return {"mensaje": f"El campo '{campo}' es obligatorio"}, 400
+
+        # Instanciar veterinario
+        vet = VeterinarioModel(
+            id=id,
+            nombre=v["nombre"].strip(),
+            especialidad=v["especialidad"].strip(),
+            email=v["email"].strip(),
+            telefono=v["telefono"].strip()
+        )
+
         try:
-            vet = VeterinarioModel(
-                id=id,
-                nombre=data.get("nombre"),
-                especialidad=data.get("especialidad"),
-                email=data.get("email"),
-                telefono=data.get("telefono")
-            )
-            if vet.update():
-                return {"mensaje": "Veterinario actualizado"}, 200
-            return {"mensaje": "No se pudo actualizar"}, 400
+            vet.update()
         except Exception as e:
-            return {"mensaje": str(e)}, 500
+            if "Duplicate entry" in str(e) and "'veterinarios.email'" in str(e):
+                return {"mensaje": "El email ya está registrado por otro veterinario"},409
+            return {"mensaje": str(e)},500
+
+        # Actualizar horarios si vienen
+        horarios = data.get("horarios")
+        if horarios:
+            #Borro los anteriores:
+            HorarioModel.delete_by_veterinario_id(id)
+
+            for dia, horas in horarios.items():
+                for hora in horas:
+                    horario = HorarioModel(
+                        dia_semana=dia,
+                        hora=hora,
+                        veterinario_id=id
+                    )
+                    if horario.create() is None:
+                        return {"mensaje": f"Error al insertar horario '{hora}' del día '{dia}'"}, 500
+
+        return {"mensaje": "Veterinario actualizado correctamente"}, 200
 
     @staticmethod
     def delete(id: int):

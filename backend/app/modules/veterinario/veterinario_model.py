@@ -87,4 +87,17 @@ class VeterinarioModel:
         params = (self.nombre, self.especialidad, self.email, self.telefono)
         result = ConnectDB.write(VeterinarioModel.SQL_INSERT, params)
         return result if result else False
+    
 
+    def update(self):
+        params = (
+            self.nombre,
+            self.especialidad,
+            self.email,
+            self.telefono,
+            self.id
+        )
+        try:
+            return ConnectDB.write(VeterinarioModel.SQL_UPDATE, params)
+        except Exception as e:
+            raise e
