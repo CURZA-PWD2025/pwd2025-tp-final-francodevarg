@@ -85,9 +85,10 @@ TABLES['turnos'] = (
 SEEDS['usuarios'] = (
     "INSERT INTO usuarios (nombre, email, password, tipo) VALUES (%s, %s, %s, %s)",
     [
-        ('Admin Uno', 'admin1@vet.com', 'hashedpassword123', 'admin'),
-        ('Carlos Cliente', 'carlos@cliente.com', 'hashedpassword456', 'cliente')
+        ('Admin Uno', 'admin1@vet.com', 'scrypt:32768:8:1$gY8UgPUBiSA7Im13$8421f9a50bf14c10c82fc63afd91d12d0016edfe349b40854da240323f05689b2e22614074f69139eaf4ccd3b49b44fc82289d48b6970402b4af45d037c14cb2', 'admin'),
+        ('Carlos Cliente', 'carlos@cliente.com', 'scrypt:32768:8:1$gY8UgPUBiSA7Im13$8421f9a50bf14c10c82fc63afd91d12d0016edfe349b40854da240323f05689b2e22614074f69139eaf4ccd3b49b44fc82289d48b6970402b4af45d037c14cb2', 'cliente')
     ]
+    ## (password = 1234)
 )
 
 SEEDS['veterinarios'] = (
