@@ -45,3 +45,7 @@ class AuthModel:
             **usuario.serializar(),
             'token': token
         }, 201
+        
+    @staticmethod
+    def profile(user_id: int) -> dict:
+        return Usuario.get_one(user_id)

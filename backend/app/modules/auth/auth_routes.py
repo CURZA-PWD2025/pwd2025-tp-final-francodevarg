@@ -16,8 +16,8 @@ def login():
     result,status = AuthController.login(data)
     return jsonify(result), status
 
-@auth_bp.route("/profile", methods=["GET"])
-@role_required('admin','cliente')
-def profile():
-    response, status = AuthController.profile()
+@auth_bp.route("/profile/<int:user_id>", methods=["GET"])
+@role_required('admin', 'cliente')
+def profile(user_id: int):
+    response, status = AuthController.profile(user_id)
     return jsonify(response), status

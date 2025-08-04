@@ -47,18 +47,17 @@ class UsuarioModel:
             print(f"Error al obtener usuario por email: {e}")
 
     @staticmethod
-    def get_one(id:int) -> dict:
-        result = ConnectDB.read(UsuarioModel.SQL_SELECT_BY_ID, (id,))
+    def get_one(id: int) -> dict:
         try:
+            result = ConnectDB.read(UsuarioModel.SQL_SELECT_BY_ID, (id,))
             if result:
                 usuario = UsuarioModel.deserializar(result[0])
                 return usuario.serializar()
-            else:
-                return None
+            return {"error": "Usuario no encontrado"}
         except Exception as e:
             print(f"Error al obtener usuario: {e}")
-            return {"error": "Error al obtener usuario: {e}"}
-        
+            return {"error": f"Error al obtener usuario: {e}"}
+    
     def create(self) -> bool:
         try:
             lastId =ConnectDB.write(UsuarioModel.SQL_INSERT_USER, (self.nombre, self.email, self.password, self.tipo))

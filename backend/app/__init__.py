@@ -8,7 +8,6 @@ import os
 load_dotenv()
 
 # Importar blueprints
-from app.modules.usuario.usuario_routes import usuario_bp
 from app.modules.auth.auth_routes import auth_bp
 from app.modules.veterinario.veterinario_routes import veterinario_bp
 
@@ -27,7 +26,6 @@ def create_app():
     jwt.init_app(app)
 
     # Registrar rutas
-    app.register_blueprint(usuario_bp)
     app.register_blueprint(auth_bp)
     app.register_blueprint(veterinario_bp)
     return app

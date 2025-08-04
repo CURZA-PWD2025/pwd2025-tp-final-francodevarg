@@ -2,6 +2,7 @@ from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_requir
 from werkzeug.security import generate_password_hash
 from .auth_model import AuthModel
 
+
 class AuthController:
 
     @staticmethod
@@ -26,3 +27,11 @@ class AuthController:
 
         return AuthModel.login(email, password)
 
+    @staticmethod
+    def profile(user_id: int) -> dict:
+        user = AuthModel.profile(user_id)
+
+        if not user:
+            return {"error": "Usuario no encontrado"}, 404
+
+        return user, 200
