@@ -1,0 +1,37 @@
+{
+    "admin": [
+      {
+        "id": "appointments",
+        "label": "Agendar Turno",
+        "icon": "CalendarIcon",
+        "route": "/"
+      },
+      {
+        "id": "daily",
+        "label": "Turnos del Día",
+        "icon": "UsersIcon",
+        "route": "/turnos"
+      },
+      {
+        "id": "admin",
+        "label": "Administrar",
+        "icon": "SettingsIcon",
+        "route": "/admin"
+      }
+    ],
+    "client": [
+      {
+        "id": "appointments",
+        "label": "Agendar Turno",
+        "icon": "CalendarIcon",
+        "route": "/"
+      },
+      {
+        "id": "my-appointments",
+        "label": "Mis Turnos",
+        "icon": "UsersIcon",
+        "route": "/mis-turnos"
+      }
+    ]
+  }
+  
