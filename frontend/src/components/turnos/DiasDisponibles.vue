@@ -7,7 +7,7 @@
           v-for="dia in diasSemana"
           :key="dia.id"
           class="dia-chip"
-          :class="{ activo: diasDisponibles.includes(dia.id) }"
+          :class="{ activo: diasDisponibles.includes(dia.id.toUpperCase()) }"
         >
           {{ dia.label }}
         </span>
@@ -35,7 +35,7 @@ import { computed } from 'vue';
   ]
   
   const diasDisponibles = computed(() => {
-    const diasSet = new Set(props.horarios.map(h => h.dia_semana))
+    const diasSet = new Set(props.horarios.map(h => h.dia_semana.toUpperCase()))
     return Array.from(diasSet)
   })
   </script>

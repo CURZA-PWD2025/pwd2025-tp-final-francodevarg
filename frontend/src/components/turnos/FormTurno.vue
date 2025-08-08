@@ -1,16 +1,15 @@
 <template>
     <form class="form-container">
-      <SelectVeterinario
-        :veterinarios="veterinarios"
+      <VeterinarioSelect
         v-model="veterinario_id"
-        :error="errors.veterinario_id"
+        @seleccionar="onSeleccionarVeterinario"
       />
-  
+
       <DiasDisponibles
-        v-if="veterinarioSeleccionado"
-        :nombre="veterinarioSeleccionado.nombre"
-        :especialidad="veterinarioSeleccionado.especialidad"
-        :horarios="veterinarioSeleccionado.horarios"
+        v-if="store.veterinario"
+        :nombre="store.veterinario.nombre"
+        :especialidad="store.veterinario.especialidad"
+        :horarios="store.veterinario.horarios"
       />
   
       <InputFecha v-model="fecha" :error="errors.fecha" />
@@ -31,45 +30,17 @@
   import { z } from 'zod'
   import { toTypedSchema } from '@vee-validate/zod'
   
-  import SelectVeterinario from '@/components/turnos/SelectVeterinario.vue'
+  import VeterinarioSelect from '@/components/turnos/VeterinarioSelect.vue'
   import InputFecha from '@/components/turnos/InputFecha.vue'
   import HorarioSelector from '@/components/turnos/HorarioSelector.vue'
   import DiasDisponibles from '@/components/turnos/DiasDisponibles.vue'
   
-  // Veterinarios simulados con horarios por día
-  const veterinarios = [
-    {
-      id: 1,
-      nombre: 'Dra. Ana Fernández',
-      especialidad: 'Cardiología',
-      horarios: [
-        { dia_semana: 'Lunes', hora: '09:00:00', id: 1 },
-        { dia_semana: 'Lunes', hora: '10:00:00', id: 2 },
-        { dia_semana: 'Miércoles', hora: '11:00:00', id: 3 },
-      ],
-    },
-    {
-      id: 2,
-      nombre: 'Dr. Luis Martínez',
-      especialidad: 'Dermatología',
-      horarios: [
-        { dia_semana: 'Martes', hora: '09:00:00', id: 4 },
-        { dia_semana: 'Jueves', hora: '10:00:00', id: 5 },
-        { dia_semana: 'Sábado', hora: '11:00:00', id: 6 },
-      ],
-    },
-    {
-      id: 3,
-      nombre: 'Dra. Sofía Gómez',
-      especialidad: 'Medicina general',
-      horarios: [
-        { dia_semana: 'Lunes', hora: '09:00:00', id: 7 },
-        { dia_semana: 'Martes', hora: '11:00:00', id: 8 },
-        { dia_semana: 'Viernes', hora: '10:00:00', id: 9 },
-      ],
-    },
-  ]
-  
+
+  import { useVeterinarioStore } from '@/store/useVeterinarioStore'
+
+  const store = useVeterinarioStore()
+
+  const veterinarios = store.veterinarios
   const horarios = ref<{ hora: string; disponible: boolean }[]>([])
   
   const schema = z.object({
@@ -90,28 +61,28 @@
     veterinarios.find(v => v.id.toString() === veterinario_id.value)
   )
   
-  function simularHorarios(vetId: string, fechaVal: string) {
-    const todasLasHoras = [
-      { hora: '09:00', disponible: Math.random() > 0.5 },
-      { hora: '10:00', disponible: Math.random() > 0.5 },
-      { hora: '11:00', disponible: Math.random() > 0.5 },
-      { hora: '12:00', disponible: Math.random() > 0.5 },
-      { hora: '14:00', disponible: Math.random() > 0.5 },
-      { hora: '15:00', disponible: Math.random() > 0.5 },
-      { hora: '16:00', disponible: Math.random() > 0.5 },
-    ]
+  // function simularHorarios(vetId: string, fechaVal: string) {
+  //   const todasLasHoras = [
+  //     { hora: '09:00', disponible: Math.random() > 0.5 },
+  //     { hora: '10:00', disponible: Math.random() > 0.5 },
+  //     { hora: '11:00', disponible: Math.random() > 0.5 },
+  //     { hora: '12:00', disponible: Math.random() > 0.5 },
+  //     { hora: '14:00', disponible: Math.random() > 0.5 },
+  //     { hora: '15:00', disponible: Math.random() > 0.5 },
+  //     { hora: '16:00', disponible: Math.random() > 0.5 },
+  //   ]
   
-    setTimeout(() => {
-      horarios.value = todasLasHoras
-      hora.value = ''
-    }, 300)
-  }
+  //   setTimeout(() => {
+  //     horarios.value = todasLasHoras
+  //     hora.value = ''
+  //   }, 300)
+  // }
   
   watch([veterinario_id, fecha], ([vetId, f]) => {
-    if (vetId && f) {
-      simularHorarios(vetId, f)
+    if (vetId) {
+      store.fetchHorarios(vetId)
     } else {
-      horarios.value = []
+      store.clearHorarios()
     }
   })
   
@@ -129,6 +100,9 @@
   
   function onSubmit(data: any) {
     console.log('Turno agendado:', data)
+  }
+  function onSeleccionarVeterinario(id: number | null) {
+    console.log('Veterinario seleccionado ID:', id)
   }
   </script>
   
