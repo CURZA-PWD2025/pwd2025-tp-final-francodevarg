@@ -1,27 +1,36 @@
-// services/ApiService.ts
-import {instance as axios} from '../plugins/axios';
-import type { AxiosResponse } from 'axios';
+import { instance as axios } from '@/plugins/axios'
+import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 class ApiService {
-  async getAll<T>(url: string): Promise<AxiosResponse<T[]>> {
-    return await axios.get<T[]>(url);
+  private withAuthHeader(useAuth: boolean): AxiosRequestConfig {
+    return useAuth
+      ? {}
+      : {
+          headers: {
+            'Skip-Authorization': true,
+          },
+        }
   }
 
-  async getOne<T>(url: string, id: number): Promise<AxiosResponse<T>> {
-    return await axios.get<T>(`${url}${id}`);
+  async getAll<T>(url: string, useAuth = true): Promise<AxiosResponse<T[]>> {
+    return axios.get<T[]>(url, this.withAuthHeader(useAuth))
   }
 
-  async create<T>(url: string, data: Partial<T>): Promise<AxiosResponse<T>> {
-    return await axios.post<T>(url, data);
+  async getOne<T>(url: string, id: number, useAuth = true): Promise<AxiosResponse<T>> {
+    return axios.get<T>(`${url}${id}`, this.withAuthHeader(useAuth))
   }
 
-  async update<T>(url: string, id: number, data: Partial<T>): Promise<AxiosResponse<T>> {
-    return await axios.put<T>(`${url}${id}`, data);
+  async create<T>(url: string, data: Partial<T>, useAuth = true): Promise<AxiosResponse<T>> {
+    return axios.post<T>(url, data, this.withAuthHeader(useAuth))
   }
 
-  async destroy(url: string, id: number): Promise<AxiosResponse<{ message: string }>> {
-    return await axios.delete(`${url}${id}`);
+  async update<T>(url: string, id: number, data: Partial<T>, useAuth = true): Promise<AxiosResponse<T>> {
+    return axios.put<T>(`${url}${id}`, data, this.withAuthHeader(useAuth))
+  }
+
+  async destroy(url: string, id: number, useAuth = true): Promise<AxiosResponse<{ message: string }>> {
+    return axios.delete(`${url}${id}`, this.withAuthHeader(useAuth))
   }
 }
 
-export default new ApiService();
+export default new ApiService()
