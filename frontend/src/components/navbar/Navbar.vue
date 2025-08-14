@@ -29,10 +29,10 @@ const isAdmin = ref(true)
 
 const route = useRoute()
 const router = useRouter()
-const currentPage = computed(() => route.name)
+const currentPage = computed(() => String(route.name ?? 'appointments'))
 
-const navigate = (item: { route: string }) => {
-  router.push(item.route)
+function navigate(to: string) {
+  router.push(to)
 }
 
 const logout = () => console.log('Cerrando sesión...')

@@ -2,7 +2,7 @@
     <template v-for="item in menuItems" :key="item.id">
       <Button
         :variant="currentPage === item.id ? 'default' : 'ghost'"
-        @click="$emit('navigate', item)"
+        @click="go(item.route)"
         :class="[
           'flex items-center gap-2 cursor-pointer',
           currentPage === item.id
@@ -30,7 +30,14 @@
     isAdmin: boolean
     currentPage: string
   }>()
-  
+
+  const emit = defineEmits<{
+    (e: 'navigate', to: string): void
+  }>()
+
+  function go(to: string) {
+   emit('navigate', to)
+  }
   const icons = {
     CalendarIcon,
     UsersIcon,
