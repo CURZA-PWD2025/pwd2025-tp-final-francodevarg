@@ -18,7 +18,7 @@
 import { ref } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import { formSchemaTurno } from '@/schemas/turnoSchema'
+import { turnoFormSchema } from '@/schemas/turnoFormSchema'
 import type { Veterinario } from '@/types/Veterinario'
 
 import VeterinarioSelect from './VeterinarioSelect.vue'

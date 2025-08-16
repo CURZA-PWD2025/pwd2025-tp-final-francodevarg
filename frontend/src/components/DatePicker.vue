@@ -7,7 +7,7 @@ import {
 } from '@internationalized/date'
 import { CalendarIcon } from 'lucide-vue-next'
 
-import { ref } from 'vue'
+import { defineModel } from 'vue'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -17,33 +17,16 @@ const df = new DateFormatter('en-US', {
   dateStyle: 'long',
 })
 
-const value = ref<DateValue>()
+const value = defineModel<DateValue | undefined>()
 
 function isDateUnavailable(date: DateValue): boolean {
   const d = date.toDate(getLocalTimeZone())
-  return !diasHabilitados.has(d.getDay())
+  return !props.diasHabilitados.includes(d.getDay())
 }
-
-const diasMap: Record<string, number> = {
-  'Domingo': 0,
-  'Lunes': 1,
-  'Martes': 2,
-  'Miércoles': 3,
-  'Jueves': 4,
-  'Viernes': 5,
-  'Sábado': 6
-}
-
-
-import type { Horario } from '@/types/Veterinario'
 
 const props = defineProps<{
-  horarios: Horario[]
+  diasHabilitados: number[]
 }>()
-
-const diasHabilitados = new Set<number>(
-  props.horarios.map(h => diasMap[h.dia_semana])
-)
 
 </script>
 

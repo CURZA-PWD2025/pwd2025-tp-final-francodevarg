@@ -11,7 +11,12 @@
       :especialidad="veterinarioSelected.especialidad"
       :horarios="veterinarioSelected.horarios"
     />
-
+    
+    <DatePicker
+      v-if="veterinarioSelected"
+      :dias-habilitados="diasHabilitados"
+      v-model="fecha"
+    />
     <!-- <InputFecha v-model="fecha" :error="errors.fecha" /> -->
 
     <!-- Si volvés a usar HorarioSelector, descomenta esto y cambia el schema de 'hora' -->
@@ -30,38 +35,29 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { useForm, useField } from 'vee-validate'
-import { z } from 'zod'
 import { toTypedSchema } from '@vee-validate/zod'
-
+import {
+  type DateValue,
+} from '@internationalized/date'
 import VeterinarioSelect from '@/components/turnos/VeterinarioSelect.vue'
-// import InputFecha from '@/components/turnos/InputFecha.vue'
-// import HorarioSelector from '@/components/turnos/HorarioSelector.vue'
 import DiasDisponibles from '@/components/turnos/DiasDisponibles.vue'
-
 import { useVeterinarioStore } from '@/store/useVeterinarioStore'
 import type { Veterinario } from '@/types/Veterinario'
+import { turnoFormSchema } from '@/schemas/turnoFormSchema'
+import DatePicker from '../DatePicker.vue'
 
 const store = useVeterinarioStore()
 
 const veterinarioSelected = ref<Veterinario>()
-
-const schema = z.object({
-  veterinario_id: z.string().min(1, 'Selecciona un veterinario'),
-  fecha: z.string().min(1, 'La fecha es obligatoria'),
-  hora: z.string().optional(),
-})
 const { value: veterinario_id } = useField<string>('veterinario_id')
-const { value: fecha } = useField<string>('fecha')
+const { value: fecha } = useField<DateValue | undefined >('fecha')
 const { value: hora } = useField<string>('hora')
 
 const { validate, errors } = useForm({
-  validationSchema: toTypedSchema(schema),
+  validationSchema: toTypedSchema(turnoFormSchema),
 })
-
-
-
 
 async function validarYEnviar() {
   const { valid } = await validate()
@@ -69,20 +65,39 @@ async function validarYEnviar() {
 
   const data = {
     veterinario_id: veterinario_id.value,
-    fecha: fecha.value,
-    hora: hora.value, // opcional hoy
+    fecha: fecha.value?.toString(),
+    hora: hora.value,
   }
+  console.log('Datos del turno:', data)
 }
 
 function onSeleccionarVeterinario(id: number | null) {
   if (!id) {
-    veterinario_id.value = ''
+    veterinarioSelected.value = undefined
+    fecha.value = undefined 
     return
   }
-  veterinario_id.value = id.toString()
 
-  veterinarioSelected.value  = store.veterinarios.find(v => v.id === id)
+  veterinarioSelected.value = store.veterinarios.find(v => v.id === id)
+  fecha.value = undefined
 }
+
+const diasMap: Record<string, number> = {
+  'Domingo': 0,
+  'Lunes': 1,
+  'Martes': 2,
+  'Miércoles': 3,
+  'Jueves': 4,
+  'Viernes': 5,
+  'Sábado': 6,
+}
+
+const diasHabilitados = computed(() =>
+  Array.from(new Set(
+    veterinarioSelected.value?.horarios.map(h => diasMap[h.dia_semana]) || []
+  ))
+)
+
 </script>
 
 <style scoped>
