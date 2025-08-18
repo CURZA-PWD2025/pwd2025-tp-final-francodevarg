@@ -11,22 +11,14 @@
       :especialidad="veterinarioSelected.especialidad"
       :horarios="veterinarioSelected.horarios"
     />
-    
+
     <DatePicker
       v-if="veterinarioSelected"
-      :dias-habilitados="diasHabilitados"
       v-model="fecha"
+      :dias-habilitados="diasHabilitados"
+      :error="fechaMeta.touched ? fechaError : ''"
+      @blur="fechaBlur"
     />
-    <!-- <InputFecha v-model="fecha" :error="errors.fecha" /> -->
-
-    <!-- Si volvés a usar HorarioSelector, descomenta esto y cambia el schema de 'hora' -->
-    <!--
-    <HorarioSelector
-      :horarios="horarios"
-      v-model="hora"
-      :error="errors.hora"
-    />
-    -->
 
     <button type="button" class="submit-btn" @click="validarYEnviar">
       Agendar turno
@@ -35,53 +27,70 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { ref, computed } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import {
-  type DateValue,
-} from '@internationalized/date'
+import { turnoFormSchema } from '@/schemas/turnoFormSchema'
+import type { Veterinario } from '@/types/Veterinario'
+import type { DateValue } from '@internationalized/date'
+
+import { useVeterinarioStore } from '@/store/useVeterinarioStore'
 import VeterinarioSelect from '@/components/turnos/VeterinarioSelect.vue'
 import DiasDisponibles from '@/components/turnos/DiasDisponibles.vue'
-import { useVeterinarioStore } from '@/store/useVeterinarioStore'
-import type { Veterinario } from '@/types/Veterinario'
-import { turnoFormSchema } from '@/schemas/turnoFormSchema'
-import DatePicker from '../DatePicker.vue'
+import DatePicker from '@/components/DatePicker.vue'
 
 const store = useVeterinarioStore()
-
 const veterinarioSelected = ref<Veterinario>()
-const { value: veterinario_id } = useField<string>('veterinario_id')
-const { value: fecha } = useField<DateValue | undefined >('fecha')
-const { value: hora } = useField<string>('hora')
 
-const { validate, errors } = useForm({
+// === VeeValidate ===
+const { validate, setFieldTouched } = useForm({
   validationSchema: toTypedSchema(turnoFormSchema),
+  validateOnMount: false,
 })
 
+const { value: veterinario_id } = useField<string>('veterinario_id')
+
+const {
+  value: fecha,
+  errorMessage: fechaError,
+  handleBlur: fechaBlur,
+  meta: fechaMeta,
+} = useField<DateValue | undefined>('fecha')
+
+// === Envío del formulario ===
 async function validarYEnviar() {
   const { valid } = await validate()
-  if (!valid) return
+  console.log('Validación:', valid)
+
+  if (!valid) {
+    setFieldTouched('fecha', true)
+    return
+  }
 
   const data = {
     veterinario_id: veterinario_id.value,
     fecha: fecha.value?.toString(),
-    hora: hora.value,
   }
+
   console.log('Datos del turno:', data)
 }
 
+// === Al seleccionar veterinario ===
 function onSeleccionarVeterinario(id: number | null) {
   if (!id) {
     veterinarioSelected.value = undefined
-    fecha.value = undefined 
+    fecha.value = undefined
+    setFieldTouched('fecha', false)
     return
   }
 
   veterinarioSelected.value = store.veterinarios.find(v => v.id === id)
   fecha.value = undefined
+  setFieldTouched('fecha', false)
 }
 
+
+// === Cálculo de días hábiles ===
 const diasMap: Record<string, number> = {
   'Domingo': 0,
   'Lunes': 1,
@@ -97,7 +106,6 @@ const diasHabilitados = computed(() =>
     veterinarioSelected.value?.horarios.map(h => diasMap[h.dia_semana]) || []
   ))
 )
-
 </script>
 
 <style scoped>
@@ -120,5 +128,3 @@ const diasHabilitados = computed(() =>
   cursor: pointer;
 }
 </style>
-
-  
