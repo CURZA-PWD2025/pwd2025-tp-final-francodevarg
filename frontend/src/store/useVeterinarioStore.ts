@@ -2,11 +2,17 @@ import { defineStore } from 'pinia'
 import VeterinarioService from '@/services/VeterinarioService'
 import type { Veterinario } from '@/types/Veterinario'
 
+interface HorarioDisponible {
+  hora: string
+  disponible: boolean
+}
+
 interface State {
   veterinarios: Veterinario[]
-  veterinario: Veterinario | null,
+  veterinario: Veterinario | null
   loading: boolean
   error: string | null
+  horariosDisponibles: HorarioDisponible[]
 }
 
 export const useVeterinarioStore = defineStore('veterinario', {
@@ -14,7 +20,8 @@ export const useVeterinarioStore = defineStore('veterinario', {
     veterinarios: [],
     veterinario: null,
     loading: false,
-    error: null
+    error: null,
+    horariosDisponibles: []
   }),
 
   actions: {
@@ -46,8 +53,26 @@ export const useVeterinarioStore = defineStore('veterinario', {
         this.loading = false
       }
     },
+
+    async fetchDisponibilidad(veterinario_id: number, fechaISO: string) {
+      this.loading = true
+      this.error = null
+      try {
+        const res = await VeterinarioService.getDisponibilidad(veterinario_id, fechaISO)
+        this.horariosDisponibles = res.data // ← array [{hora, disponible}]
+      } catch (e) {
+        this.error = 'Error al cargar disponibilidad'
+        console.error('fetchDisponibilidad:', e)
+        this.horariosDisponibles = []
+      } finally {
+        this.loading = false
+      }
+    },
+
     clearHorarios() {
       this.veterinario = null
+      this.horariosDisponibles = []
     }
   }
 })
+

@@ -8,4 +8,5 @@ export const turnoFormSchema = z.object({
       typeof val === 'object' && val !== null && 'toDate' in val,
     { message: 'La fecha es obligatoria' }
   ),
+  hora: z.string().min(1, 'Selecciona un horario')
 })

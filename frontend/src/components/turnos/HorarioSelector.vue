@@ -24,10 +24,11 @@
   
   <script setup lang="ts">
   defineProps<{
-    modelValue: string
+    modelValue: string | undefined
     horarios: { hora: string; disponible: boolean }[]
     error?: string
   }>()
+  defineEmits(['update:modelValue'])
   </script>
 
   <style scoped>

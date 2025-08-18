@@ -2,11 +2,18 @@ import ApiService from './ApiService'
 import type { Veterinario } from '../types/Veterinario'
 
 const baseUrl = 'veterinarios/'
-
+interface HorarioDisponible {
+  hora: string
+  disponible: boolean
+}
 export default {
   // Público
   getPublicList() {
     return ApiService.getAll<Veterinario>(baseUrl, false)
+  },
+  
+  getDisponibilidad(veterinario_id: number, fecha: string) {
+    return ApiService.getAll<HorarioDisponible>(`/veterinarios/disponibilidad?veterinario_id=${veterinario_id}&fecha=${fecha}`,false)
   },
 
   getOne(id: number) {
@@ -29,5 +36,5 @@ export default {
 
   destroy(id: number) {
     return ApiService.destroy(baseUrl, id, true)
-  }
+  },
 }
