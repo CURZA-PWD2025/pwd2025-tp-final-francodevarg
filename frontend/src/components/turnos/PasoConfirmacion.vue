@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text-lg font-semibold mb-4">Confirmación</h3>
+    <HeaderConfirmacion />
 
     <div class="space-y-2">
       <p><strong>Veterinario ID:</strong> {{ turno.veterinario_id }}</p>
@@ -18,6 +18,7 @@
 
 <script setup lang="ts">
 import { useTurnoStore } from '@/store/useTurnoStore'
+import HeaderConfirmacion from './HeaderConfirmacion.vue';
 const turnoStore = useTurnoStore()
 const turno = turnoStore.turno
 </script>

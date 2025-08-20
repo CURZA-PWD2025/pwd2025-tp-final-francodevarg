@@ -46,7 +46,6 @@ import { computed } from 'vue';
     background: linear-gradient(to right, #ecfdf5, #e0f7fa);
     border-radius: 12px;
     padding: 16px;
-    margin-bottom: 24px;
   }
   
   .nombre {

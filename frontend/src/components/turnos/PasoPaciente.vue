@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 class="text-lg font-semibold mb-4">Datos del Paciente</h3>
+    <HeaderPaciente />
     <form class="space-y-4">
       <input v-model="nombre" type="text" placeholder="Nombre" class="border rounded p-2 w-full" />
       <input v-model="email" type="email" placeholder="Email" class="border rounded p-2 w-full" />
@@ -17,6 +17,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useTurnoStore } from '@/store/useTurnoStore'
+import HeaderPaciente from './HeaderPaciente.vue';
 
 const emit = defineEmits<{
   (e: 'prev'): void
