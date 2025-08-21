@@ -53,6 +53,7 @@
 
 <script setup lang="ts">
 import { useTurnoForm } from '@/composables/useTurnoForm'
+import {useTurnoStore} from "@/store/useTurnoStore"
 import VeterinarioSelect from '@/components/turnos/VeterinarioSelect.vue'
 import DiasDisponibles from '@/components/turnos/DiasDisponibles.vue'
 import DatePicker from '@/components/DatePicker.vue'
@@ -72,8 +73,12 @@ const {
 
 const emit = defineEmits(['next'])
 
+const turnoStore = useTurnoStore();
 async function submit() {
   const data = await validarYEnviar()
+
+  turnoStore.setTurnoDatos(data as any)
+  console.log("data", data)
 
   if (data) {
     emit('next')

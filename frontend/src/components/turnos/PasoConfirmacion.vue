@@ -6,7 +6,6 @@
       <p><strong>Veterinario ID:</strong> {{ turno.veterinario_id }}</p>
       <p><strong>Fecha:</strong> {{ turno.fecha }}</p>
       <p><strong>Hora:</strong> {{ turno.hora }}</p>
-      <p><strong>Paciente:</strong> {{ turno.paciente?.nombre }} - {{ turno.paciente?.email }} - {{ turno.paciente?.telefono }}</p>
     </div>
 
     <div class="mt-6 flex justify-between">

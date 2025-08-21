@@ -1,37 +1,38 @@
+// @/store/useAuthStore.ts
 import { defineStore } from 'pinia'
+import { instance as axios } from '@/plugins/axios'
+import AuthService from '@/services/AuthService'
 
-export interface AuthUser {
+interface User {
+  id: number
   nombre: string
   email: string
-  telefono: string
+  tipo: string
 }
-
-const STORAGE_KEY = 'fake_auth_user'
 
 export const useAuthStore = defineStore('auth', {
-  state: (): { user: AuthUser | null } => ({
-    user: loadUser(),
+  state: () => ({
+    user: null as User | null,
+    token: localStorage.getItem('token') || null,
   }),
-  getters: {
-    isAuthenticated: (state) => !!state.user,
-  },
+
   actions: {
-    loginFake(payload: AuthUser) {
-      this.user = payload
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload))
+    async login(email: string, password: string) {
+      const data = await AuthService.login(email, password)
+
+      const { id, nombre, email: userEmail, tipo, token } = data
+      this.user = { id, nombre, email: userEmail, tipo }
+      this.token = token
+
+      localStorage.setItem('token', token)
+      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     },
+
     logout() {
       this.user = null
-      localStorage.removeItem(STORAGE_KEY)
-    },
-  },
-})
-
-function loadUser(): AuthUser | null {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    return raw ? (JSON.parse(raw) as AuthUser) : null
-  } catch {
-    return null
+      this.token = null
+      localStorage.removeItem('token')
+      delete axios.defaults.headers.common['Authorization']
+    }
   }
-}
+})

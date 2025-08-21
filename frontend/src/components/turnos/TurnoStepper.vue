@@ -1,5 +1,5 @@
 <template>
-    <div class="">
+    <div>
       <FormTurno
         v-if="currentStep === 1"
         @next="goToStep(2)"
@@ -21,7 +21,6 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-
 import FormTurno from '@/components/turnos/FormTurno.vue'
 import PasoPaciente from '@/components/turnos/PasoPaciente.vue'
 import PasoConfirmacion from '@/components/turnos/PasoConfirmacion.vue'
@@ -34,7 +33,15 @@ function goToStep(step: 1 | 2 | 3) {
   currentStep.value = step
 }
 
-function finish() {
-  console.log('🚀 Payload final listo:', turnoStore.turno)
+async function finish() {
+  try {
+    const data = await turnoStore.finish()
+    console.log('🚀 Turno enviado con éxito:', data)
+    alert('Turno creado correctamente')
+    currentStep.value = 1 // Reiniciar pasos o redirigir
+  } catch (err) {
+    alert('Error al crear el turno')
+  }
 }
+
 </script>

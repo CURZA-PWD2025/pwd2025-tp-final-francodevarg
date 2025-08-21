@@ -21,7 +21,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{ (e: 'blur'): void }>()
 
-const df = new DateFormatter('es-AR', { dateStyle: 'long' })
+const df = new DateFormatter('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })
 
 function isDateUnavailable(date: DateValue): boolean {
   const d = date.toDate(getLocalTimeZone())

@@ -1,30 +1,33 @@
+import type { Veterinario } from '@/types/Veterinario'
+import type { Turno } from '@/types/Turno'
+import type { Mascota } from '@/types/Mascota'
 import { defineStore } from 'pinia'
-
-interface TurnoData {
-  veterinario_id?: number
-  fecha?: string
-  hora?: string
-  paciente?: {
-    nombre: string
-    email: string
-    telefono: string
-  }
-  estado?: string
-}
+import TurnoService from '@/services/TurnoService'
 
 export const useTurnoStore = defineStore('turno', {
-  state: (): { turno: TurnoData } => ({
+  state: (): { turno: Turno, veterinario: Veterinario | null, mascota:Mascota | null} => ({
     turno: {},
+    veterinario: null,
+    mascota: null
   }),
   actions: {
-    setTurnoDatos(datos: Partial<TurnoData>) {
+    setTurnoDatos(datos: Partial<Turno>) {
       this.turno = { ...this.turno, ...datos }
-    },
-    setPaciente(datos: TurnoData['paciente']) {
-      this.turno.paciente = datos
     },
     resetTurno() {
       this.turno = {}
     },
+    async finish() {
+      try {
+        console.log('Enviando payload final:', this.turno)
+        const { data } = await TurnoService.create(this.turno)
+        console.log('✅ Turno creado:', data)
+        this.resetTurno()
+        return data
+      } catch (err) {
+        console.error('❌ Error al crear turno:', err)
+        throw err
+      }
+    }
   },
 })
