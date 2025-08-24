@@ -10,6 +10,7 @@ load_dotenv()
 # Importar blueprints
 from app.modules.auth.auth_routes import auth_bp
 from app.modules.veterinario.veterinario_routes import veterinario_bp
+from app.modules.mascota.mascota_routes import mascota_bp
 
 # Instanciar JWT globalmente
 jwt = JWTManager()
@@ -28,4 +29,5 @@ def create_app():
     # Registrar rutas
     app.register_blueprint(auth_bp)
     app.register_blueprint(veterinario_bp)
+    app.register_blueprint(mascota_bp)
     return app
