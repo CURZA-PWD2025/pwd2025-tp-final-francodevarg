@@ -4,7 +4,6 @@
 
     <!-- Mostrar login si no hay usuario -->
     <div v-if="!usuario">
-      <p class="text-red-600 font-semibold mb-4">Debes iniciar sesión para continuar</p>
       <LoginForm @login-success="onLoginSuccess" />
     </div>
 
@@ -33,7 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed } from 'vue'
 import { useAuthStore } from '@/store/useAuthStore'
 import { useTurnoStore } from '@/store/useTurnoStore'
 import HeaderPaciente from './HeaderPaciente.vue'
@@ -57,25 +56,16 @@ interface Mascota {
 const mascotas = ref<Mascota[]>([])
 const mascotaSeleccionadaId = ref<number | ''>('')
 
-// 🔁 Al montar, si ya hay usuario, cargamos mascotas
-onMounted(async () => {
-  if (usuario.value) {
-    await cargarMascotas()
-  }
-})
-
-async function onLoginSuccess() {
-  await cargarMascotas()
+function onLoginSuccess(){
+  console.log();
 }
 
-async function cargarMascotas() {
-  // Podés reemplazar esto por una llamada real a la API usando usuario.value.id
-  mascotas.value = [
+mascotas.value = [
     { id: 1, nombre: 'Firulais' },
     { id: 2, nombre: 'Mishi' },
     { id: 3, nombre: 'Luna' },
   ]
-}
+
 
 function submit() {
   if (!mascotaSeleccionadaId.value) {
