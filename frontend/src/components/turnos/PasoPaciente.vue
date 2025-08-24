@@ -9,19 +9,7 @@
 
     <!-- Mostrar selector de mascota si hay usuario -->
     <div v-else>
-      <div class="space-y-4">
-        <label for="mascota">Selecciona una mascota</label>
-        <select v-model="mascotaSeleccionadaId" id="mascota" class="border rounded p-2 w-full">
-          <option disabled value="">-- Elegí una mascota --</option>
-          <option
-            v-for="m in mascotas"
-            :key="m.id"
-            :value="m.id"
-          >
-            {{ m.nombre }}
-          </option>
-        </select>
-      </div>
+      <MascotaSelect v-model="mascotaSeleccionadaId" />
 
       <div class="mt-6 flex justify-between">
         <button @click="$emit('prev')" class="px-4 py-2 bg-gray-200 rounded">Atrás</button>
@@ -32,44 +20,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
-import { useAuthStore } from '@/store/useAuthStore'
-import { useTurnoStore } from '@/store/useTurnoStore'
-import HeaderPaciente from './HeaderPaciente.vue'
-import LoginForm from '@/components/auth/LoginForm.vue'
+import { ref, computed, watch } from "vue"
+import { useAuthStore } from "@/store/useAuthStore"
+import { useTurnoStore } from "@/store/useTurnoStore"
+import { useMascotaStore } from "@/store/useMascotaStore"
+import HeaderPaciente from "./HeaderPaciente.vue"
+import LoginForm from "@/components/auth/LoginForm.vue"
+import MascotaSelect from "@/components/MascotaSelect.vue"
 
 const emit = defineEmits<{
-  (e: 'prev'): void
-  (e: 'next'): void
+  (e: "prev"): void
+  (e: "next"): void
 }>()
 
 const authStore = useAuthStore()
 const turnoStore = useTurnoStore()
+const mascotaStore = useMascotaStore()
 
 const usuario = computed(() => authStore.user)
+const mascotaSeleccionadaId = ref<number | "">("")
 
-interface Mascota {
-  id: number
-  nombre: string
+async function cargarMascotas() {
+  if (usuario.value) {
+    await mascotaStore.fetchMascotas(usuario.value.id)
+  }
 }
 
-const mascotas = ref<Mascota[]>([])
-const mascotaSeleccionadaId = ref<number | ''>('')
-
-function onLoginSuccess(){
-  console.log();
+function onLoginSuccess() {
+  mascotaStore.clearMascotas()
+  cargarMascotas()
 }
 
-mascotas.value = [
-    { id: 1, nombre: 'Firulais' },
-    { id: 2, nombre: 'Mishi' },
-    { id: 3, nombre: 'Luna' },
-  ]
-
+watch(usuario, (nuevoUsuario) => {
+  if (nuevoUsuario) {
+    cargarMascotas()
+  }
+})
 
 function submit() {
   if (!mascotaSeleccionadaId.value) {
-    alert('Por favor, seleccioná una mascota')
+    alert("Por favor, seleccioná una mascota")
     return
   }
 
@@ -78,6 +68,6 @@ function submit() {
     motivo: "Consulta",
   })
 
-  emit('next')
+  emit("next")
 }
 </script>
