@@ -1,4 +1,18 @@
 {
+  "public": [
+    {
+      "id": "appointments",
+      "label": "Agendar Turno",
+      "icon": "CalendarIcon",
+      "route": "/"
+    },
+    {
+      "id": "login",
+      "label": "Iniciar Sesión",
+      "icon": "LogInIcon",
+      "route": "/login"
+    }
+  ],
     "admin": [
       {
         "id": "appointments",

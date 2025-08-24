@@ -4,7 +4,7 @@
 
     <!-- Mostrar login si no hay usuario -->
     <div v-if="!usuario">
-      <LoginForm @login-success="onLoginSuccess" />
+      <LoginForm @success="onLoginSuccess" />
     </div>
 
     <!-- Mostrar selector de mascota si hay usuario -->
@@ -20,13 +20,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from "vue"
+import { ref, computed, watch, onMounted } from "vue"
 import { useAuthStore } from "@/store/useAuthStore"
 import { useTurnoStore } from "@/store/useTurnoStore"
 import { useMascotaStore } from "@/store/useMascotaStore"
 import HeaderPaciente from "./HeaderPaciente.vue"
 import LoginForm from "@/components/auth/LoginForm.vue"
 import MascotaSelect from "@/components/MascotaSelect.vue"
+import { on } from "events"
 
 const emit = defineEmits<{
   (e: "prev"): void
@@ -50,6 +51,10 @@ function onLoginSuccess() {
   mascotaStore.clearMascotas()
   cargarMascotas()
 }
+
+onMounted(() => {
+    cargarMascotas()
+})
 
 watch(usuario, (nuevoUsuario) => {
   if (nuevoUsuario) {

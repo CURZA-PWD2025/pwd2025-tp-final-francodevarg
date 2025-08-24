@@ -25,11 +25,14 @@
     SettingsIcon
   } from 'lucide-vue-next'
   import menuConfig from './menuConfig.json'
+import { useAuthStore } from '@/store/useAuthStore';
   
   const props = defineProps<{
-    isAdmin: boolean
     currentPage: string
   }>()
+
+
+  const authStore = useAuthStore()
 
   const emit = defineEmits<{
     (e: 'navigate', to: string): void
@@ -38,12 +41,17 @@
   function go(to: string) {
    emit('navigate', to)
   }
-  const icons = {
+  const icons:any = {
     CalendarIcon,
     UsersIcon,
     SettingsIcon
   }
-  
-  const menuItems = computed(() => props.isAdmin ? menuConfig.admin : menuConfig.client)
-  </script>
+
+  const menuItems = computed(() => {
+  if (!authStore.user) return menuConfig.public
+  return authStore.user.tipo === 'admin'
+    ? menuConfig.admin
+    : menuConfig.client
+})
+</script>
   

@@ -8,8 +8,17 @@
         </div>
 
         <div class="hidden md:flex items-center space-x-4">
-          <MenuItems :is-admin="isAdmin" :current-page="currentPage" @navigate="navigate" />
-          <UserMenu :is-admin="isAdmin" :user="user" @logout="logout" />
+          <MenuItems
+            :is-admin="isAdmin"
+            :current-page="currentPage"
+            @navigate="navigate"
+          />
+          <UserMenu
+            v-if="authStore.user"
+            :is-admin="isAdmin"
+            :user="authStore.user"
+            @logout="logout"
+          />
         </div>
       </div>
     </div>
@@ -17,23 +26,27 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { StethoscopeIcon } from 'lucide-vue-next'
 
 import MenuItems from './MenuItems.vue'
 import UserMenu from './UserMenu.vue'
-
-const user = ref({ name: 'Franco Dev' })
-const isAdmin = ref(true)
+import { useAuthStore } from '@/store/useAuthStore'
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
+
+const isAdmin = computed(() => authStore.user?.tipo === 'admin')
 const currentPage = computed(() => String(route.name ?? 'appointments'))
 
 function navigate(to: string) {
   router.push(to)
 }
 
-const logout = () => console.log('Cerrando sesión...')
+async function logout() {
+  await authStore.logout()
+  router.push({ name: 'login' })
+}
 </script>

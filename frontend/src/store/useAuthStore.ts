@@ -1,38 +1,52 @@
-// @/store/useAuthStore.ts
 import { defineStore } from 'pinia'
 import { instance as axios } from '@/plugins/axios'
 import AuthService from '@/services/AuthService'
-
-interface User {
-  id: number
-  nombre: string
-  email: string
-  tipo: string
-}
+import type { User, AuthResponse } from '@/types/Auth'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
     user: null as User | null,
-    token: localStorage.getItem('token') || null,
+    token: null as string | null
   }),
 
   actions: {
     async login(email: string, password: string) {
-      const data = await AuthService.login(email, password)
+      const data: AuthResponse = await AuthService.login({ email, password })
+      this.user = { id: data.id, nombre: data.nombre, email: data.email, tipo: data.tipo }
+      this.token = data.token
 
-      const { id, nombre, email: userEmail, tipo, token } = data
-      this.user = { id, nombre, email: userEmail, tipo }
-      this.token = token
-
-      localStorage.setItem('token', token)
-      axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      localStorage.setItem('token', data.token)
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
     },
 
-    logout() {
-      this.user = null
-      this.token = null
-      localStorage.removeItem('token')
-      delete axios.defaults.headers.common['Authorization']
+    async register(email: string, nombre: string, password: string, tipo: 'cliente' | 'admin' = 'cliente') {
+      const data: AuthResponse = await AuthService.register({ email, nombre, password, tipo })
+      this.user = { id: data.id, nombre: data.nombre, email: data.email, tipo: data.tipo }
+      this.token = data.token
+
+      localStorage.setItem('token', data.token)
+      axios.defaults.headers.common['Authorization'] = `Bearer ${data.token}`
+    },
+
+    async logout() {
+      try {
+        await AuthService.logout()
+      } catch (err) {
+        console.warn('Error al hacer logout en backend:', err)
+      } finally {
+        this.user = null
+        this.token = null
+        localStorage.removeItem('token')
+        delete axios.defaults.headers.common['Authorization']
+      }
+    },
+
+    restoreSession() {
+      const token = localStorage.getItem('token')
+      if (token) {
+        this.token = token
+        axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      }
     }
   }
 })

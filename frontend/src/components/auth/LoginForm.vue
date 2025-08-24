@@ -3,13 +3,34 @@
     <!-- Card -->
     <div class="login-card overflow-hidden rounded-xl border border-slate-200 shadow-md bg-white">
       <div class="px-5 py-5">
-
         <div class="mb-6 text-center">
-          <h2 class="text-2xl font-bold text-slate-900 mb-2">Iniciar sesión</h2>
-          <p class="text-sm text-slate-600">Ingresá tus credenciales para continuar</p>
+          <h2 class="text-2xl font-bold text-slate-900 mb-2">
+            {{ mode === 'login' ? 'Iniciar sesión' : 'Registrarse' }}
+          </h2>
+          <p class="text-sm text-slate-600">
+            {{ mode === 'login'
+              ? 'Ingresá tus credenciales para continuar'
+              : 'Completá tus datos para crear una cuenta' }}
+          </p>
         </div>
 
         <form @submit.prevent="handleSubmit" class="space-y-5">
+          <!-- Nombre (solo en register) -->
+          <div v-if="mode === 'register'" class="space-y-1.5">
+            <Label for="nombre" class="login-label">Nombre</Label>
+            <Input
+              id="nombre"
+              v-model="formData.nombre"
+              type="text"
+              placeholder="Tu nombre"
+              :disabled="isLoading"
+              class="login-input"
+              :class="{ 'login-input--error': errors.nombre }"
+              required
+            />
+            <p v-if="errors.nombre" class="login-error-msg">{{ errors.nombre }}</p>
+          </div>
+
           <!-- Email -->
           <div class="space-y-1.5">
             <Label for="email" class="login-label">Email</Label>
@@ -23,9 +44,7 @@
               :class="{ 'login-input--error': errors.email }"
               required
             />
-            <p v-if="errors.email" class="login-error-msg">
-              {{ errors.email }}
-            </p>
+            <p v-if="errors.email" class="login-error-msg">{{ errors.email }}</p>
           </div>
 
           <!-- Password -->
@@ -35,17 +54,34 @@
               id="password"
               v-model="formData.password"
               type="password"
-              placeholder="••••••••"
+              placeholder=""
               :disabled="isLoading"
               class="login-input"
               :class="{ 'login-input--error': errors.password }"
               required
             />
-            <p v-if="errors.password" class="login-error-msg">
-              {{ errors.password }}
+            <p v-if="errors.password" class="login-error-msg">{{ errors.password }}</p>
+          </div>
+
+          <!-- Confirmar password (solo en register) -->
+          <div v-if="mode === 'register'" class="space-y-1.5">
+            <Label for="passwordConfirm" class="login-label">Confirmar contraseña</Label>
+            <Input
+              id="passwordConfirm"
+              v-model="formData.passwordConfirm"
+              type="password"
+              placeholder=""
+              :disabled="isLoading"
+              class="login-input"
+              :class="{ 'login-input--error': errors.passwordConfirm }"
+              required
+            />
+            <p v-if="errors.passwordConfirm" class="login-error-msg">
+              {{ errors.passwordConfirm }}
             </p>
           </div>
 
+          <!-- Botón -->
           <div class="space-y-3">
             <Button
               type="submit"
@@ -53,18 +89,23 @@
               :disabled="!isFormValid || isLoading"
             >
               <Loader2 v-if="isLoading" class="mr-2 h-4 w-4 animate-spin" />
-              {{ isLoading ? 'Iniciando sesión...' : 'Iniciar sesión' }}
+              {{
+                isLoading
+                  ? (mode === 'login' ? 'Iniciando...' : 'Registrando...')
+                  : (mode === 'login' ? 'Iniciar sesión' : 'Registrarse')
+              }}
             </Button>
 
-            <!-- Mensaje: iniciar sesión o registrarse -->
+            <!-- Switch -->
             <p class="text-center text-sm text-slate-600">
-              ¿No tenés cuenta?
-              <a
-                href="/register"
+              {{ mode === 'login' ? '¿No tenés cuenta?' : '¿Ya tenés cuenta?' }}
+              <button
+                type="button"
                 class="font-medium text-teal-700 hover:text-teal-800 underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 rounded-sm"
+                @click="toggleMode"
               >
-                Registrate
-              </a>
+                {{ mode === 'login' ? 'Registrate' : 'Iniciá sesión' }}
+              </button>
             </p>
           </div>
         </form>
@@ -74,32 +115,66 @@
 </template>
 
 <script setup lang="ts">
+import { ref, } from 'vue'
 import { Loader2 } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { useLoginForm } from '@/composables/useLoginForm'
-import type { LoginCredentials } from '@/types/Auth'
+import { useAuthStore } from '@/store/useAuthStore'
 
-const {
-  formData,
-  errors,
-  isLoading,
-  isFormValid,
-  validateForm,
-  resetForm,
-  submitLogin
-} = useLoginForm()
+const authStore = useAuthStore()
+const mode = ref<'login' | 'register'>('login')
 
-const handleSubmit = async () => {
+const formData = ref({
+  nombre: '',
+  email: '',
+  password: '',
+  passwordConfirm: ''
+})
+
+const errors = ref<Record<string, string>>({})
+const isLoading = ref(false)
+const isFormValid = ref(true)
+
+function validateForm() {
+  errors.value = {}
+  if (!formData.value.email) errors.value.email = 'Email requerido'
+  if (!formData.value.password) errors.value.password = 'Contraseña requerida'
+
+  if (mode.value === 'register') {
+    if (!formData.value.nombre) errors.value.nombre = 'Nombre requerido'
+    if (formData.value.password !== formData.value.passwordConfirm) {
+      errors.value.passwordConfirm = 'Las contraseñas no coinciden'
+    }
+  }
+
+  return Object.keys(errors.value).length === 0
+}
+
+async function handleSubmit() {
   if (!validateForm()) return
   try {
-    const user = await submitLogin(formData.value as LoginCredentials)
-    // emite eventos si es necesario en tu integración
-    resetForm()
-  } catch {
-    // el composable ya setea loginError
+    isLoading.value = true
+    if (mode.value === 'login') {
+      await authStore.login(formData.value.email, formData.value.password)
+    } else {
+      await authStore.register(
+        formData.value.email,
+        formData.value.nombre,
+        formData.value.password,
+        'cliente'
+      )
+    }
+  } finally {
+    isLoading.value = false
+    emit('success',authStore.user)
   }
+}
+const emit = defineEmits(['success'])
+
+function toggleMode() {
+  mode.value = mode.value === 'login' ? 'register' : 'login'
+  errors.value = {}
 }
 </script>
 
