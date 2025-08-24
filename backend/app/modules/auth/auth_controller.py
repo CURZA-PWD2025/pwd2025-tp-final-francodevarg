@@ -1,5 +1,4 @@
-from flask_jwt_extended import create_access_token, get_jwt_identity, jwt_required
-from werkzeug.security import generate_password_hash
+from flask import request
 from .auth_model import AuthModel
 
 
@@ -35,3 +34,9 @@ class AuthController:
             return {"error": "Usuario no encontrado"}, 404
 
         return user, 200
+    
+
+    @staticmethod
+    def logout():
+        auth_header = request.headers.get("Authorization", None)
+        return AuthModel.logout(auth_header)

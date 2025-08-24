@@ -1,6 +1,8 @@
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token,decode_token
 from werkzeug.security import generate_password_hash
 from app.modules.usuario.usuario_model import UsuarioModel as Usuario
+
+blacklist: set[str] = set()
 
 class AuthModel:
 
@@ -49,3 +51,17 @@ class AuthModel:
     @staticmethod
     def profile(user_id: int) -> dict:
         return Usuario.get_one(user_id)
+    
+    @staticmethod
+    def logout(auth_header: str | None) -> tuple[dict, int]:
+        if auth_header and auth_header.startswith("Bearer "):
+            token = auth_header.split(" ")[1]
+        else:
+            return {"error": "Token no provisto"}, 400
+
+        decoded = decode_token(token)
+        jti = decoded["jti"]
+        blacklist.add(jti)
+        return {"message": "Logout exitoso"}, 200
+    
+    
