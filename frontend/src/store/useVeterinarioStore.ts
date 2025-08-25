@@ -68,9 +68,11 @@ export const useVeterinarioStore = defineStore('veterinario', {
         this.loading = false
       }
     },
-
+    setVeterinario(v: Veterinario | null) {
+      console.log("v",v)
+      this.veterinario = v
+    },
     clearHorarios() {
-      this.veterinario = null
       this.horariosDisponibles = []
     }
   }

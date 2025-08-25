@@ -1,14 +1,10 @@
-import type { Veterinario } from '@/types/Veterinario'
 import type { Turno } from '@/types/Turno'
-import type { Mascota } from '@/types/Mascota'
 import { defineStore } from 'pinia'
 import TurnoService from '@/services/TurnoService'
 
 export const useTurnoStore = defineStore('turno', {
-  state: (): { turno: Turno, veterinario: Veterinario | null, mascota:Mascota | null} => ({
-    turno: {},
-    veterinario: null,
-    mascota: null
+  state: (): { turno: Turno} => ({
+    turno: {}
   }),
   actions: {
     setTurnoDatos(datos: Partial<Turno>) {

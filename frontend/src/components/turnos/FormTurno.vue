@@ -68,14 +68,14 @@ const {
   hora, horaError, horaMeta,
   diasHabilitados,
   onSeleccionarVeterinario,
-  validarYEnviar
+  validarYEnviarTurno
 } = useTurnoForm()
 
 const emit = defineEmits(['next'])
 
 const turnoStore = useTurnoStore();
 async function submit() {
-  const data = await validarYEnviar()
+  const data = await validarYEnviarTurno()
 
   turnoStore.setTurnoDatos(data as any)
   console.log("data", data)

@@ -42,12 +42,22 @@ export function useTurnoForm() {
 
   // === Selección veterinario ===
   function onSeleccionarVeterinario(id: number | null) {
+    console.log("id", id)
     if (!id) {
       veterinarioSelected.value = undefined
+      store.veterinario = null
       resetCampos()
       return
     }
     veterinarioSelected.value = store.veterinarios.find(v => v.id === id)
+    console.log("veterinario " , veterinarioSelected.value)
+    store.veterinario = (veterinarioSelected.value as Veterinario)
+    console.log("store", store)
+
+    console.log('Array veterinarios:', store.veterinarios)
+console.log('ID recibido:', id, 'typeof', typeof id)
+const encontrado = store.veterinarios.find(v => v.id === id)
+console.log('Resultado find:', encontrado)
     resetCampos()
   }
 
@@ -80,7 +90,7 @@ export function useTurnoForm() {
   })
 
   // === Enviar ===
-  async function validarYEnviar() {
+  async function validarYEnviarTurno() {
     const { valid } = await validate()
     if (!valid) {
       setFieldTouched('fecha', true)
@@ -104,6 +114,6 @@ export function useTurnoForm() {
     hora, horaError, horaMeta,
     diasHabilitados,
     onSeleccionarVeterinario,
-    validarYEnviar,
+    validarYEnviarTurno,
   }
 }
