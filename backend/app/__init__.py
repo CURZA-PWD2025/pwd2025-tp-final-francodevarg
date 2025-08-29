@@ -11,6 +11,7 @@ load_dotenv()
 from app.modules.auth.auth_routes import auth_bp
 from app.modules.veterinario.veterinario_routes import veterinario_bp
 from app.modules.mascota.mascota_routes import mascota_bp
+from app.modules.turno.turno_routes import turno_bp
 
 from app.modules.auth.auth_model import blacklist  
 
@@ -37,5 +38,6 @@ def create_app():
     app.register_blueprint(auth_bp)
     app.register_blueprint(veterinario_bp)
     app.register_blueprint(mascota_bp)
+    app.register_blueprint(turno_bp)
 
     return app
