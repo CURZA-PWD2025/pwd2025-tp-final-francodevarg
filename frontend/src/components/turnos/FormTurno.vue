@@ -25,6 +25,7 @@
           :error="fechaMeta.touched ? fechaError : ''"
           @blur="fechaBlur"
         />
+      <small class="text-xs text-gray-500">Solo se muestran las fechas en las que {{ veterinarioSelected.nombre }} atiende</small>
       </div>
 
       <div v-if="store.horariosDisponibles.length > 0" class="form-item">
@@ -39,7 +40,6 @@
         <button
           type="button"
           class="boton-continuar"
-          :class="{ 'activo': veterinario_id && fecha && hora }"
           @click="submit"
         >
           Continuar
@@ -110,23 +110,15 @@ async function submit() {
 
 .boton-continuar {
   width: 100%;
-  background-color: #e0e0e0; /* gris inactivo */
+  background-color: #e0e0e0; 
   color: #ffffff;
   padding: 12px 20px;
   font-size: 16px;
   font-weight: 500;
   border: none;
   border-radius: 8px;
+  background-color: #4caf50;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
-
-.boton-continuar.activo {
-  background-color: #4caf50;
-}
-
-.boton-continuar:hover {
-  opacity: 0.95;
-}
-
 </style>

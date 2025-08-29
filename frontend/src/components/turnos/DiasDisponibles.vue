@@ -1,7 +1,11 @@
 <template>
     <div class="dias-container">
-      <h3 class="nombre">{{ nombre }}</h3>
-      <p class="especialidad">{{ especialidad }}</p>
+      <div class="flex justify-items-end">
+        <h3 class="nombre">{{ nombre }}
+          - <span class="especialidad">{{ especialidad }}</span>
+        </h3>
+      </div>
+      <h2 class="mb-2">Días de Atencion:</h2>
       <div class="dias">
         <span
           v-for="dia in diasSemana"
@@ -25,13 +29,13 @@ import { computed } from 'vue';
   }>()
   
   const diasSemana = [
-    { id: 'Domingo', label: 'Dom' },
     { id: 'Lunes', label: 'Lun' },
     { id: 'Martes', label: 'Mar' },
     { id: 'Miércoles', label: 'Mié' },
     { id: 'Jueves', label: 'Jue' },
     { id: 'Viernes', label: 'Vie' },
     { id: 'Sábado', label: 'Sáb' },
+    { id: 'Domingo', label: 'Dom' },
   ]
   
   const diasDisponibles = computed(() => {
@@ -46,6 +50,7 @@ import { computed } from 'vue';
     background: linear-gradient(to right, #ecfdf5, #e0f7fa);
     border-radius: 12px;
     padding: 16px;
+    color:#047857;
   }
   
   .nombre {
@@ -57,7 +62,8 @@ import { computed } from 'vue';
   
   .especialidad {
     color: #047857;
-    margin-bottom: 12px;
+    font-weight: 400;
+    font-size: 1.2rem;
   }
   
   .dias {

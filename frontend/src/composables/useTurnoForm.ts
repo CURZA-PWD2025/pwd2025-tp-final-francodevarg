@@ -50,14 +50,7 @@ export function useTurnoForm() {
       return
     }
     veterinarioSelected.value = store.veterinarios.find(v => v.id === id)
-    console.log("veterinario " , veterinarioSelected.value)
     store.veterinario = (veterinarioSelected.value as Veterinario)
-    console.log("store", store)
-
-    console.log('Array veterinarios:', store.veterinarios)
-console.log('ID recibido:', id, 'typeof', typeof id)
-const encontrado = store.veterinarios.find(v => v.id === id)
-console.log('Resultado find:', encontrado)
     resetCampos()
   }
 
@@ -97,7 +90,7 @@ console.log('Resultado find:', encontrado)
       setFieldTouched('hora', true)
       return
     }
-
+    store.horariosDisponibles = []
     return {
       veterinario_id: veterinario_id.value,
       fecha: fecha.value?.toString(),

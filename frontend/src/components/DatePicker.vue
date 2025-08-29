@@ -35,27 +35,31 @@ function onSelect(date: DateValue) {
 </script>
 
 <template>
+  <label class="text-sm font-medium text-gray-700 flex items-center gap-2 mb-1">
+    <CalendarIcon class="mr-2 h-4 w-4" />
+    Fecha *
+  </label>
   <div>
     <Popover>
       <PopoverTrigger as-child>
         <Button
           variant="outline"
           :class="cn(
-            'w-[280px] justify-start text-left font-normal',
+            'w-full justify-start text-left font-normal',
             !model && 'text-muted-foreground'
           )"
         >
-          <CalendarIcon class="mr-2 h-4 w-4" />
           {{ model ? df.format(model.toDate(getLocalTimeZone())) : "Seleccionar una Fecha" }}
         </Button>
       </PopoverTrigger>
-      <PopoverContent class="w-auto p-0">
+      <PopoverContent class="w-auto p-0" align="start">
         <Calendar
           v-model="model"
           initial-focus
           :min-value="today(getLocalTimeZone())"
           :is-date-unavailable="isDateUnavailable"
           @update:selected="onSelect"
+          :locale="'es-AR'"
         />
       </PopoverContent>
     </Popover>

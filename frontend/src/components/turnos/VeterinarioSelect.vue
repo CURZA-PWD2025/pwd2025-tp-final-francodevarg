@@ -1,14 +1,15 @@
 <template>
   <FormField name="veterinario_id" v-slot="{ componentField }">
     <FormItem>
-      <FormLabel>Veterinario *</FormLabel>
+      <FormLabel><User class="mr-2 h-4 w-4" />
+        Veterinario *</FormLabel>
       <FormControl>
         <Select
           v-bind="componentField"
           :disabled="loading || veterinarios.length === 0"
           @update:modelValue="onUpdateModelValue"
           >
-          <SelectTrigger>
+          <SelectTrigger class="w-full">
             <SelectValue placeholder="Selecciona un veterinario" />
           </SelectTrigger>
           <SelectContent>
@@ -46,6 +47,7 @@ import {
 import { onMounted, computed } from 'vue'
 import { useVeterinarioStore } from '@/store/useVeterinarioStore'
 import type { Veterinario } from '@/types/Veterinario'
+import { User } from 'lucide-vue-next'
 
 const store = useVeterinarioStore()
 const veterinarios = computed<Veterinario[]>(() => store.veterinarios)
