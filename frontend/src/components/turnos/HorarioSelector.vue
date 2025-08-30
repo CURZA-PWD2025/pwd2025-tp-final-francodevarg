@@ -1,5 +1,5 @@
 <template>
-    <div class="form-group" v-if="horarios.length">
+    <div class="form-group" v-if="horarios.some(h => h.disponible)">
       <label class="text-sm font-medium text-gray-700 flex items-center gap-2">
         <Clock class="h-4 w-6" />
         Horarios disponibles*
@@ -25,6 +25,9 @@
       </div>
       <span class="error" v-if="error">{{ error }}</span>
     </div>
+    <p v-else class="text-sm text-red-500 italic mt-1">
+      No hay horarios para la fecha seleccionada
+    </p>
   </template>
   
   <script setup lang="ts">
@@ -33,7 +36,7 @@
 import { cn } from '@/lib/utils';
 
   defineProps<{
-    modelValue: string | undefined
+    modelValue: string
     horarios: { hora: string; disponible: boolean }[]
     error?: string
   }>()

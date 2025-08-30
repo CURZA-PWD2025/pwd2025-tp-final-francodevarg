@@ -1,7 +1,7 @@
 import { ref, computed, watch } from 'vue'
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import { turnoFormSchema } from '@/schemas/turnoFormSchema'
+import { makeTurnoFormSchema } from '@/schemas/turnoFormSchema'
 import { getLocalTimeZone } from '@internationalized/date'
 import type { DateValue } from '@internationalized/date'
 import type { Veterinario } from '@/types/Veterinario'
@@ -11,10 +11,29 @@ export function useTurnoForm() {
   const store = useVeterinarioStore()
   const veterinarioSelected = ref<Veterinario>()
 
+
+  const horasValidas = computed(() =>
+    store.horariosDisponibles.filter(h => h.disponible).map(h => h.hora)
+  )
+
+  // 2) Schema tipado y REACTIVO según las horas habilitadas
+  const validationSchema = computed(() =>
+    toTypedSchema(makeTurnoFormSchema(horasValidas.value))
+  )
+
   // === VeeValidate ===
   const { validate, setFieldTouched } = useForm({
-    validationSchema: toTypedSchema(turnoFormSchema),
-    validateOnMount: false,
+    validationSchema,
+      validateOnMount: false,
+      validateOnBlur: false,
+      validateOnChange: false,
+      validateOnInput: false,
+      validateOnModelUpdate: false,
+      initialValues: {
+        veterinario_id: '',
+        fecha: null as unknown as DateValue | null,
+        hora: '' // string vacía => evita “Required”
+      }
   })
 
   const { value: veterinario_id } = useField<string>('veterinario_id')
@@ -29,12 +48,12 @@ export function useTurnoForm() {
     value: hora,
     errorMessage: horaError,
     meta: horaMeta,
-  } = useField<string | undefined>('hora')
+  } = useField<string>('hora')
 
   // === Reset ===
   function resetCampos() {
     fecha.value = undefined
-    hora.value = undefined
+    hora.value = ""
     setFieldTouched('fecha', false)
     setFieldTouched('hora', false)
     store.clearHorarios()
