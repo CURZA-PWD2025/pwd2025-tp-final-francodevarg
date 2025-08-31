@@ -5,10 +5,10 @@
         Veterinario *</FormLabel>
       <FormControl>
         <Select
-          v-bind="componentField"
+          :model-value="modelValue?.toString()"
+          @update:modelValue="onChange"
           :disabled="loading || veterinarios.length === 0"
-          @update:modelValue="onUpdateModelValue"
-          >
+        >
           <SelectTrigger class="w-full">
             <SelectValue placeholder="Selecciona un veterinario" />
           </SelectTrigger>
@@ -60,13 +60,17 @@ onMounted(() => {
 })
 
 const emit = defineEmits<{
+  (e: 'update:modelValue', value: number | null): void
   (e: 'seleccionar', id: number | null): void
 }>()
 
+const props = defineProps<{
+  modelValue: number | null
+}>()
 
-function onUpdateModelValue(value: unknown) {
-  const id = typeof value === 'string' ? parseInt(value) : null
-  emit('seleccionar', id)
+function onChange(val: string | undefined) {
+  const num = val ? parseInt(val) : null
+  emit('update:modelValue', num)
+  emit('seleccionar', num)
 }
-
 </script>

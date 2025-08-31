@@ -3,12 +3,14 @@ import type { DateValue } from '@internationalized/date'
 
 export const makeTurnoFormSchema = () =>
   z.object({
-    veterinario_id: z.string()
-      .min(1, 'Selecciona un veterinario'),
-
-    mascota_id: z.string()
-      .min(1, 'Selecciona una mascota'),
-
+    veterinario_id: z.preprocess(
+      (val) => Number(val),
+      z.number().min(1, 'Seleccioná un veterinario')
+    ),
+    mascota_id: z.preprocess(
+      (val) => Number(val),
+      z.number().min(1, 'Seleccioná una mascota')
+    ),
     fecha: z.any().refine(
       (val): val is DateValue =>
         typeof val === 'object' &&

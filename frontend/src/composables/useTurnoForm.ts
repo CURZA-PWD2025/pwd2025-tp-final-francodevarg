@@ -1,7 +1,8 @@
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { makeTurnoFormSchema } from '@/schemas/turnoFormSchema'
-import type { DateValue, parseDate } from '@internationalized/date'
+import type { DateValue } from '@internationalized/date'
+import { parseDate } from '@internationalized/date'
 import type { Turno } from '@/types/Turno'
 
 
@@ -10,13 +11,19 @@ import type { Turno } from '@/types/Turno'
 
 export function useTurnoForm(initialValues?: Partial<Turno>) {
 
+  function parseFechaInput(fecha: unknown): DateValue | null {
+    if (typeof fecha === 'string') return parseDate(fecha)
+    if (fecha && typeof fecha === 'object' && 'day' in fecha) return fecha as DateValue
+    return null
+  }
+
   const { validate, validateField, setFieldTouched, resetForm } = useForm({
     validationSchema: toTypedSchema(makeTurnoFormSchema()),
     validateOnMount: false,
     initialValues: {
-      veterinario_id: initialValues?.veterinario_id?.toString() ?? '',
-      mascota_id: initialValues?.mascota_id?.toString() ?? '',
-      fecha: initialValues?.fecha ? parseDate(initialValues.fecha) : null,
+      veterinario_id: Number(initialValues?.veterinario_id) ?? 0,
+      mascota_id: Number(initialValues?.mascota_id) ?? 0,
+      fecha: parseFechaInput(initialValues?.fecha),
       hora: initialValues?.hora ?? '',
       motivo: initialValues?.motivo ?? '',
       estado: initialValues?.estado ?? 'pendiente'
@@ -29,13 +36,13 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
     value: veterinario_id,
     errorMessage: veterinarioIdError,
     meta: veterinarioIdMeta
-  } = useField<string>('veterinario_id')
+  } = useField<Number>('veterinario_id')
 
   const {
     value: mascota_id,
     errorMessage: mascotaIdError,
     meta: mascotaIdMeta
-  } = useField<string>('mascota_id')
+  } = useField<Number>('mascota_id')
 
   const {
     value: fecha,
@@ -66,8 +73,8 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
   function resetCampos() {
     resetForm({
       values: {
-        veterinario_id: '',
-        mascota_id: '',
+        veterinario_id: 0,
+        mascota_id: 0,
         fecha: undefined,
         hora: '',
         motivo: '',
@@ -112,6 +119,23 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
     return payload
   }
 
+  async function submitStep2(): Promise<Partial<Turno> | null> {
+    setFieldTouched('motivo', true)
+    setFieldTouched('mascota_id', true)
+
+    const motivoValido = await validateField('motivo')
+    const mascotaValida = await validateField('mascota_id')
+
+    if (!motivoValido || !mascotaValida) return null
+
+    const payload: Partial<Turno> = {
+      mascota_id: Number(mascota_id.value),
+      motivo: motivo.value,
+      estado: "pendiente"
+    }
+    return payload
+  }
+
   // === Enviar ===
   async function validarYEnviarTurno(): Promise<Turno | null> {
     const { valid } = await validate()
@@ -147,6 +171,7 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
     resetCampos,
     validarYEnviarTurno,
     validarPaso1,
-    validarYEnviarTurnoPaso1
+    validarYEnviarTurnoPaso1,
+    submitStep2
   }
 }

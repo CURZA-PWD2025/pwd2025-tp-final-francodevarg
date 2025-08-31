@@ -85,6 +85,7 @@ const {
 
 // Selección de veterinario
 function onSeleccionarVeterinario(id: number | null) {
+  console.log("id",id)
   turnoStore.veterinario = id
     ? turnoStore.veterinarios.find(v => v.id === id) || null
     : null
