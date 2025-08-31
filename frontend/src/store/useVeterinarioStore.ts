@@ -23,6 +23,27 @@ export const useVeterinarioStore = defineStore('veterinario', {
     error: null,
     horariosDisponibles: []
   }),
+  getters: {
+  diasHabilitados(state): number[] {
+    if (!state.veterinario) return []
+
+    const diasMap: Record<string, number> = {
+      Domingo: 0,
+      Lunes: 1,
+      Martes: 2,
+      Miércoles: 3,
+      Jueves: 4,
+      Viernes: 5,
+      Sábado: 6,
+    }
+
+    return Array.from(
+      new Set(state.veterinario.horarios.map(h => diasMap[h.dia_semana]))
+    )
+}
+
+  },
+
 
   actions: {
     async fetchVeterinarios() {

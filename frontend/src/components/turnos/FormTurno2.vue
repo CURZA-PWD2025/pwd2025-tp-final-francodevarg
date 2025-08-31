@@ -1,0 +1,153 @@
+<template>
+  <div>
+    <HeaderCita />
+
+    <form class="tarjeta-formulario">
+      <!-- Veterinario -->
+      <div class="form-item">
+        <VeterinarioSelect
+          v-model="veterinario_id"
+          @seleccionar="onSeleccionarVeterinario"
+        />
+      </div>
+
+      <!-- Detalle del veterinario seleccionado -->
+      <div v-if="store.veterinario" class="form-item">
+        <DiasDisponibles
+          :nombre="store.veterinario.nombre"
+          :especialidad="store.veterinario.especialidad"
+          :horarios="store.veterinario.horarios"
+        />
+      </div>
+
+      <!-- Fecha -->
+      <div v-if="store.veterinario" class="form-item">
+        <DatePicker
+          v-model="fecha"
+          :dias-habilitados="store.diasHabilitados"
+          :error="fechaMeta.touched ? fechaError : ''"
+          @blur="fechaBlur"
+        />
+        <small class="text-xs text-gray-500">
+          Solo se muestran las fechas en las que {{ store.veterinario.nombre }} atiende
+        </small>
+      </div>
+
+      <!-- Hora -->
+      <div v-if="store.horariosDisponibles.length > 0" class="form-item">
+        <HorarioSelector
+          :horarios="store.horariosDisponibles"
+          v-model="hora"
+          :error="horaMeta.touched ? horaError : ''"
+        />
+      </div>
+
+      <!-- Botón -->
+      <div class="form-item">
+        <button
+          type="button"
+          class="boton-continuar"
+          @click="submit"
+        >
+          Continuar
+        </button>
+      </div>
+    </form>
+  </div>
+</template>
+
+<script setup lang="ts">
+import HeaderCita from './HeaderCita.vue'
+import VeterinarioSelect from '@/components/turnos/VeterinarioSelect.vue'
+import DiasDisponibles from '@/components/turnos/DiasDisponibles.vue'
+import DatePicker from '@/components/DatePicker.vue'
+import HorarioSelector from '@/components/turnos/HorarioSelector.vue'
+
+import { watch } from 'vue'
+import { getLocalTimeZone } from '@internationalized/date'
+import { useTurnoForm2 } from '@/composables/useTurnoForm2'
+import { useVeterinarioStore } from '@/store/useVeterinarioStore'
+import { useTurnoStore } from '@/store/useTurnoStore'
+
+const emit = defineEmits(['next'])
+
+// Composables
+const {
+  veterinario_id,
+  fecha, fechaError, fechaMeta, fechaBlur,
+  hora, horaError, horaMeta,
+  validarYEnviarTurnoPaso1
+} = useTurnoForm2()
+
+const store = useVeterinarioStore()
+const turnoStore = useTurnoStore()
+
+
+
+// === Selección de veterinario ===
+function onSeleccionarVeterinario(id: number | null) {
+  if (!id) {
+    store.veterinario = null
+    store.clearHorarios()
+    return
+  }
+
+  const seleccionado = store.veterinarios.find(v => v.id === id)
+  store.veterinario = seleccionado || null
+  store.clearHorarios()
+}
+
+// === Watch fecha → traer disponibilidad del store ===
+watch(fecha, async (nuevaFecha) => {
+  if (!nuevaFecha || !store.veterinario?.id) return
+
+  const fechaISO = nuevaFecha.toDate(getLocalTimeZone()).toISOString().split('T')[0]
+  await store.fetchDisponibilidad(store.veterinario.id, fechaISO)
+})
+
+// === Submit ===
+async function submit() {
+  const data = await validarYEnviarTurnoPaso1()
+  console.log("data",data)
+
+  if (data) {
+    turnoStore.setTurnoDatos(data)
+    emit('next')
+  } else {
+    fechaMeta.touched = true
+    horaMeta.touched = true
+  }
+}
+</script>
+
+<style scoped>
+.tarjeta-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+  padding: 24px;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+.form-item {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.boton-continuar {
+  width: 100%;
+  background-color: #4caf50;
+  color: #ffffff;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+</style>

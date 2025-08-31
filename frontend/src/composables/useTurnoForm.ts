@@ -9,7 +9,6 @@ import { useVeterinarioStore } from '@/store/useVeterinarioStore'
 
 export function useTurnoForm() {
   const store = useVeterinarioStore()
-  const veterinarioSelected = ref<Veterinario>()
 
 
   const horasValidas = computed(() =>

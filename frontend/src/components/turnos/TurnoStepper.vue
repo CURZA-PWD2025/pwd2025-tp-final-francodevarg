@@ -1,6 +1,6 @@
 <template>
     <div>
-      <FormTurno
+      <FormTurno2
         v-if="currentStep === 1"
         @next="goToStep(2)"
       />
@@ -21,10 +21,11 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import FormTurno from '@/components/turnos/FormTurno.vue'
+// import FormTurno from '@/components/turnos/FormTurno.vue'
 import PasoPaciente from '@/components/turnos/PasoPaciente.vue'
 import PasoConfirmacion from '@/components/turnos/PasoConfirmacion.vue'
 import { useTurnoStore } from '@/store/useTurnoStore'
+import FormTurno2 from './FormTurno2.vue'
 
 const currentStep = ref<1 | 2 | 3>(1)
 const turnoStore = useTurnoStore()

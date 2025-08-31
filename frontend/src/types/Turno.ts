@@ -1,8 +1,10 @@
-export interface Turno{
-  veterinario_id?: number
-  mascota_id?: number
-  fecha?: string
-  hora?: string
-  motivo?:string
-  estado?: string
+export type EstadoTurno = 'pendiente' | 'confirmado' | 'cancelado'
+
+export interface Turno {
+  veterinario_id: number | null
+  mascota_id: number | null
+  fecha: string
+  hora: string
+  motivo: string
+  estado: EstadoTurno
 }
