@@ -1,9 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import type { RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/store/useAuthStore'
 
 // Lazy load de páginas
-const HomePage = () => import('@/pages/Home.vue')
 const LoginPage = () => import('@/pages/Login.vue')
 const AppointmentsPage = () => import('@/pages/AgendarTurno.vue')
 const MyAppointmentsPage = () => import('@/pages/MisTurnos.vue')
@@ -26,13 +24,17 @@ const routes: RouteRecordRaw[] = [
     path: '/mis-turnos',
     name: 'my-appointments',
     component: MyAppointmentsPage,
-    meta: { requiresAuth: true, role: 'client' }
+    meta: { requiresAuth: true, role: 'cliente' }
   },
   {
     path: '/admin',
     name: 'admin',
     component: AdminPage,
     meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    redirect: { name: 'appointments' }
   }
 ]
 
@@ -41,8 +43,8 @@ const router = createRouter({
   routes
 })
 
-// ✅ Guard global
-router.beforeEach((to, from, next) => {
+// Guard global
+router.beforeEach((to, _from, next) => {
   const authStore = useAuthStore()
 
   // restaurar sesión en caso de refresh
@@ -52,11 +54,11 @@ router.beforeEach((to, from, next) => {
 
   // rutas públicas -> libre acceso
   if (to.meta.public) {
-    // 🔒 Si el user ya está logueado, no dejar ir a login
+    // si ya está logueado, no dejar ir a login
     if (to.name === 'login' && authStore.user) {
       return authStore.user.tipo === 'admin'
         ? next({ name: 'admin' })
-        : next({ name: 'appointments' })
+        : next({ name: 'my-appointments' })
     }
     return next()
   }
@@ -66,13 +68,15 @@ router.beforeEach((to, from, next) => {
     return next({ name: 'login' })
   }
 
-  // rutas por rol
   if (to.meta.role && authStore.user?.tipo !== to.meta.role) {
-    return next({ name: 'home' })
+    return next(
+      authStore.user?.tipo === 'admin'
+        ? { name: 'admin' }
+        : { name: 'appointments' }
+    )
   }
 
   return next()
 })
 
 export default router
-

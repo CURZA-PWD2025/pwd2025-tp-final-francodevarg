@@ -42,6 +42,7 @@ const isAdmin = computed(() => authStore.user?.tipo === 'admin')
 const currentPage = computed(() => String(route.name ?? 'appointments'))
 
 function navigate(to: string) {
+  console.log("to",to)
   router.push(to)
 }
 

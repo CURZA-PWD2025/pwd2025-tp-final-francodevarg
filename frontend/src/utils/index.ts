@@ -12,3 +12,10 @@ export function filtrarHorariosValidos(arr: string[]): Horario[] {
     .map(normalizarHora)
     .filter((h): h is Horario => horariosDisponibles.includes(h as Horario))
 }
+
+export function formatFechaHora(iso: string): { fecha: string; hora: string } {
+  const d = new Date(iso)
+  const fecha = d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' })
+  const hora  = d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })
+  return { fecha, hora }
+}
