@@ -71,7 +71,6 @@ import MascotaSelect from "@/components/MascotaSelect.vue"
 import { useTurnoStore } from "@/store/useTurnoStore"
 import { useAuthEffects } from "@/composables/useAuthEffects"
 import { useAuthStore } from "@/store/useAuthStore"
-import { useVeterinarioStore } from "@/store/useVeterinarioStore"
 
 const emit = defineEmits<{
   (e: "prev"): void
@@ -82,11 +81,10 @@ const emit = defineEmits<{
 useAuthEffects()
 
 const turnoStore = useTurnoStore()
-const veterinarioStore = useVeterinarioStore()
 const authStore = useAuthStore()
 
 const { turno } = storeToRefs(turnoStore)
-const { veterinario } = storeToRefs(veterinarioStore)
+const { veterinario } = storeToRefs(turnoStore)
 const { user } = storeToRefs(authStore)
 
 

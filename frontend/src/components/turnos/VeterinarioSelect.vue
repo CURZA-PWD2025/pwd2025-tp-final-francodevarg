@@ -45,11 +45,11 @@ import {
 } from '@/components/ui/select'
 
 import { onMounted, computed } from 'vue'
-import { useVeterinarioStore } from '@/store/useVeterinarioStore'
 import type { Veterinario } from '@/types/Veterinario'
 import { User } from 'lucide-vue-next'
+import { useTurnoStore } from '@/store/useTurnoStore'
 
-const store = useVeterinarioStore()
+const store = useTurnoStore()
 const veterinarios = computed<Veterinario[]>(() => store.veterinarios)
 const loading = computed<boolean>(() => store.loading)
 
