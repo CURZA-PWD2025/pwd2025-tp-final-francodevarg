@@ -1,26 +1,27 @@
 import { useForm, useField } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import { makeTurnoFormSchema } from '@/schemas/turnoFormSchema'
-import type { DateValue } from '@internationalized/date'
+import type { DateValue, parseDate } from '@internationalized/date'
 import type { Turno } from '@/types/Turno'
 
 
 // Gestiona y valida los campos del formulario de turno,
 // y si son válidos, guarda los datos tipados en el store (useTurnoStore).
 
-export function useTurnoForm() {
+export function useTurnoForm(initialValues?: Partial<Turno>) {
 
   const { validate, validateField, setFieldTouched, resetForm } = useForm({
     validationSchema: toTypedSchema(makeTurnoFormSchema()),
     validateOnMount: false,
     initialValues: {
-      veterinario_id: '',
-      mascota_id: '',
-      fecha: null as unknown as DateValue | null,
-      hora: '',
-      motivo: '',
-      estado: 'pendiente'
+      veterinario_id: initialValues?.veterinario_id?.toString() ?? '',
+      mascota_id: initialValues?.mascota_id?.toString() ?? '',
+      fecha: initialValues?.fecha ? parseDate(initialValues.fecha) : null,
+      hora: initialValues?.hora ?? '',
+      motivo: initialValues?.motivo ?? '',
+      estado: initialValues?.estado ?? 'pendiente'
     }
+
   })
 
   // === Campos ===

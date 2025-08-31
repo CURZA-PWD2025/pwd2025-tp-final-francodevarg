@@ -64,21 +64,24 @@ import DatePicker from '@/components/DatePicker.vue'
 import HorarioSelector from './HorarioSelector.vue'
 
 import { watch } from 'vue'
-import { getLocalTimeZone } from '@internationalized/date'
+import { getLocalTimeZone, parseDate } from '@internationalized/date'
 import { useTurnoForm } from '@/composables/useTurnoForm'
 import { useTurnoStore } from '@/store/useTurnoStore'
 
 const emit = defineEmits(['next'])
 
 // Composables
+const turnoStore = useTurnoStore()
 const {
   veterinario_id,
   fecha, fechaError, fechaMeta, fechaBlur,
   hora, horaError, horaMeta,
   validarYEnviarTurnoPaso1
-} = useTurnoForm()
-
-const turnoStore = useTurnoStore()
+} = useTurnoForm({
+  veterinario_id: turnoStore.turno.veterinario_id,
+  fecha: turnoStore.turno.fecha ? parseDate(turnoStore.turno.fecha) : undefined,
+  hora: turnoStore.turno.hora ?? '',
+})
 
 // Selección de veterinario
 function onSeleccionarVeterinario(id: number | null) {
