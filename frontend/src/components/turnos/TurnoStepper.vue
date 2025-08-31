@@ -25,7 +25,7 @@ import { ref } from 'vue'
 import PasoPaciente from '@/components/turnos/PasoPaciente.vue'
 import PasoConfirmacion from '@/components/turnos/PasoConfirmacion.vue'
 import { useTurnoStore } from '@/store/useTurnoStore'
-import FormTurno from './FormTurno.vue'
+import FormTurno from './form/stepOne/FormTurno.vue'
 
 const currentStep = ref<1 | 2 | 3>(1)
 const turnoStore = useTurnoStore()

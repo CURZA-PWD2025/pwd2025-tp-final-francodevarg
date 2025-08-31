@@ -23,7 +23,7 @@
           {{ horarioItem.hora }}
         </Button>
       </div>
-      <span class="error" v-if="error">{{ error }}</span>
+      <span class="text-sm text-red-500 mt-1" v-if="error">{{ error }}</span>
     </div>
     <p v-else class="text-sm text-red-500 italic mt-1">
       No hay horarios para la fecha seleccionada
@@ -32,7 +32,7 @@
   
   <script setup lang="ts">
   import { Clock } from 'lucide-vue-next';
-  import Button from '../ui/button/Button.vue';
+  import Button from '@/components/ui/button/Button.vue';
 import { cn } from '@/lib/utils';
 
   defineProps<{
@@ -83,11 +83,4 @@ import { cn } from '@/lib/utils';
     color: #aaa;
     cursor: not-allowed;
     }
-
-    .error {
-    color: red;
-    font-size: 13px;
-    margin-top: 4px;
-    }
-
   </style>

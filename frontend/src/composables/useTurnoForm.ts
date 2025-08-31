@@ -8,7 +8,7 @@ import type { Turno } from '@/types/Turno'
 // Gestiona y valida los campos del formulario de turno,
 // y si son válidos, guarda los datos tipados en el store (useTurnoStore).
 
-export function useTurnoForm2() {
+export function useTurnoForm() {
 
   const { validate, validateField, setFieldTouched, resetForm } = useForm({
     validationSchema: toTypedSchema(makeTurnoFormSchema()),

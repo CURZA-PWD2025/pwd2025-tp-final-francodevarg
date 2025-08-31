@@ -58,14 +58,14 @@
 
 <script setup lang="ts">
 import HeaderCita from './HeaderCita.vue'
-import VeterinarioSelect from '@/components/turnos/VeterinarioSelect.vue'
-import DiasDisponibles from '@/components/turnos/DiasDisponibles.vue'
+import VeterinarioSelect from './VeterinarioSelect.vue'
+import DiasDisponibles from './DiasDisponibles.vue'
 import DatePicker from '@/components/DatePicker.vue'
-import HorarioSelector from '@/components/turnos/HorarioSelector.vue'
+import HorarioSelector from './HorarioSelector.vue'
 
 import { watch } from 'vue'
 import { getLocalTimeZone } from '@internationalized/date'
-import { useTurnoForm2 } from '@/composables/useTurnoForm2'
+import { useTurnoForm } from '@/composables/useTurnoForm'
 import { useTurnoStore } from '@/store/useTurnoStore'
 
 const emit = defineEmits(['next'])
@@ -76,31 +76,24 @@ const {
   fecha, fechaError, fechaMeta, fechaBlur,
   hora, horaError, horaMeta,
   validarYEnviarTurnoPaso1
-} = useTurnoForm2()
+} = useTurnoForm()
 
 const turnoStore = useTurnoStore()
 
-// === Selección de veterinario ===
+// Selección de veterinario
 function onSeleccionarVeterinario(id: number | null) {
-  if (!id) {
-    turnoStore.veterinario = null
-    turnoStore.clearHorarios()
-    return
-  }
+  turnoStore.veterinario = id
+    ? turnoStore.veterinarios.find(v => v.id === id) || null
+    : null
 
-  const seleccionado = turnoStore.veterinarios.find(v => v.id === id)
-  turnoStore.veterinario = seleccionado || null
   turnoStore.clearHorarios()
 }
 
-// === Watch fecha → traer disponibilidad del store ===
 watch(fecha, async (nuevaFecha) => {
   if (!nuevaFecha || !turnoStore.veterinario?.id) return
-
   const fechaISO = nuevaFecha.toDate(getLocalTimeZone()).toISOString().split('T')[0]
   await turnoStore.fetchDisponibilidad(turnoStore.veterinario.id, fechaISO)
 })
-
 // === Submit ===
 async function submit() {
   const data = await validarYEnviarTurnoPaso1()

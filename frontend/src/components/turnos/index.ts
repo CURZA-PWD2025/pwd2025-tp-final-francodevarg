@@ -1,4 +1,3 @@
-export {default as VeterinarioSelect} from './VeterinarioSelect.vue'
-export {default as HeaderCita} from './HeaderCita.vue'
-export {default as VeterinarioDetalle} from './VeterinarioDetalle.vue'
-export {default as FormTurno} from './FormTurno.vue'
+export {default as VeterinarioSelect} from './form/stepOne/VeterinarioSelect.vue'
+export {default as HeaderCita} from './form/stepOne/HeaderCita.vue'
+export {default as FormTurno} from './form/stepOne/FormTurno.vue'
