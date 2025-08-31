@@ -55,7 +55,10 @@
       <!-- Selector de mascota -->
       <section>
         <h2 class="text-lg font-semibold text-slate-800 mb-2">Seleccioná tu mascota</h2>
-        <MascotaSelect v-model="mascota_id" />
+        <MascotaSelect
+          v-model="mascota_id"
+          @mascotaSeleccionada="setMascota"
+        />
         <span v-if="mascotaIdError" class="text-sm text-red-500">{{ mascotaIdError }}</span>
       </section>
 
@@ -135,13 +138,16 @@ const {
 const turnoStore = useTurnoStore()
 const authStore = useAuthStore()
 
-const { turno } = storeToRefs(turnoStore)
-const { veterinario } = storeToRefs(turnoStore)
+const { turno, mascota, veterinario } = storeToRefs(turnoStore)
 const { user } = storeToRefs(authStore)
 
 
 function onLoginSuccess() {
   // se recarga por efecto
+}
+
+function setMascota(mascotaemited: Mascota) {
+  mascota.value = mascotaemited
 }
 
 async function submit() {

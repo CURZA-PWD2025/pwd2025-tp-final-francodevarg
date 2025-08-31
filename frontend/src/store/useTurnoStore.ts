@@ -3,6 +3,7 @@ import type { Turno } from '@/types/Turno'
 import type { Veterinario } from '@/types/Veterinario'
 import TurnoService from '@/services/TurnoService'
 import VeterinarioService from '@/services/VeterinarioService'
+import type { Mascota } from '@/types/Mascota'
 
 interface HorarioDisponible {
   hora: string
@@ -23,6 +24,7 @@ export const useTurnoStore = defineStore('turno', {
     turno: { ...initialTurno } as Turno,
     veterinarios: [] as Veterinario[],
     veterinario: null as Veterinario | null,
+    mascota: null as Mascota | null,
     horariosDisponibles: [] as HorarioDisponible[],
     loading: false,
     error: null as string | null
