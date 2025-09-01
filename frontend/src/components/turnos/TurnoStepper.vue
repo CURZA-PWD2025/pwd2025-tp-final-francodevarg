@@ -39,6 +39,7 @@ async function finish() {
     const data = await turnoStore.finish()
     console.log('🚀 Turno enviado con éxito:', data)
     alert('Turno creado correctamente')
+    turnoStore.resetTurno()
     currentStep.value = 1 // Reiniciar pasos o redirigir
   } catch (err) {
     alert('Error al crear el turno')

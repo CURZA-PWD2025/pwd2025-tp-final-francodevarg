@@ -6,6 +6,9 @@ const LoginPage = () => import('@/pages/Login.vue')
 const AppointmentsPage = () => import('@/pages/AgendarTurno.vue')
 const MyAppointmentsPage = () => import('@/pages/MisTurnos.vue')
 const AdminPage = () => import('@/pages/Admin.vue')
+const TurnosDia = () => import('@/pages/TurnosDia.vue')
+const Perfil = () => import('@/pages/Perfil.vue')
+const Mascotas = () => import('@/pages/Mascotas.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -27,10 +30,28 @@ const routes: RouteRecordRaw[] = [
     meta: { requiresAuth: true, role: 'cliente' }
   },
   {
+    path: '/mis-mascotas',
+    name: 'mis-mascotas',
+    component: Mascotas,
+    meta: { requiresAuth: true, role: 'cliente' }
+  },
+  {
     path: '/admin',
     name: 'admin',
     component: AdminPage,
     meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/turnos',
+    name: 'turnos',
+    component: TurnosDia,
+    meta: { requiresAuth: true, role: 'admin' }
+  },
+  {
+    path: '/perfil',
+    name: 'perfil',
+    component: Perfil,
+    meta: { requiresAuth: true }
   },
   {
     path: '/:pathMatch(.*)*',

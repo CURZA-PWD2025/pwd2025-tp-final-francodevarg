@@ -56,7 +56,10 @@ export const useTurnoStore = defineStore('turno', {
     },
 
     resetTurno() {
-      this.turno = { ...initialTurno }
+      this.turno = initialTurno 
+      this.veterinario = null
+      this.veterinarios = []
+      this.horariosDisponibles = []
     },
 
     async finish() {

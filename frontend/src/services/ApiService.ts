@@ -3,13 +3,8 @@ import type { AxiosRequestConfig, AxiosResponse } from 'axios'
 
 class ApiService {
   private withAuthHeader(useAuth: boolean): AxiosRequestConfig {
-    return useAuth
-      ? {}
-      : {
-          headers: {
-            'Skip-Authorization': true,
-          },
-        }
+    return useAuth ? {} : { headers: { 'skip-authorization': 'true' } }
+
   }
 
   async getAll<T>(url: string, useAuth = true): Promise<AxiosResponse<T[]>> {

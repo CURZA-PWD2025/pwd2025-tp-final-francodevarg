@@ -22,7 +22,8 @@
   import {
     CalendarIcon,
     UsersIcon,
-    SettingsIcon
+    SettingsIcon,
+    Dog
   } from 'lucide-vue-next'
   import menuConfig from './menuConfig.json'
 import { useAuthStore } from '@/store/useAuthStore';
@@ -44,7 +45,8 @@ import { useAuthStore } from '@/store/useAuthStore';
   const icons:any = {
     CalendarIcon,
     UsersIcon,
-    SettingsIcon
+    SettingsIcon,
+    Dog
   }
 
   const menuItems = computed(() => {

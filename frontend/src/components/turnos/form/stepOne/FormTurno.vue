@@ -12,7 +12,7 @@
       </div>
 
       <!-- Detalle del veterinario seleccionado -->
-      <div v-if="turnoStore.veterinario" class="form-item">
+      <div v-if="veterinario_id && turnoStore.veterinario" class="form-item">
         <DiasDisponibles
           :nombre="turnoStore.veterinario.nombre"
           :especialidad="turnoStore.veterinario.especialidad"
@@ -21,7 +21,7 @@
       </div>
 
       <!-- Fecha -->
-      <div v-if="turnoStore.veterinario" class="form-item">
+      <div v-if="veterinario_id && turnoStore.veterinario" class="form-item">
         <DatePicker
           v-model="fecha"
           :dias-habilitados="turnoStore.diasHabilitados"
@@ -34,7 +34,7 @@
       </div>
 
       <!-- Hora -->
-      <div v-if="turnoStore.horariosDisponibles.length > 0" class="form-item">
+      <div v-if="turnoStore.horariosDisponibles.length > 0 && veterinario_id" class="form-item">
         <HorarioSelector
           :horarios="turnoStore.horariosDisponibles"
           v-model="hora"

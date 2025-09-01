@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen flex items-center justify-center bg-slate-50">
+    <div class="min-h-screen flex items-align-start justify-center bg-slate-50 pt-4">
       <LoginForm @success="onLoginSuccess" />
     </div>
   </template>
