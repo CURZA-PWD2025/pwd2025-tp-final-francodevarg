@@ -9,7 +9,7 @@ class HorarioModel:
     """
 
     SQL_SELECT_HORARIOS_POR_DIA = """
-        SELECT hora
+        SELECT TIME_FORMAT(hora, '%H:%i') AS hora
         FROM horarios_laborales
         WHERE veterinario_id = %s AND dia_semana = %s
     """
@@ -96,7 +96,7 @@ class HorarioModel:
         dia_semana = cls.get_dia_semana(fecha)
         rows = ConnectDB.read(cls.SQL_SELECT_HORARIOS_POR_DIA, (veterinario_id, dia_semana))
         # Devuelve 'HH:MM'
-        return [str(row["hora"])[:5] for row in rows] if rows else []
+        return [row["hora"] for row in rows] if rows else []
 
     @classmethod
     def get_horas_ocupadas(cls, veterinario_id: int, fecha: str) -> list[str]:

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { watch, computed } from 'vue'
 import { useForm } from 'vee-validate'
 import { toast } from 'vue-sonner'
 import { formSchema } from '@/schemas/veterinarioSchema'
@@ -6,59 +7,75 @@ import { diasSemana, type DiaSemana } from '@/constants/diasSemana'
 import VeterinarioFormFields from './VeterinarioFormFields.vue'
 import { Button } from '@/components/ui/button'
 import type { Veterinario } from '@/types/Veterinario'
-import { computed, onMounted } from 'vue'
+import VeterinarioService from '@/services/VeterinarioService'
 
-const props = defineProps<{
-  veterinario?: Veterinario | null
-}>()
-
-const emit = defineEmits(['submit', 'success'])
-
+const props = defineProps<{ veterinario?: Veterinario | null }>()
+const emit = defineEmits(['submit','success'])
 const isEditing = computed(() => !!props.veterinario?.id)
 
 interface FormHorarioPayload {
-  veterinario: {
-    nombre: string
-    especialidad: string
-    email: string
-    telefono: string
-  },
+  veterinario: { nombre: string; especialidad: string; email: string; telefono: string },
   horarios: Partial<Record<DiaSemana, string[]>>
 }
 
-function filtrarDiasValidos(arr: string[]): DiaSemana[] {
-  return arr.filter((d): d is DiaSemana => diasSemana.includes(d as DiaSemana))
+// --- helpers ---
+const normBasic = (s: string) => (s ?? '').trim().toLowerCase()
+const matchDia = (dia: string): DiaSemana | null => {
+  const n = normBasic(dia)
+  const found = diasSemana.find(d => normBasic(d) === n)
+  return (found as DiaSemana) ?? null
+}
+const fmtHora = (h: unknown): string => {
+  const s = String(h ?? '')
+  const [hhRaw, mmRaw] = s.split(':')
+  const hh = Number(hhRaw ?? 0)
+  const mm = Number(mmRaw ?? 0)
+  return `${hh.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}`
 }
 
-const { handleSubmit, setValues } = useForm({
+const { handleSubmit, resetForm, isSubmitting } = useForm({
   validationSchema: formSchema,
   initialValues: {
     nombre: '',
     especialidad: '',
     email: '',
     telefono: '',
-    dias: [],
-    horarios: [],
+    dias: [] as DiaSemana[],
+    horarios: [] as string[],
   },
 })
-import { filtrarHorariosValidos } from '@/utils'
 
-onMounted(() => {
-  if (props.veterinario) {
-    const dias = filtrarDiasValidos(props.veterinario.horarios.map(h => h.dia_semana))
+watch(
+  () => props.veterinario,
+  (vet) => {
+    if (!vet) {
+      resetForm({ values: { nombre:'', especialidad:'', email:'', telefono:'', dias:[], horarios:[] } })
+      return
+    }
 
-    const horarios = filtrarHorariosValidos(props.veterinario.horarios.map(h => h.hora))
+    // DEDUP: un solo día y una sola vez cada horario
+    const diasSet = new Set<DiaSemana>()
+    const horasSet = new Set<string>()
 
-    setValues({
-      nombre: props.veterinario.nombre,
-      especialidad: props.veterinario.especialidad,
-      email: props.veterinario.email,
-      telefono: props.veterinario.telefono,
-      dias,
-      horarios,
+    for (const h of (vet.horarios ?? [])) {
+      const d = matchDia(h.dia_semana)
+      if (d) diasSet.add(d)
+      horasSet.add(fmtHora(h.hora))
+    }
+
+    resetForm({
+      values: {
+        nombre: vet.nombre ?? '',
+        especialidad: vet.especialidad ?? '',
+        email: vet.email ?? '',
+        telefono: vet.telefono ?? '',
+        dias: Array.from(diasSet),
+        horarios: Array.from(horasSet),
+      }
     })
-  }
-})
+  },
+  { immediate: true }
+)
 
 const onSubmit = handleSubmit(async (formValues) => {
   const payload: FormHorarioPayload = {
@@ -69,45 +86,32 @@ const onSubmit = handleSubmit(async (formValues) => {
       telefono: formValues.telefono,
     },
     horarios: Object.fromEntries(
-      formValues.dias.map(dia => [dia as DiaSemana, formValues.horarios])
+      (formValues.dias as DiaSemana[]).map(d => [d, (formValues.horarios as string[]).map(fmtHora)])
     ),
   }
 
   try {
-    const url = isEditing.value
-      ? `http://localhost:5000/veterinarios/${props.veterinario!.id}`
-      : 'http://localhost:5000/veterinarios/'
-
-    const method = isEditing.value ? 'PUT' : 'POST'
-
-    const res = await fetch(url, {
-      method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-    })
-
-    if (!res.ok) throw new Error('Error al guardar')
-
-    toast({
-      title: isEditing.value ? 'Veterinario actualizado' : 'Veterinario creado con éxito',
-    })
-
-    emit('submit', payload)
-    emit('success')
-  } catch (e) {
-    toast({
-      title: 'Error',
-      description: (e as Error).message,
-    })
+    if (isEditing.value) {
+      await VeterinarioService.update(props.veterinario!.id, payload as any)
+      toast({ title: 'Veterinario actualizado' })
+    } else {
+      await VeterinarioService.create(payload as any)
+      toast({ title: 'Veterinario creado con éxito' })
+    }
+    emit('submit', payload); emit('success')
+  } catch (e: any) {
+    const msg = e?.response?.data?.message || e?.response?.data?.error || e?.message || 'Error al guardar'
+    toast({ title: 'Error', description: msg })
   }
 })
 </script>
 
 <template>
-  <form @submit="onSubmit" class="grid gap-6">
+  <form @submit.prevent="onSubmit" class="grid gap-6">
     <VeterinarioFormFields />
-    <Button type="submit" class="w-full">
-      {{ isEditing ? 'Actualizar Veterinario' : 'Guardar Veterinario' }}
+    <Button type="submit" class="w-full" :disabled="isSubmitting">
+      <template v-if="isSubmitting">Guardando...</template>
+      <template v-else>{{ isEditing ? 'Actualizar Veterinario' : 'Guardar Veterinario' }}</template>
     </Button>
   </form>
 </template>
