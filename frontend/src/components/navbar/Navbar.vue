@@ -39,7 +39,7 @@ const router = useRouter()
 const authStore = useAuthStore()
 
 const isAdmin = computed(() => authStore.user?.tipo === 'admin')
-const currentPage = computed(() => String(route.name ?? 'appointments'))
+const currentPage = computed(() => String(route.name ?? 'agendar-turno'))
 
 function navigate(to: string) {
   console.log("to",to)
@@ -48,6 +48,6 @@ function navigate(to: string) {
 
 async function logout() {
   await authStore.logout()
-  router.push({ name: 'login' })
+  router.push({ name: 'iniciar-sesion' })
 }
 </script>

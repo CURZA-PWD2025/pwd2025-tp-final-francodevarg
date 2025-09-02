@@ -1,51 +1,56 @@
 {
   "public": [
     {
-      "id": "appointments",
+      "id": "agendar-turno",
       "label": "Agendar Turno",
       "icon": "CalendarIcon",
       "route": "/"
     },
     {
-      "id": "login",
+      "id": "iniciar-sesion",
       "label": "Iniciar Sesión",
       "icon": "LogInIcon",
       "route": "/login"
     }
   ],
-    "admin": [
-      {
-        "id": "daily",
-        "label": "Turnos del Día",
-        "icon": "UsersIcon",
-        "route": "/turnos"
-      },
-      {
-        "id": "admin",
-        "label": "Administrar",
-        "icon": "SettingsIcon",
-        "route": "/admin"
-      }
-    ],
-    "client": [
-      {
-        "id": "appointments",
-        "label": "Agendar Turno",
-        "icon": "CalendarIcon",
-        "route": "/"
-      },
-      {
-        "id": "my-appointments",
-        "label": "Mis Turnos",
-        "icon": "UsersIcon",
-        "route": "/mis-turnos"
-      },
-      {
-        "id": "mis-mascotas",
-        "label": "Mis Mascotas",
-        "icon": "Dog",
-        "route": "/mis-mascotas"
-      }
-    ]
-  }
-  
+  "admin": [
+    {
+      "id": "turnos-del-dia",
+      "label": "Turnos del Día",
+      "icon": "UsersIcon",
+      "route": "/turnos"
+    },
+    {
+      "id": "administracion",
+      "label": "Administrar",
+      "icon": "SettingsIcon",
+      "route": "/admin"
+    }
+  ],
+  "client": [
+    {
+      "id": "agendar-turno",
+      "label": "Agendar Turno",
+      "icon": "CalendarIcon",
+      "route": "/"
+    },
+    {
+      "id": "mis-turnos",
+      "label": "Mis Turnos",
+      "icon": "UsersIcon",
+      "route": "/mis-turnos"
+    },
+    {
+      "id": "mis-mascotas",
+      "label": "Mis Mascotas",
+      "icon": "Dog",
+      "route": "/mis-mascotas"
+    },
+    {
+      "id": "perfil",
+      "label": "Perfil",
+      "icon": "UserIcon",
+      "route": "/perfil"
+    }
+  ]
+}

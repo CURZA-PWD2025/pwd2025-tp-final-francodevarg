@@ -1,5 +1,5 @@
 <template>
-    <div class="min-h-screen flex items-align-start justify-center bg-slate-50 pt-4">
+    <div class="flex items-align-start justify-center pt-4">
       <LoginForm @success="onLoginSuccess" />
     </div>
   </template>
@@ -12,14 +12,13 @@
   const router = useRouter()
   const authStore = useAuthStore()
   
-  async function onLoginSuccess(user: unknown) {
-    console.log('✅ Sesión iniciada:', user)
+  async function onLoginSuccess() {
   
     // redirigir según rol
     if (authStore.user?.tipo === 'admin') {
-      router.push({ name: 'admin' })
+      router.push({ name: 'turnos-del-dia' })
     } else {
-      router.push({ name: 'appointments' })
+      router.push({ name: 'agendar-turno' })
     }
   }
   </script>

@@ -1,63 +1,64 @@
 import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/store/useAuthStore'
 
-// Lazy load de páginas
-const LoginPage = () => import('@/pages/Login.vue')
-const AppointmentsPage = () => import('@/pages/AgendarTurno.vue')
-const MyAppointmentsPage = () => import('@/pages/MisTurnos.vue')
-const AdminPage = () => import('@/pages/Admin.vue')
-const TurnosDia = () => import('@/pages/TurnosDia.vue')
-const Perfil = () => import('@/pages/Perfil.vue')
-const Mascotas = () => import('@/pages/Mascotas.vue')
+// Páginas
+const PaginaLogin = () => import('@/pages/Login.vue')
+const PaginaAgendarTurno = () => import('@/pages/AgendarTurno.vue')
+const PaginaMisTurnos = () => import('@/pages/MisTurnos.vue')
+const PaginaAdmin = () => import('@/pages/Admin.vue')
+const PaginaTurnosDia = () => import('@/pages/TurnosDia.vue')
+const PaginaPerfil = () => import('@/pages/Perfil.vue')
+const PaginaMascotas = () => import('@/pages/Mascotas.vue')
 
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
-    name: 'appointments',
-    component: AppointmentsPage,
+    name: 'agendar-turno',
+    component: PaginaAgendarTurno,
     meta: { public: true }
   },
   {
     path: '/login',
-    name: 'login',
-    component: LoginPage,
+    name: 'iniciar-sesion',
+    component: PaginaLogin,
     meta: { public: true }
   },
   {
     path: '/mis-turnos',
-    name: 'my-appointments',
-    component: MyAppointmentsPage,
+    name: 'mis-turnos',
+    component: PaginaMisTurnos,
     meta: { requiresAuth: true, role: 'cliente' }
   },
   {
     path: '/mis-mascotas',
     name: 'mis-mascotas',
-    component: Mascotas,
+    component: PaginaMascotas,
     meta: { requiresAuth: true, role: 'cliente' }
   },
   {
     path: '/admin',
-    name: 'admin',
-    component: AdminPage,
+    name: 'administracion',
+    component: PaginaAdmin,
     meta: { requiresAuth: true, role: 'admin' }
   },
   {
     path: '/turnos',
-    name: 'turnos',
-    component: TurnosDia,
+    name: 'turnos-del-dia',
+    component: PaginaTurnosDia,
     meta: { requiresAuth: true, role: 'admin' }
   },
   {
     path: '/perfil',
     name: 'perfil',
-    component: Perfil,
+    component: PaginaPerfil,
     meta: { requiresAuth: true }
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: { name: 'appointments' }
+    redirect: { name: 'agendar-turno' }
   }
 ]
+
 
 const router = createRouter({
   history: createWebHistory(),
@@ -79,7 +80,7 @@ router.beforeEach((to, _from, next) => {
     if (to.name === 'login' && authStore.user) {
       return authStore.user.tipo === 'admin'
         ? next({ name: 'admin' })
-        : next({ name: 'my-appointments' })
+        : next({ name: 'mis-turnos' })
     }
     return next()
   }
@@ -93,7 +94,7 @@ router.beforeEach((to, _from, next) => {
     return next(
       authStore.user?.tipo === 'admin'
         ? { name: 'admin' }
-        : { name: 'appointments' }
+        : { name: 'agendar-turnos' }
     )
   }
 
