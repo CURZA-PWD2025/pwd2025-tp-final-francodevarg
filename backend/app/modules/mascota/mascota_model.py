@@ -95,6 +95,7 @@ class MascotaModel:
     def create(self) -> bool | None:
         params = (self.nombre, self.especie, self.raza, self.edad, self.usuario.id)
         result = ConnectDB.write(MascotaModel.SQL_INSERT, params)
+        self.id = result
         return result if result else False
 
     def update(self) -> bool | None:

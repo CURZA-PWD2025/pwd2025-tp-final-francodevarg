@@ -8,7 +8,6 @@ export const useAuthStore = defineStore('auth', {
     user: null as User | null,
     token: null as string | null
   }),
-
   actions: {
     async login(email: string, password: string) {
       const data: AuthResponse = await AuthService.login({ email, password })

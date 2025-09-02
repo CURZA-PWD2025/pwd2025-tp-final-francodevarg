@@ -18,7 +18,7 @@ export function useAuthEffects() {
     user,
     async (u) => {
       if (u?.id && u.tipo === 'cliente'){
-        await mascotas.fetchMascotas(u.id)
+        await mascotas.fetchByUserId(u.id)
       } else {
         mascotas.clearMascotas()
       }

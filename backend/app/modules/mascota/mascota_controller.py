@@ -38,7 +38,8 @@ class MascotaController:
             )
             result = mascota.create()
             if result:
-                return {"message": "Mascota creada correctamente"}, 201
+                print("result",result)
+                return mascota.serializar(), 201
             return {"message": "Error al crear la mascota"}, 400
         except Exception as e:
             return {"error": str(e)}, 500
