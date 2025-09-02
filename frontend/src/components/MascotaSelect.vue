@@ -33,13 +33,13 @@ const emit = defineEmits<{
 }>()
 
 const mascotaStore = useMascotaStore()
-const mascotas = computed(() => mascotaStore.mascotas)
+const mascotas = computed(() => mascotaStore.items)
 
 const localValue = computed({
   get: () => props.modelValue,
   set: (val) => {
     emit("update:modelValue", val)
-    const mascota = mascotaStore.mascotas.find((m) => m.id === val)
+    const mascota = mascotaStore.items.find((m) => m.id === val)
     if (mascota) emit("mascotaSeleccionada", mascota)
   },
 })
