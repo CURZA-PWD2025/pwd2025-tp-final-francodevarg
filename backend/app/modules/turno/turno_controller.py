@@ -60,3 +60,12 @@ class TurnoController:
 
         turno.id = inserted_id
         return {"mensaje": "Turno creado correctamente", "turno": turno.serializar()}, 201
+
+
+    @staticmethod
+    def get_by_user(user_id: int):
+        try:
+            turnos = TurnoModel.get_by_user(user_id)
+            return turnos, 200
+        except Exception as e:
+            return {"error": str(e)}, 400

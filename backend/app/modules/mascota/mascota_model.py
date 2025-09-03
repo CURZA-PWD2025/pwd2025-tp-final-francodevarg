@@ -63,6 +63,7 @@ class MascotaModel:
         mascotas = []
         for row in rows:
             usuario = UsuarioModel.get_one(row["usuario_id"])
+            del usuario["password"]
             mascota = MascotaModel(
                 id=row["id"],
                 nombre=row["nombre"],
