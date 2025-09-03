@@ -1,59 +1,51 @@
 import { defineStore } from 'pinia'
-import type { Turno, EstadoTurno } from '@/types/Turno'
+import type { TurnoDetail, EstadoTurno } from '@/types/Turno'
+import TurnoService from '@/services/TurnoService'
 
 export const useMisTurnos = defineStore('misTurnos', {
   state: () => ({
-    turnos: [] as Turno[],
-    filtroEstado: 'todos' as 'todos' | EstadoTurno
+    turnos: [] as TurnoDetail[],
+    filtroEstado: 'todos' as 'todos' | EstadoTurno,
+    loading: false,
+    error: null as string | null,
   }),
+
   getters: {
-    turnosFiltrados(state): Turno[] {
+    turnosFiltrados(state): TurnoDetail[] {
       if (state.filtroEstado === 'todos') return state.turnos
-      return state.turnos.filter(t => t.estado === state.filtroEstado)
+      return state.turnos.filter((t:TurnoDetail) => t.estado === state.filtroEstado)
+    },
+    total(state): number {
+      return state.turnos.length
+    },
+    confirmados(state): TurnoDetail[] {
+      return state.turnos.filter((t:TurnoDetail) => t.estado === 'confirmado')
+    },
+    pendientes(state): TurnoDetail[] {
+      return state.turnos.filter((t:TurnoDetail) => t.estado === 'pendiente')
+    },
+    cancelados(state): TurnoDetail[] {
+      return state.turnos.filter((t:TurnoDetail) => t.estado === 'cancelado')
     },
   },
+
   actions: {
-    // mock: traería desde tu API Flask /turnos del cliente autenticado
-    cargarMock() {
-      this.turnos = [
-        {
-          id: 1,
-          veterinario_id:1,
-          mascota_id:1,
-          hora:"11:00",
-          fecha: '2025-01-19T10:00:00',
-          motivo: 'Control de rutina',
-          estado: 'confirmado'
-        },
-        {
-          id: 2,
-          veterinario_id:1,
-          mascota_id:1,
-          hora:"11:00",
-          fecha: '2025-01-24T15:00:00',
-          motivo: 'Revisión de tratamiento para alergia, inyeccion de corticoides, receta de un nuevo farmaco',
-          estado: 'pendiente'
-        },
-        {
-          id: 3,
-          veterinario_id:1,
-          mascota_id:1,
-          hora:"11:00",
-          fecha: '2025-01-14T09:00:00',
-          motivo: 'Refuerzo anual',
-          estado: 'cancelado'
-        }
-      ]
-    },
     setFiltro(estado: 'todos' | EstadoTurno) {
       this.filtroEstado = estado
     },
-    async cancelarTurno(id: number) {
-      const t = this.turnos.find(x => x.id === id)
-      if (t) t.estado = 'cancelado'
+
+    async fetchTurnos(userId: number) {
+      this.loading = true
+      this.error = null
+      try {
+        const data = await TurnoService.getByUserId(userId)
+        console.log("data TurnoDetail", data)
+        this.turnos = data
+      } catch (err: any) {
+        this.error = err.message || 'Error cargando turnos'
+      } finally {
+        this.loading = false
+      }
     },
-    async reprogramarTurno(id: number) {
-      console.log('Reprogramar turno', id)
-    }
-  }
+  },
 })

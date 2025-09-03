@@ -27,16 +27,16 @@
               <SelectItem value="completado">Completado</SelectItem>
             </SelectContent>
           </Select>
-          <span class="hidden sm:inline text-sm text-slate-600">{{ store.resumenMostrando }}</span>
+          <span class="hidden sm:inline text-sm text-slate-600"></span>
         </div>
       </header>
 
-      <p class="sm:hidden text-sm text-slate-600 mb-4">{{ store.resumenMostrando }}</p>
+      <p class="sm:hidden text-sm text-slate-600 mb-4"></p>
 
       <!-- Lista -->
       <div class="space-y-4">
         <TurnoCard
-          v-for="t in store.turnosFiltrados"
+          v-for="t in storeTurno.turnosFiltrados"
           :key="t.id"
           :turno="t"
           @cancelar="cancelar"
@@ -45,7 +45,7 @@
       </div>
 
       <!-- Empty state -->
-      <div v-if="store.turnosFiltrados.length === 0"
+      <div v-if="storeTurno.turnosFiltrados.length === 0"
            class="text-center py-20 text-slate-500">
         <CalendarX class="w-8 h-8 mx-auto mb-3 text-slate-400" />
         No hay turnos para el filtro seleccionado.
@@ -62,23 +62,25 @@ import { CalendarDays, CalendarX } from 'lucide-vue-next'
 
 // shadcn-vue
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { useAuthStore } from '@/store/useAuthStore'
 
-const store = useMisTurnos()
-const filtro = ref(store.filtroEstado)
+const storeTurno = useMisTurnos()
+const storeAuth = useAuthStore()
+const filtro = ref(storeTurno.filtroEstado)
 
 onMounted(() => {
-  if (!store.turnos.length) store.cargarMock()
+  if (!storeTurno.turnos.length) storeTurno.fetchTurnos(storeAuth.user!.id)
 })
 
-function onFiltroChange(val: typeof store.filtroEstado) {
-  store.setFiltro(val)
+function onFiltroChange(val: typeof storeTurno.filtroEstado) {
+  storeTurno.setFiltro(val)
 }
 
 async function cancelar(id: number) {
-  await store.cancelarTurno(id)
+  console.log("Cancelar turno", id)
 }
 
 function reprogramar(id: number) {
-  store.reprogramarTurno(id)
+  console.log("Reprogramar turno", id)
 }
 </script>

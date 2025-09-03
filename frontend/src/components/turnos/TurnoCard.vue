@@ -176,7 +176,7 @@ const fechaRaw = new Date(props.turno.fecha)
 const fechaLegible = fechaRaw
   .toLocaleDateString('es-AR', { weekday: 'long', day: '2-digit', month: 'long' })
   .replace(/\b\w/g, l => l.toUpperCase())
-const hora = fechaRaw.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false })
+const hora = props.turno.hora.slice(0, 5) // "HH:MM:SS" -> "HH:MM"
 
 const veterinarioNombre = (props.turno as any)?.veterinario?.nombre ?? '—'
 const especialidad = (props.turno as any)?.veterinario?.especialidad ?? '—'

@@ -1,12 +1,17 @@
+import type { AxiosResponse } from 'axios'
 import ApiService from './ApiService'
-import type { Turno } from '../types/Turno'
+import type { Turno, TurnoDetail } from '@/types/Turno'
 
 const baseUrl = 'turnos/'
 
 export default {
-  // Privados (requieren autenticación)
-  getAll() {
-    return ApiService.getAll<Turno>(baseUrl, true)
+  // Obtener turnos de un usuario (con mascota + veterinario incluidos)
+  async getByUserId(userId: number): Promise<TurnoDetail[]> {
+    const res: AxiosResponse<TurnoDetail[]> = await ApiService.getAll<TurnoDetail>(
+      `${baseUrl}usuario/${userId}`,
+      true
+    )
+    return res.data
   },
 
   create(data: Partial<Turno>) {
@@ -17,7 +22,4 @@ export default {
     return ApiService.update<Turno>(baseUrl, id, data, true)
   },
 
-  destroy(id: number) {
-    return ApiService.destroy(baseUrl, id, true)
-  },
 }

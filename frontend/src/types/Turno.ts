@@ -9,3 +9,11 @@ export interface Turno {
   motivo: string
   estado: EstadoTurno
 }
+
+import type { Veterinario } from './Veterinario'
+import type { Mascota } from './Mascota'
+
+export interface TurnoDetail extends Turno {
+  veterinario: Veterinario
+  mascota: Mascota
+}
