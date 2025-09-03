@@ -45,12 +45,6 @@
       "label": "Mis Mascotas",
       "icon": "Dog",
       "route": "/mis-mascotas"
-    },
-    {
-      "id": "perfil",
-      "label": "Perfil",
-      "icon": "UserIcon",
-      "route": "/perfil"
     }
   ]
 }
