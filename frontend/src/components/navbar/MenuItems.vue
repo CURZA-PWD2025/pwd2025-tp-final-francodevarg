@@ -30,6 +30,7 @@ import { useAuthStore } from '@/store/useAuthStore';
   
   const props = defineProps<{
     currentPage: string
+    isAdmin: Boolean ,
   }>()
 
 

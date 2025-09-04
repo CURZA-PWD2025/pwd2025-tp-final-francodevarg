@@ -39,7 +39,6 @@ export const useMisTurnos = defineStore('misTurnos', {
       this.error = null
       try {
         const data = await TurnoService.getByUserId(userId)
-        console.log("data TurnoDetail", data)
         this.turnos = data
       } catch (err: any) {
         this.error = err.message || 'Error cargando turnos'

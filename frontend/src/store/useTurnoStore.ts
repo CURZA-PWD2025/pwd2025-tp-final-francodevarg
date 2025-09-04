@@ -64,13 +64,10 @@ export const useTurnoStore = defineStore('turno', {
 
     async finish() {
       try {
-        console.log('📤 Enviando payload final:', this.turno)
         const { data } = await TurnoService.create(this.turno)
-        console.log('✅ Turno creado:', data)
         this.resetTurno()
         return data
       } catch (err) {
-        console.error('❌ Error al crear turno:', err)
         throw err
       }
     },

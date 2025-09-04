@@ -17,7 +17,6 @@ export const useMascotaStore = defineStore("mascotas", {
 
   actions: {
     async fetchByUserId(userId: number) {
-      console.log("number",userId)
       this.loading = true
       this.error = null
       try {

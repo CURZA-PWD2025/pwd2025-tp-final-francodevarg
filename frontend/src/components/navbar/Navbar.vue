@@ -41,8 +41,9 @@ const authStore = useAuthStore()
 const isAdmin = computed(() => authStore.user?.tipo === 'admin')
 const currentPage = computed(() => String(route.name ?? 'agendar-turno'))
 
+const emit = defineEmits<{ (e: 'logout'): void }>();
+
 function navigate(to: string) {
-  console.log("to",to)
   router.push(to)
 }
 

@@ -100,7 +100,6 @@ async function handleSaved(mascota: Mascota) {
 }
 
 async function confirmDelete() {
-  console.log("data",toDeleteMascota.value)
   if (toDeleteMascota.value) {
     await store.removeOne(toDeleteMascota.value.id!)
     toDeleteMascota.value = null

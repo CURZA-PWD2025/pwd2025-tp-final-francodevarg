@@ -5,7 +5,6 @@ import {
   getLocalTimeZone,
   today
 } from '@internationalized/date'
-import { defineModel } from 'vue'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'

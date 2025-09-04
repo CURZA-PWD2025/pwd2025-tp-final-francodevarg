@@ -85,7 +85,6 @@ const {
 
 // Selección de veterinario
 function onSeleccionarVeterinario(id: number | null) {
-  console.log("id",id)
   turnoStore.veterinario = id
     ? turnoStore.veterinarios.find(v => v.id === id) || null
     : null
@@ -101,7 +100,6 @@ watch(fecha, async (nuevaFecha) => {
 // === Submit ===
 async function submit() {
   const data = await validarYEnviarTurnoPaso1()
-  console.log("data",data)
 
   if (data) {
     turnoStore.setTurnoDatos(data)
