@@ -7,7 +7,7 @@
         : 'bg-sky-100 border-sky-300 text-sky-800'"
     >
       <UserIcon class="h-4 w-4" />
-      <span class="text-sm font-semibold">{{ user?.nombre }}</span>
+      <span class="text-sm font-semibold">{{ nombre }}</span>
       <Badge
         :variant="isAdmin ? 'default' : 'secondary'"
         class="text-xs"
@@ -41,11 +41,12 @@
     TooltipProvider,
     TooltipTrigger,
   } from '@/components/ui/tooltip'
-  import type { User } from '@/types/Auth';
-  
+
+  defineEmits<{ (e: 'logout'): void }>()
+
   defineProps<{
     isAdmin: boolean
-    user: User 
+    nombre: string 
   }>()
   </script>
   

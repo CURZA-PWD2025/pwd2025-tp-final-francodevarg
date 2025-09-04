@@ -3,10 +3,10 @@ import type { Usuario } from './Usuario'
 export interface Mascota {
   id?: number               // opcional al crear una nueva
   nombre: string
-  especie: string           // ej: "Perro", "Gato"
-  raza: string              // ej: "Labrador", "Siames"
+  especie: string           
+  raza: string           
   edad: number
-  usuario_id: number        // referencia al dueño (cliente)
+  usuario_id: number   
 }
 
 export interface MascotaDetail extends Mascota {

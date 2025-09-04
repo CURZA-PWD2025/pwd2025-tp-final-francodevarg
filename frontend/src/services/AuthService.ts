@@ -1,5 +1,6 @@
 import { instance as axios } from '@/plugins/axios'
-import type { AuthResponse, LoginCredentials, RegisterCredentials, User } from '@/types/Auth'
+import type { AuthResponse, LoginCredentials, RegisterCredentials } from '@/types/Auth'
+import type { Usuario } from '@/types/Usuario'
 import type { AxiosResponse } from 'axios'
 
 class AuthService {
@@ -12,12 +13,16 @@ class AuthService {
     return data
   }
 
-  async logout(): Promise<AxiosResponse<{ message: string }>>{
-    return await axios.post('auth/logout')
+  async logout(token:string): Promise<AxiosResponse<{ message: string }>>{
+    return await axios.post('auth/logout',null,{
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
   }
 
-  async profile(): Promise<User> {
-    const { data } = await axios.get<User>('auth/profile')
+  async profile(): Promise<Usuario> {
+    const { data } = await axios.get<Usuario>('auth/profile')
     return data
   }
 

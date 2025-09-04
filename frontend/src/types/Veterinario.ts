@@ -1,7 +1,7 @@
 export interface Horario {
   id: number
   dia_semana: string
-  hora: string // formato "HH:MM"
+  hora: string 
 }
 
 export interface Veterinario {

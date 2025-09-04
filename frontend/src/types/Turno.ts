@@ -7,7 +7,8 @@ export interface Turno {
   fecha: string
   hora: string
   motivo: string
-  estado: EstadoTurno
+  estado: EstadoTurno,
+  created_at?: string
 }
 
 import type { Veterinario } from './Veterinario'

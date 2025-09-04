@@ -1,11 +1,12 @@
 import { defineStore } from 'pinia'
 import { instance as axios } from '@/plugins/axios'
 import AuthService from '@/services/AuthService'
-import type { User, AuthResponse } from '@/types/Auth'
+import type { AuthResponse } from '@/types/Auth'
+import type { Usuario } from '@/types/Usuario'
 
 export const useAuthStore = defineStore('auth', {
   state: () => ({
-    user: null as User | null,
+    user: null as Usuario | null,
     token: null as string | null
   }),
   actions: {
@@ -29,7 +30,7 @@ export const useAuthStore = defineStore('auth', {
 
     async logout() {
       try {
-        await AuthService.logout()
+        await AuthService.logout(this.token!)
       } catch (err) {
         console.warn('Error al hacer logout en backend:', err)
       } finally {

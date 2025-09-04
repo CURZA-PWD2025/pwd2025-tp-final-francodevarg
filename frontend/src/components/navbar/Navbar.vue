@@ -9,14 +9,14 @@
 
         <div class="hidden md:flex items-center space-x-4">
           <MenuItems
-            :is-admin="isAdmin"
-            :current-page="currentPage"
+            :isAdmin="isAdmin"
+            :currentPage="currentPage"
             @navigate="navigate"
           />
           <UserMenu
             v-if="authStore.user"
-            :is-admin="isAdmin"
-            :user="authStore.user"
+            :isAdmin="isAdmin"
+            :nombre="authStore.user.nombre"
             @logout="logout"
           />
         </div>
@@ -40,8 +40,6 @@ const authStore = useAuthStore()
 
 const isAdmin = computed(() => authStore.user?.tipo === 'admin')
 const currentPage = computed(() => String(route.name ?? 'agendar-turno'))
-
-const emit = defineEmits<{ (e: 'logout'): void }>();
 
 function navigate(to: string) {
   router.push(to)

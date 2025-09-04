@@ -1,10 +1,3 @@
-export interface User {
-  id: number
-  nombre: string
-  email: string
-  tipo: 'admin' | 'cliente'
-}
-
 export interface AuthResponse {
   id: number
   nombre: string
