@@ -22,7 +22,7 @@ def profile(user_id: int):
     response, status = AuthController.profile(user_id)
     return jsonify(response), status
 
-@auth_bp.route("/logout/", methods=["POST"])
+@auth_bp.route("/logout", methods=["POST"])
 @role_required('admin', 'cliente')
 def logout():
     response, status = AuthController.logout()
