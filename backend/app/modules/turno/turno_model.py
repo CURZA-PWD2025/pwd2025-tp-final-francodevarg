@@ -15,7 +15,9 @@ class TurnoModel:
         INNER JOIN mascotas m ON m.id = t.mascota_id
         INNER JOIN veterinarios v ON v.id = t.veterinario_id
         WHERE m.usuario_id = %s
-        ORDER BY t.fecha, t.hora
+        AND (t.fecha > CURRENT_DATE 
+            OR (t.fecha = CURRENT_DATE AND t.hora >= CURRENT_TIME))
+        ORDER BY t.fecha ASC, t.hora ASC
     """
 
     def __init__(
