@@ -11,7 +11,11 @@
       :class="{ 'login-input--error': errorMessage }"
       :autocomplete="autocomplete"
     />
-    <p v-if="errorMessage" class="login-error-msg">{{ errorMessage }}</p>
+    <p class="login-error-msg">
+        <span v-if="errorMessage">
+            {{ errorMessage }}
+        </span>
+    </p>
   </div>
 </template>
 
@@ -32,4 +36,14 @@ const props = defineProps<{
 
 const { value, errorMessage } = useField<string>(() => props.name)
 </script>
+
+<style scoped>
+.login-error-msg {
+  height: 1rem;
+  color: #dc2626;
+  font-size: 0.875rem;
+  font-weight: 500; 
+  margin-top: 0.25rem;
+}
+</style>
 
