@@ -59,6 +59,7 @@
               class="login-input"
               :class="{ 'login-input--error': errors.password }"
               required
+              autocomplete="off"
             />
             <p v-if="errors.password" class="login-error-msg">{{ errors.password }}</p>
           </div>
@@ -69,12 +70,13 @@
             <Input
               id="passwordConfirm"
               v-model="formData.passwordConfirm"
-              type="password"
+              type="current-password"
               placeholder=""
               :disabled="isLoading"
               class="login-input"
               :class="{ 'login-input--error': errors.passwordConfirm }"
               required
+              autocomplete="off"
             />
             <p v-if="errors.passwordConfirm" class="login-error-msg">
               {{ errors.passwordConfirm }}
