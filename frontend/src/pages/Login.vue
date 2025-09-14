@@ -1,12 +1,12 @@
 <template>
     <div class="flex items-align-start justify-center pt-4">
-      <LoginForm @success="onLoginSuccess" />
+      <AuthForm @success="onLoginSuccess" />
     </div>
   </template>
   
   <script setup lang="ts">
   import { useRouter } from 'vue-router'
-  import LoginForm from '@/components/auth/LoginForm.vue'
+  import AuthForm from '@/components/auth/AuthForm.vue'
   import { useAuthStore } from '@/store/useAuthStore'
   
   const router = useRouter()

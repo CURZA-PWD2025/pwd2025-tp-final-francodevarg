@@ -4,7 +4,7 @@
 
     <!-- 1) Mostrar login si no hay usuario -->
     <div v-if="!user">
-      <LoginForm @success="onLoginSuccess" />
+      <AuthForm @success="onLoginSuccess" />
     </div>
 
     <!-- 2) Bloqueo por rol (admin / no cliente) con redirección -->
@@ -134,7 +134,7 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import HeaderPaciente from './HeaderPaciente.vue'
-import LoginForm from '@/components/auth/LoginForm.vue'
+import AuthForm from '@/components/auth/AuthForm.vue'
 import MascotaSelect from '@/components/MascotaSelect.vue'
 
 import { useTurnoStore } from '@/store/useTurnoStore'

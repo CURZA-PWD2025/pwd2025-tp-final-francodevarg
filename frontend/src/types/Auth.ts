@@ -6,14 +6,9 @@ export interface AuthResponse {
   token: string
 }
 
-export interface LoginCredentials {
-  email: string
-  password: string
-}
-
-export interface RegisterCredentials {
-  email: string
+export interface AuthFormValues {
   nombre: string
+  email: string
   password: string
-  tipo?: 'cliente' | 'admin'
+  passwordConfirm: string
 }
