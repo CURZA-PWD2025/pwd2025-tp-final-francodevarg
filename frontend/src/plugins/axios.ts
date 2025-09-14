@@ -31,11 +31,5 @@ instance.interceptors.request.use((config) => {
     headers.delete('skip-authorization') // que no viaje al backend
   }
 
-  // Agregamos un header de debug para asegurarnos que ESTA instancia se usa
-  headers.set('X-Debug-Client', 'axios-instance')
-
-  // LOG: cómo va a salir la request (lo vas a ver en la consola del navegador)
-  const dump = (headers.toJSON?.() ?? headers) as Record<string, any>
-
   return config
 })
