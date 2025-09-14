@@ -36,7 +36,6 @@ instance.interceptors.request.use((config) => {
 
   // LOG: cómo va a salir la request (lo vas a ver en la consola del navegador)
   const dump = (headers.toJSON?.() ?? headers) as Record<string, any>
-  console.debug('[axios] outgoing headers', dump)
 
   return config
 })
