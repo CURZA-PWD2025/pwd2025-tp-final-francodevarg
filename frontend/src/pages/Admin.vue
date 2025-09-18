@@ -1,5 +1,5 @@
 <template>
-  <section class="px-6 py-8 bg-muted/30 min-h-screen">
+  <section class="mx-auto max-w-5xl px-6 py-8 min-h-screen">
     <div class="mb-6 flex items-center justify-between">
       <div>
         <h2 class="text-2xl font-semibold flex items-center gap-2">
@@ -47,8 +47,8 @@ import {
   DialogContent,
 } from '@/components/ui/dialog'
 import { UsersIcon } from 'lucide-vue-next'
-import VeterinarioForm from '@/components/VeterinarioForm.vue'
-import VeterinarioCard from '@/components/VeterinarioCard.vue'
+import VeterinarioForm from '@/components/veterinarios/VeterinarioForm.vue'
+import VeterinarioCard from '@/components/veterinarios/VeterinarioCard.vue'
 import type { Veterinario } from '@/types/Veterinario'
 import VeterinarioService from '@/services/VeterinarioService'
 

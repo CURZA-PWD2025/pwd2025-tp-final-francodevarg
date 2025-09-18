@@ -44,7 +44,7 @@
           :key="hora"
           class="bg-muted text-sm px-2 py-1 rounded-md"
         >
-          {{ hora }}
+          {{ hora}}
         </span>
       </div>
     </div>

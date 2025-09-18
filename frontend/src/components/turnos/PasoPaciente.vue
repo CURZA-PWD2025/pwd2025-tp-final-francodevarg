@@ -135,7 +135,7 @@ import { useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import HeaderPaciente from './HeaderPaciente.vue'
 import AuthForm from '@/components/auth/AuthForm.vue'
-import MascotaSelect from '@/components/MascotaSelect.vue'
+import MascotaSelect from '@/components/mascotas/MascotaSelect.vue'
 
 import { useTurnoStore } from '@/store/useTurnoStore'
 import { useAuthEffects } from '@/composables/useAuthEffects'
