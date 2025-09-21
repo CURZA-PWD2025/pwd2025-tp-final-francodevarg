@@ -102,11 +102,12 @@ SEEDS['veterinarios'] = (
 SEEDS['horarios_laborales'] = (
     "INSERT INTO horarios_laborales (veterinario_id, dia_semana, hora) VALUES (%s, %s, %s)",
     [
-        (1, 'lunes', '09:00'),
-        (1, 'lunes', '10:00'),
-        (1, 'miércoles', '14:00'),
-        (2, 'martes', '11:00'),
-        (2, 'jueves', '16:00')
+        (1, 'Lunes', '09:00'),
+        (1, 'Lunes', '10:00'),
+        (2, 'Martes', '09:00'),
+        (2, 'Martes', '10:00'),
+        (1, 'Miércoles', '14:00'),
+        (1, 'Miércoles', '15:00')
     ]
 )
 
