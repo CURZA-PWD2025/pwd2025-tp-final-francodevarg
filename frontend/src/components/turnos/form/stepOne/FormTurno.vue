@@ -131,7 +131,7 @@ async function submit() {
 
 .boton-continuar {
   width: 100%;
-  background-color: #4caf50;
+  background-color: oklch(69.6% 0.17 162.48);
   color: #ffffff;
   padding: 12px 20px;
   font-size: 16px;

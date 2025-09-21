@@ -4,6 +4,10 @@ export interface Horario {
   hora: string 
 }
 
+export interface HorarioDisponible extends Horario {
+  disponible: boolean
+}
+
 export interface Veterinario {
   id: number
   nombre: string

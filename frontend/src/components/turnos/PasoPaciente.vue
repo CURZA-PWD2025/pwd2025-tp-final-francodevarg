@@ -120,7 +120,7 @@
         </button>
         <button
           @click="submit"
-          class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+          class="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-green-700"
         >
           Siguiente
         </button>
