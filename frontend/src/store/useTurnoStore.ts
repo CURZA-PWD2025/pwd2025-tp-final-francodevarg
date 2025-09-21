@@ -16,7 +16,7 @@ const initialTurno: Turno = {
   fecha: '',
   hora: '',
   motivo: '',
-  estado: 'pendiente'
+  estado: 'Pendiente'
 }
 
 export const useTurnoStore = defineStore('turno', {

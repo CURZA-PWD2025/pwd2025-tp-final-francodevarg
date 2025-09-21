@@ -26,7 +26,7 @@ class TurnoController:
 
         fecha = str(data["fecha"]).strip()
         hora = _hhmm_to_hhmmss(str(data["hora"]).strip())
-        estado = (data.get("estado") or "pendiente").strip().lower()
+        estado = (data.get("estado") or "Pendiente").strip()
         motivo = str(data.get("motivo") or "")
 
         try:
@@ -69,3 +69,21 @@ class TurnoController:
             return turnos, 200
         except Exception as e:
             return {"error": str(e)}, 400
+        
+
+    
+    @staticmethod
+    def confirm(turno_id: int):
+        actualizado = TurnoModel.update_estado(turno_id, "Confirmado")
+        if not actualizado:
+            return {"mensaje": "No se pudo confirmar el turno"}, 500
+
+        return {"mensaje": "Turno confirmado correctamente"}, 200
+
+    @staticmethod
+    def cancel(turno_id: int):
+        actualizado = TurnoModel.update_estado(turno_id, "Cancelado")
+        if not actualizado:
+            return {"mensaje": "No se pudo cancelar el turno"}, 500
+
+        return {"mensaje": "Turno cancelado correctamente"}, 200

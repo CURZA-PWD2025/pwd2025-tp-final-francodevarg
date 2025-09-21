@@ -187,20 +187,19 @@ const mascotaNombre = (props.turno as any)?.mascota?.nombre ?? '—'
  *  - localForcedHidden: se pone true al clickear confirmar/cancelar para ocultar de inmediato (optimistic)
  *  - Si el estado cambia a algo != 'pendiente', se resetea el flag.
  */
-const baseAccionVisible = computed(() => props.turno.estado === 'pendiente')
+const baseAccionVisible = computed(() => props.turno.estado === 'Pendiente')
 const localForcedHidden = ref(false)
 const accionVisible = computed(() => baseAccionVisible.value && !localForcedHidden.value)
 watch(baseAccionVisible, (v) => { if (!v) localForcedHidden.value = false })
 
 function estadoLabel(e: Turno['estado']) {
-  return { confirmado: 'Confirmado', pendiente: 'Pendiente', cancelado: 'Cancelado', completado: 'Completado' }[e] ?? '—'
+  return { Confirmado: 'Confirmado', Pendiente: 'Pendiente', Cancelado: 'Cancelado'}[e] ?? '—'
 }
 function badgeClass(e: Turno['estado']) {
   return {
-    confirmado: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
-    pendiente: 'bg-amber-100 text-amber-700 border border-amber-200',
-    cancelado: 'bg-rose-100 text-rose-700 border border-rose-200',
-    completado: 'bg-slate-100 text-slate-700 border border-slate-200'
+    Confirmado: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
+    Pendiente: 'bg-amber-100 text-amber-700 border border-amber-200',
+    Cancelado: 'bg-rose-100 text-rose-700 border border-rose-200'
   }[e] ?? 'bg-slate-100 text-slate-700 border border-slate-200'
 }
 

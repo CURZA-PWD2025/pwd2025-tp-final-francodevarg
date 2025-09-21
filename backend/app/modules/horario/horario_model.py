@@ -20,7 +20,7 @@ class HorarioModel:
         FROM turnos
         WHERE veterinario_id = %s
           AND fecha = %s
-          AND estado IN ('pendiente','confirmado')
+          AND estado IN ('Pendiente','Confirmado')
     """
 
     SQL_INSERT = """

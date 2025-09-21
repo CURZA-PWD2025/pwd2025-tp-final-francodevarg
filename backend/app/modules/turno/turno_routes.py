@@ -15,5 +15,18 @@ def create():
 @role_required('cliente')
 def get_by_user(user_id):
     response, status = TurnoController.get_by_user(user_id)
-    print(response)
     return jsonify(response), status
+
+
+@turno_bp.route("/confirmar/<int:turno_id>", methods=["PUT"])
+@role_required('cliente')
+def confirmar_turno(turno_id):
+    response,status = TurnoController.confirm(turno_id)
+    return jsonify(response), status    
+
+
+@turno_bp.route("/cancelar/<int:turno_id>", methods=["PUT"])
+@role_required('cliente')
+def cancelar_turno(turno_id):
+    response,status = TurnoController.cancel(turno_id)
+    return jsonify(response), status    

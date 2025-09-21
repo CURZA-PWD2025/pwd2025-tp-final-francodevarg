@@ -26,7 +26,7 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
       fecha: parseFechaInput(initialValues?.fecha),
       hora: initialValues?.hora ?? '',
       motivo: initialValues?.motivo ?? '',
-      estado: initialValues?.estado ?? 'pendiente'
+      estado: initialValues?.estado ?? 'Pendiente'
     }
 
   })
@@ -78,7 +78,7 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
         fecha: undefined,
         hora: '',
         motivo: '',
-        estado: 'pendiente'
+        estado: 'Pendiente'
       },
       touched: {
         veterinario_id: false,
@@ -131,7 +131,7 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
     const payload: Partial<Turno> = {
       mascota_id: Number(mascota_id.value),
       motivo: motivo.value,
-      estado: "pendiente"
+      estado: "Pendiente"
     }
     return payload
   }

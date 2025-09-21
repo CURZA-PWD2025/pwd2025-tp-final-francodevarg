@@ -20,6 +20,12 @@ class TurnoModel:
         ORDER BY t.fecha ASC, t.hora ASC
     """
 
+    SQL_UPDATE_ESTADO = """
+        UPDATE turnos 
+        SET estado = %s
+        WHERE id = %s
+    """
+
     def __init__(
         self,
         mascota: "MascotaModel",
@@ -33,7 +39,7 @@ class TurnoModel:
         self.id = id
         self.fecha = fecha
         self.hora = hora
-        self.estado = estado or "pendiente"
+        self.estado = estado or "Pendiente"
         self.motivo = motivo or ""
         self.mascota = mascota
         self.veterinario = veterinario
@@ -88,6 +94,16 @@ class TurnoModel:
             turnos.append(turno)
 
         return turnos
+
+
+    @staticmethod
+    def update_estado(turno_id: int, nuevo_estado: str) -> bool:
+        params = (nuevo_estado, turno_id)
+        updated = ConnectDB.write(TurnoModel.SQL_UPDATE_ESTADO, params)
+        print(updated)
+        print(bool(updated))
+        return bool(updated)
+
 
     @staticmethod
     def _format_hora(td):

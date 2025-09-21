@@ -25,7 +25,7 @@ export const makeTurnoFormSchema = () =>
     motivo: z.string()
       .min(1, 'El motivo es obligatorio'),
 
-    estado: z.enum(['pendiente', 'confirmado', 'cancelado'], {
+    estado: z.enum(['Pendiente', 'Confirmado', 'Cancelado'], {
       required_error: 'El estado es requerido',
       invalid_type_error: 'El estado no es válido'
     })

@@ -1,4 +1,4 @@
-export type EstadoTurno = 'pendiente' | 'confirmado' | 'cancelado'
+export type EstadoTurno = 'Pendiente' | 'Confirmado' | 'Cancelado'
 
 export interface Turno {
   id?: number

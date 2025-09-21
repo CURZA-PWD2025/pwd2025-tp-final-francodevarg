@@ -21,10 +21,10 @@
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todos los estados</SelectItem>
-              <SelectItem value="confirmado">Confirmado</SelectItem>
-              <SelectItem value="pendiente">Pendiente</SelectItem>
-              <SelectItem value="cancelado">Cancelado</SelectItem>
-              <SelectItem value="completado">Completado</SelectItem>
+              <SelectItem value="Confirmado">Confirmado</SelectItem>
+              <SelectItem value="Pendiente">Pendiente</SelectItem>
+              <SelectItem value="Cancelado">Cancelado</SelectItem>
+              <SelectItem value="Completado">Completado</SelectItem>
             </SelectContent>
           </Select>
           <span class="hidden sm:inline text-sm text-slate-600"></span>
@@ -40,7 +40,7 @@
           :key="t.id"
           :turno="t"
           @cancelar="cancelar"
-          @reprogramar="reprogramar"
+          @confirmar="confirmar"
         />
       </div>
 
@@ -63,6 +63,7 @@ import { CalendarDays, CalendarX } from 'lucide-vue-next'
 // shadcn-vue
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuthStore } from '@/store/useAuthStore'
+import TurnoService from '@/services/TurnoService'
 
 const storeTurno = useMisTurnos()
 const storeAuth = useAuthStore()
@@ -78,9 +79,22 @@ function onFiltroChange(val: typeof storeTurno.filtroEstado) {
 
 async function cancelar(id: number) {
   console.log("Cancelar turno", id)
+
+  const response = TurnoService.cancel(id).then(() => {
+    storeTurno.fetchTurnos(storeAuth.user!.id)
+  }).catch((error) => {
+    console.error("Error al cancelar el turno", error)
+  })
 }
 
-function reprogramar(id: number) {
-  console.log("Reprogramar turno", id)
+function confirmar(id: number) {
+
+  const response = TurnoService.confirm(id).then(() => {
+    storeTurno.fetchTurnos(storeAuth.user!.id)
+  }).catch((error) => {
+    console.error("Error al confirmar el turno", error)
+  })
+
+  console.log("Confirmar turno", id)
 }
 </script>

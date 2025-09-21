@@ -19,13 +19,13 @@ export const useMisTurnos = defineStore('misTurnos', {
       return state.turnos.length
     },
     confirmados(state): TurnoDetail[] {
-      return state.turnos.filter((t:TurnoDetail) => t.estado === 'confirmado')
+      return state.turnos.filter((t:TurnoDetail) => t.estado === 'Confirmado')
     },
     pendientes(state): TurnoDetail[] {
-      return state.turnos.filter((t:TurnoDetail) => t.estado === 'pendiente')
+      return state.turnos.filter((t:TurnoDetail) => t.estado === 'Pendiente')
     },
     cancelados(state): TurnoDetail[] {
-      return state.turnos.filter((t:TurnoDetail) => t.estado === 'cancelado')
+      return state.turnos.filter((t:TurnoDetail) => t.estado === 'Cancelado')
     },
   },
 

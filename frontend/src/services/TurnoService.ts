@@ -22,4 +22,11 @@ export default {
     return ApiService.update<Turno>(baseUrl, id, data, true)
   },
 
+  confirm(id: number) {
+    return ApiService.update<Turno>(`${baseUrl}confirmar/`, id, {}, true)
+  },
+
+  cancel(id: number) {
+    return ApiService.update<Turno>(`${baseUrl}cancelar/`, id, {}, true)
+  }
 }

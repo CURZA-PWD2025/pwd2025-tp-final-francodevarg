@@ -122,8 +122,8 @@ SEEDS['mascotas'] = (
 SEEDS['turnos'] = (
     "INSERT INTO turnos (fecha, hora, estado, motivo, mascota_id, veterinario_id) VALUES (%s, %s, %s, %s, %s, %s)",
     [
-        ('2025-07-25', '09:00', 'confirmado', 'Consulta general', 1, 1),
-        ('2025-07-26', '11:00', 'pendiente', 'Chequeo anual', 2, 2)
+        ('2025-07-25', '09:00', 'Confirmado', 'Consulta general', 1, 1),
+        ('2025-07-26', '11:00', 'Pendiente', 'Chequeo anual', 2, 2)
     ]
 )
 
