@@ -1,12 +1,12 @@
 <template>
-    <div class="form-group" v-if="horarios.some(h => h.disponible)">
+    <div class="form-group" v-if="hayDisponibles">
       <label class="text-sm font-medium text-gray-700 flex items-center gap-2">
         <Clock class="h-4 w-6" />
         Horarios disponibles*
       </label>
       <div class="grid grid-cols-3 sm:grid-cols-4 gap-2">
         <Button 
-          v-for="horarioItem in horarios"
+          v-for="horarioItem in horariosOrdenados"
           :key="horarioItem.hora"
           :variant="modelValue === horarioItem.hora ? 'default' : 'outline'"
           type="button"
@@ -31,16 +31,29 @@
   </template>
   
   <script setup lang="ts">
+  import { computed } from 'vue'
   import { Clock } from 'lucide-vue-next';
   import Button from '@/components/ui/button/Button.vue';
-import { cn } from '@/lib/utils';
+  import { cn } from '@/lib/utils';
+  import type { HorarioDisponible } from '@/types/Veterinario';
 
-  defineProps<{
+  const props = defineProps<{
     modelValue: string
-    horarios: { hora: string; disponible: boolean }[]
+    horarios: HorarioDisponible[]
     error?: string
   }>()
   defineEmits(['update:modelValue'])
+
+  function parseMinutes(hora: string): number {
+    const [h, m] = hora.split(':').map(Number)
+    return h * 60 + m
+  }
+
+  const horariosOrdenados = computed((): HorarioDisponible[] =>
+    [...props.horarios].sort((a, b) => parseMinutes(a.hora) - parseMinutes(b.hora))
+  )
+  const hayDisponibles = computed(():boolean => props.horarios.some(h => h.disponible))
+
   </script>
 
   <style scoped>
