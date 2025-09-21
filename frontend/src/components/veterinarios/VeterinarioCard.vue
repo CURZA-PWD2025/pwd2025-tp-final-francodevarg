@@ -23,7 +23,7 @@
 
     <div>
       <Label class="text-sm font-medium flex items-center gap-1">
-        <ClockIcon class="w-4 h-4" /> Días de Trabajo
+        <CalendarIcon class="w-4 h-4" /> Días de Trabajo
       </Label>
       <div class="flex flex-wrap gap-2 mt-1">
         <span
@@ -37,11 +37,12 @@
     </div>
 
     <div>
-      <Label class="text-sm font-medium">Horarios</Label>
+      <Label class="text-sm font-medium">
+        <ClockIcon class="w-4 h-4" />  Horarios</Label>
       <div class="flex flex-wrap gap-2">
         <span
           v-for="hora in horariosUnicos"
-          :key="hora"
+          :key="Math.random()"
           class="bg-muted text-sm px-2 py-1 rounded-md"
         >
           {{ hora}}
@@ -53,10 +54,12 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { UsersIcon, PenLineIcon, TrashIcon, ClockIcon } from 'lucide-vue-next'
+import { UsersIcon, PenLineIcon, TrashIcon, ClockIcon, CalendarIcon } from 'lucide-vue-next'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import type { Veterinario } from '@/types/Veterinario'
+import type { Horario, Veterinario } from '@/types/Veterinario'
+import type { DiaSemana, Hora } from '@/constants/diasSemana'
+import {horariosDisponibles } from '@/constants/diasSemana'
 
 const props = defineProps<{
   veterinario: Veterinario
@@ -65,14 +68,14 @@ const props = defineProps<{
 defineEmits(['editar'])
 
 
-const diasUnicos = computed(() => {
-  const horarios = props.veterinario.horarios ?? []
+const diasUnicos = computed(():DiaSemana[] => {
+  const horarios: Horario[] | [] = props.veterinario.horarios ?? []
   return [...new Set(horarios.map(h => h.dia_semana))]
 })
 
-const horariosUnicos = computed(() => {
+const horariosUnicos = computed((): Hora[] => {
   const horarios = props.veterinario.horarios ?? []
-  return [...new Set(horarios.map(h => h.hora))].sort((a, b) => a.localeCompare(b))
+  const set = new Set(horarios.map(h => h.hora))
+  return horariosDisponibles.filter(hora => set.has(hora))
 })
-
 </script>

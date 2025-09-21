@@ -1,48 +1,39 @@
 <template>
-    <div class="dias-container">
-      <div class="flex justify-items-end">
-        <h3 class="nombre">{{ nombre }}
-          - <span class="especialidad">{{ especialidad }}</span>
-        </h3>
-      </div>
-      <h2 class="mb-2">Días de Atencion:</h2>
-      <div class="dias">
-        <span
-          v-for="dia in diasSemana"
-          :key="dia.id"
-          class="dia-chip"
-          :class="{ activo: diasDisponibles.includes(dia.id.toUpperCase()) }"
-        >
-          {{ dia.label }}
-        </span>
-      </div>
+  <div class="dias-container">
+    <div class="flex justify-items-end">
+      <h3 class="nombre">
+        {{ nombre }} - <span class="especialidad">{{ especialidad }}</span>
+      </h3>
     </div>
-  </template>
-  
-  <script setup lang="ts">
-import { computed } from 'vue';
+
+    <h2 class="mb-2">Días de Atención:</h2>
+
+    <ul class="dias flex gap-2">
+      <li
+        v-for="dia in diasSemanaConLabel"
+        :key="dia.id"
+        class="dia-chip"
+        :class="{ activo: diasDisponibles.has(dia.id) }"
+      >
+        {{ dia.label }}
+      </li>
+    </ul>
+  </div>
+</template>
+
+<script setup lang="ts">
+  import { computed } from 'vue'
+  import type { Horario } from '@/types/Veterinario'
+  import { diasSemanaConLabel } from '@/constants/diasSemana'
 
   const props = defineProps<{
     nombre: string
     especialidad: string
-    horarios: { dia_semana: string; hora: string; id: number }[]
+    horarios: Horario[]
   }>()
-  
-  const diasSemana = [
-    { id: 'Lunes', label: 'Lun' },
-    { id: 'Martes', label: 'Mar' },
-    { id: 'Miércoles', label: 'Mié' },
-    { id: 'Jueves', label: 'Jue' },
-    { id: 'Viernes', label: 'Vie' },
-    { id: 'Sábado', label: 'Sáb' },
-    { id: 'Domingo', label: 'Dom' },
-  ]
-  
-  const diasDisponibles = computed(() => {
-    const diasSet = new Set(props.horarios.map(h => h.dia_semana.toUpperCase()))
-    return Array.from(diasSet)
-  })
-  </script>
+
+  const diasDisponibles = computed(() => new Set(props.horarios.map(h => h.dia_semana)))
+</script>
   
   <style scoped>
   .dias-container {

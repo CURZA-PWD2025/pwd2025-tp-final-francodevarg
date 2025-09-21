@@ -6,7 +6,7 @@
           <UsersIcon class="w-6 h-6 text-emerald-600" />
           Administrar Veterinarios
         </h2>
-        <p class="text-muted-foreground">Gestiona los profesionales, sus horarios y servicios</p>
+        <p class="text-muted-foreground">Gestiona los profesionales y sus horarios.</p>
       </div>
 
       <Dialog v-model:open="isDialogOpen">

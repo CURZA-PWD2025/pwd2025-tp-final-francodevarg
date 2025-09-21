@@ -1,7 +1,10 @@
+import type { DiaSemana, Hora } from '@/constants/diasSemana'
+
 export interface Horario {
   id: number
-  dia_semana: string
-  hora: string 
+  dia_semana: DiaSemana
+  hora: Hora
+  disponible?: boolean
 }
 
 export interface HorarioDisponible extends Horario {

@@ -15,4 +15,9 @@ export const horariosDisponibles = [
   '14:00', '15:00', '16:00', '17:00', '18:00'
 ] as const
 
-export type Horario = typeof horariosDisponibles[number]
+export type Hora = typeof horariosDisponibles[number]
+
+export const diasSemanaConLabel = diasSemana.map(dia => ({
+  id: dia,
+  label: dia.slice(0, 3),
+}))

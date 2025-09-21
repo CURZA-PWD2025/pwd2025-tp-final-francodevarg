@@ -3,7 +3,7 @@ from app.database.connect_db import ConnectDB
 
 class HorarioModel:
     SQL_SELECT_BY_VET_ID = """
-        SELECT id, dia_semana, hora
+        SELECT id, dia_semana, TIME_FORMAT(hora, '%H:%i') AS hora
         FROM horarios_laborales
         WHERE veterinario_id = %s
     """
