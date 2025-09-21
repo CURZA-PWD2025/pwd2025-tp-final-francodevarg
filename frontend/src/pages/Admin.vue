@@ -16,6 +16,12 @@
           </Button>
         </DialogTrigger>
         <DialogContent class="max-w-3xl">
+          <DialogTitle class="text-lg font-medium">
+          {{ selectedVeterinario ? 'Editar Veterinario' : 'Nuevo Veterinario' }}
+          </DialogTitle>
+          <DialogDescription>
+            Completa el formulario para {{ selectedVeterinario ? 'editar' : 'agregar' }} un veterinario y sus horarios.
+          </DialogDescription>
         <VeterinarioForm
           :veterinario="selectedVeterinario"
           @success="onFormSuccess"
@@ -31,6 +37,7 @@
         :key="i"
         :veterinario="vet"
         @editar="editarVeterinario"
+        @eliminar="eliminarVeterniario"
         />
 
     </div>
@@ -51,6 +58,8 @@ import VeterinarioForm from '@/components/veterinarios/VeterinarioForm.vue'
 import VeterinarioCard from '@/components/veterinarios/VeterinarioCard.vue'
 import type { Veterinario } from '@/types/Veterinario'
 import VeterinarioService from '@/services/VeterinarioService'
+import DialogTitle from '@/components/ui/dialog/DialogTitle.vue'
+import DialogDescription from '@/components/ui/dialog/DialogDescription.vue'
 
 const veterinarios = ref<Veterinario[]>([])
 const isDialogOpen = ref(false)
@@ -80,6 +89,22 @@ function editarVeterinario(vet: Veterinario) {
   selectedVeterinario.value = vet
   isDialogOpen.value = true
 }
+
+async function eliminarVeterniario(vet: Veterinario) {
+  if (!confirm(`¿Estás seguro de eliminar al veterinario ${vet.nombre}? Esta acción no se puede deshacer.`)) {
+    return
+  }
+  try {
+    await VeterinarioService.destroy(vet.id)
+    // toast({ title: 'Veterinario eliminado' })
+    confirm("Veterinario eliminado")
+    fetchVeterinarios()
+  } catch (e: any) {
+    const msg = e?.response?.data?.message || e?.response?.data?.error || e?.message || 'Error al eliminar'
+    console.log("error",msg)
+  }
+}
+
 
 function onFormSuccess() {
   isDialogOpen.value = false

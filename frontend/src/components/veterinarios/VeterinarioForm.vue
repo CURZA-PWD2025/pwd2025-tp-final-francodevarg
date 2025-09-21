@@ -3,7 +3,7 @@ import { watch, computed } from 'vue'
 import { useForm } from 'vee-validate'
 import { toast } from 'vue-sonner'
 import { formSchema } from '@/schemas/veterinarioSchema'
-import { diasSemana, type DiaSemana } from '@/constants/diasSemana'
+import { diasSemana, type DiaSemana, type Hora } from '@/constants/diasSemana'
 import VeterinarioFormFields from './VeterinarioFormFields.vue'
 import { Button } from '@/components/ui/button'
 import type { Veterinario } from '@/types/Veterinario'
@@ -25,13 +25,7 @@ const matchDia = (dia: string): DiaSemana | null => {
   const found = diasSemana.find(d => normBasic(d) === n)
   return (found as DiaSemana) ?? null
 }
-const fmtHora = (h: unknown): string => {
-  const s = String(h ?? '')
-  const [hhRaw, mmRaw] = s.split(':')
-  const hh = Number(hhRaw ?? 0)
-  const mm = Number(mmRaw ?? 0)
-  return `${hh.toString().padStart(2,'0')}:${mm.toString().padStart(2,'0')}`
-}
+
 
 const { handleSubmit, resetForm, isSubmitting } = useForm({
   validationSchema: formSchema,
@@ -41,7 +35,7 @@ const { handleSubmit, resetForm, isSubmitting } = useForm({
     email: '',
     telefono: '',
     dias: [] as DiaSemana[],
-    horarios: [] as string[],
+    horarios: [] as Hora[],
   },
 })
 
@@ -55,12 +49,12 @@ watch(
 
     // DEDUP: un solo día y una sola vez cada horario
     const diasSet = new Set<DiaSemana>()
-    const horasSet = new Set<string>()
+    const horasSet = new Set<Hora>()
 
     for (const h of (vet.horarios ?? [])) {
       const d = matchDia(h.dia_semana)
       if (d) diasSet.add(d)
-      horasSet.add(fmtHora(h.hora))
+      horasSet.add(h.hora)
     }
 
     resetForm({
@@ -86,7 +80,7 @@ const onSubmit = handleSubmit(async (formValues) => {
       telefono: formValues.telefono,
     },
     horarios: Object.fromEntries(
-      (formValues.dias as DiaSemana[]).map(d => [d, (formValues.horarios as string[]).map(fmtHora)])
+      (formValues.dias as DiaSemana[]).map(d => [d, (formValues.horarios as string[]).map(h => h.trim())])
     ),
   }
 

@@ -15,7 +15,7 @@
           <PenLineIcon class="w-4 h-4" />
         </Button>
 
-        <Button size="icon" variant="destructive">
+        <Button size="icon" variant="destructive" @click="$emit('eliminar', veterinario)">
           <TrashIcon class="w-4 h-4" />
         </Button>
       </div>
@@ -65,7 +65,7 @@ const props = defineProps<{
   veterinario: Veterinario
 }>()
 
-defineEmits(['editar'])
+defineEmits(['editar', 'eliminar'])
 
 
 const diasUnicos = computed(():DiaSemana[] => {
