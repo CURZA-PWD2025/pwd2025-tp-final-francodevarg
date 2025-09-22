@@ -26,6 +26,18 @@ class TurnoModel:
         WHERE id = %s
     """
 
+    SQL_SELECT_BY_FECHA = """
+        SELECT 
+            t.id AS turno_id, t.fecha, t.hora, t.estado, t.motivo,
+            m.id AS mascota_id, m.nombre AS mascota_nombre, m.especie AS mascota_especie,
+            v.id AS veterinario_id, v.nombre AS veterinario_nombre, v.especialidad AS veterinario_especialidad
+        FROM turnos t
+        INNER JOIN mascotas m ON m.id = t.mascota_id
+        INNER JOIN veterinarios v ON v.id = t.veterinario_id
+        WHERE t.fecha = %s
+        ORDER BY t.hora ASC
+    """
+
     def __init__(
         self,
         mascota: "MascotaModel",
@@ -103,6 +115,43 @@ class TurnoModel:
         print(updated)
         print(bool(updated))
         return bool(updated)
+    
+    @staticmethod
+    def get_by_fecha(fecha_str: str) -> list[dict]:
+        from datetime import datetime
+        from app.modules.mascota.mascota_model import MascotaModel
+        from app.modules.veterinario.veterinario_model import VeterinarioModel
+
+        # convertir string DD-MM-YYYY a objeto date
+        try:
+            fecha = datetime.strptime(fecha_str, "%d-%m-%Y").date()
+        except ValueError:
+            return []
+
+        rows = ConnectDB.read(TurnoModel.SQL_SELECT_BY_FECHA, (fecha,))
+        if not rows:
+            return []
+
+        turnos: list[dict] = []
+        for row in rows:
+            mascota = MascotaModel.get_one(row["mascota_id"])
+            veterinario = VeterinarioModel.get_one(row["veterinario_id"])
+            # limpio horarios si existe
+            if "horarios" in veterinario:
+                del veterinario["horarios"]
+
+            turno = {
+                "id": row["turno_id"],
+                "fecha": row["fecha"].isoformat() if row["fecha"] else None,
+                "hora": TurnoModel._format_hora(row["hora"]),
+                "estado": row["estado"],
+                "motivo": row["motivo"],
+                "mascota": mascota,
+                "veterinario": veterinario,
+            }
+            turnos.append(turno)
+
+        return turnos
 
 
     @staticmethod

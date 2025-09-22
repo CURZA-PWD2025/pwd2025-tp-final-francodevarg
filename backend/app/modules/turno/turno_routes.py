@@ -24,9 +24,21 @@ def confirmar_turno(turno_id):
     response,status = TurnoController.confirm(turno_id)
     return jsonify(response), status    
 
+@turno_bp.route("/completar/<int:turno_id>", methods=["PUT"])
+@role_required('admin')
+def completar_turno(turno_id):
+    response,status = TurnoController.complete(turno_id)
+    return jsonify(response), status    
+
 
 @turno_bp.route("/cancelar/<int:turno_id>", methods=["PUT"])
-@role_required('cliente')
+@role_required('cliente', 'admin')
 def cancelar_turno(turno_id):
     response,status = TurnoController.cancel(turno_id)
+    return jsonify(response), status    
+
+@turno_bp.route("/fecha/<string:fecha>", methods=["GET"])
+@role_required('admin')
+def get_turnos_by_fecha(fecha):
+    response,status = TurnoController.get_by_fecha(fecha)
     return jsonify(response), status    

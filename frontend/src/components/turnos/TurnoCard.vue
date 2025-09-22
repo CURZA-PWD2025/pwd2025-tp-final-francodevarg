@@ -37,7 +37,7 @@
       <!-- Acciones rápidas + Estado + Toggle -->
       <div class="flex items-center gap-2">
         <!-- Acciones solo si pendiente y no forzadas a ocultarse -->
-        <template v-if="accionVisible">
+        <template v-if="accionVisible && roleUser === 'cliente'">
           <Button
             variant="outline"
             class="h-8 rounded-lg border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
@@ -52,6 +52,25 @@
             <Check class="w-4 h-4 mr-1" /> Confirmar
           </Button>
         </template>
+
+        <template v-if="accionVisible && roleUser === 'admin'">
+
+          <Button
+            class="h-8 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
+            @click.stop="onCompletar"
+          >
+            <Check class="w-4 h-4 mr-1" /> Completar
+          </Button>
+
+                    <Button
+            variant="outline"
+            class="h-8 rounded-lg border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+            @click.stop="onCancelar"
+          >
+            <XCircle class="w-4 h-4 mr-1" /> Cancelar
+          </Button>
+        </template>
+
 
         <Badge :class="badgeClass(turno.estado)" class="rounded-full px-2.5 py-1 text-[12px]">
           {{ estadoLabel(turno.estado) }}
@@ -158,7 +177,7 @@ import {
   TooltipTrigger
 } from '@/components/ui/tooltip'
 
-const props = withDefaults(defineProps<{ turno: Turno; defaultExpanded?: boolean; idBase?: string }>(), {
+const props = withDefaults(defineProps<{ turno: Turno; defaultExpanded?: boolean; idBase?: string, roleUser? : string }>(), {
   defaultExpanded: false,
   idBase: 'turno-card'
 })
@@ -166,16 +185,17 @@ const props = withDefaults(defineProps<{ turno: Turno; defaultExpanded?: boolean
 const emit = defineEmits<{
   (e: 'cancelar', id: number): void
   (e: 'confirmar', id: number): void
+  (e: 'completar', id: number): void
 }>()
 
 const expanded = ref<boolean>(props.defaultExpanded)
 const headerId = computed(() => `${props.idBase}-${props.turno.id}-header`)
 const contentId = computed(() => `${props.idBase}-${props.turno.id}-content`)
 
-const fechaRaw = new Date(props.turno.fecha)
-const fechaLegible = fechaRaw
-  .toLocaleDateString('es-AR', { weekday: 'long', day: '2-digit', month: 'long' })
-  .replace(/\b\w/g, l => l.toUpperCase())
+const fechaRaw = new Date(props.turno.fecha + "T00:00:00")
+const fechaLegible = fechaRaw.toLocaleDateString('es-AR', {
+  weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'
+}).replace(/^\w/, c => c.toUpperCase()) // Capitalizar primera letra
 const hora = props.turno.hora.slice(0, 5) // "HH:MM:SS" -> "HH:MM"
 
 const veterinarioNombre = (props.turno as any)?.veterinario?.nombre ?? '—'
@@ -190,16 +210,18 @@ const mascotaNombre = (props.turno as any)?.mascota?.nombre ?? '—'
 const baseAccionVisible = computed(() => props.turno.estado === 'Pendiente')
 const localForcedHidden = ref(false)
 const accionVisible = computed(() => baseAccionVisible.value && !localForcedHidden.value)
+const acconVisibleAdmin = computed(() => props.turno.estado === 'Confirmado' && !localForcedHidden.value)
 watch(baseAccionVisible, (v) => { if (!v) localForcedHidden.value = false })
 
 function estadoLabel(e: Turno['estado']) {
-  return { Confirmado: 'Confirmado', Pendiente: 'Pendiente', Cancelado: 'Cancelado'}[e] ?? '—'
+  return { Confirmado: 'Confirmado', Pendiente: 'Pendiente', Cancelado: 'Cancelado', Completado: 'Completado'}[e] ?? '—'
 }
 function badgeClass(e: Turno['estado']) {
   return {
     Confirmado: 'bg-emerald-100 text-emerald-700 border border-emerald-200',
     Pendiente: 'bg-amber-100 text-amber-700 border border-amber-200',
-    Cancelado: 'bg-rose-100 text-rose-700 border border-rose-200'
+    Cancelado: 'bg-rose-100 text-rose-700 border border-rose-200',
+    Completado: 'bg-blue-100 text-blue-700 border border-blue-200'
   }[e] ?? 'bg-slate-100 text-slate-700 border border-slate-200'
 }
 
@@ -212,6 +234,11 @@ function onCancelar() {
 function onConfirmar() {
   localForcedHidden.value = true
   emit('confirmar', props.turno.id!)
+}
+
+function onCompletar() {
+  localForcedHidden.value = true
+  emit('completar', props.turno.id!)
 }
 
 /* Transición altura auto */

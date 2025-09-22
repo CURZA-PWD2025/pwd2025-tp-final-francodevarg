@@ -14,6 +14,24 @@ export default {
     return res.data
   },
 
+  async getByFechaHoy(): Promise<TurnoDetail[]> {
+    const hoy = new Date()
+    const fecha = hoy.toLocaleDateString("es-AR", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }) // DD/MM/YYYY
+
+    // si tu backend espera DD-MM-YYYY, reemplazamos las barras
+    const fechaParam = fecha.replace(/\//g, "-")
+
+    const res: AxiosResponse<TurnoDetail[]> = await ApiService.getAll<TurnoDetail>(
+      `${baseUrl}fecha/${fechaParam}`,
+      true
+    )
+    return res.data
+  },
+
   create(data: Partial<Turno>) {
     return ApiService.create<Turno>(baseUrl, data, true)
   },
@@ -24,6 +42,10 @@ export default {
 
   confirm(id: number) {
     return ApiService.update<Turno>(`${baseUrl}confirmar/`, id, {}, true)
+  },
+
+  complete(id: number) {
+    return ApiService.update<Turno>(`${baseUrl}completar/`, id, {}, true)
   },
 
   cancel(id: number) {

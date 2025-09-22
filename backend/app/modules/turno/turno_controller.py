@@ -79,6 +79,14 @@ class TurnoController:
             return {"mensaje": "No se pudo confirmar el turno"}, 500
 
         return {"mensaje": "Turno confirmado correctamente"}, 200
+    
+    @staticmethod
+    def complete(turno_id: int):
+        actualizado = TurnoModel.update_estado(turno_id, "Completado")
+        if not actualizado:
+            return {"mensaje": "No se pudo completar el turno"}, 500
+
+        return {"mensaje": "Turno confirmado correctamente"}, 200
 
     @staticmethod
     def cancel(turno_id: int):
@@ -87,3 +95,16 @@ class TurnoController:
             return {"mensaje": "No se pudo cancelar el turno"}, 500
 
         return {"mensaje": "Turno cancelado correctamente"}, 200
+    
+    @staticmethod
+    def get_by_fecha(fecha_str: str):
+        try:
+            turnos = TurnoModel.get_by_fecha(fecha_str)
+
+            if not turnos:
+                return {"mensaje": "No hay turnos en esa fecha"}, 404
+
+            result = [t for t in turnos]
+            return result, 200
+        except ValueError:
+            return {"error": "Formato de fecha inválido, use DD-MM-YYYY"}, 400
