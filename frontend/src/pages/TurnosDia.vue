@@ -22,9 +22,10 @@
           v-for="t in storeTurno.turnosFiltrados"
           :key="t.id"
           :turno="t"
-          :roleUser="roleUser"
+          :roleUser="'admin'"
           @completar="completar"
           @cancelar="cancelar"
+          @confirmar="confirmar"
         />
       </div>
 
@@ -39,18 +40,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { useMisTurnos } from '@/store/useMisTurnosStore'
 import TurnoCard from '@/components/turnos/TurnoCard.vue'
 import { CalendarDays, CalendarX } from 'lucide-vue-next'
-import { useAuthStore } from '@/store/useAuthStore'
 import TurnoService from '@/services/TurnoService'
 
 const storeTurno = useMisTurnos()
-const storeAuth = useAuthStore()
 const filtro = ref(storeTurno.filtroEstado)
-
-const roleUser = computed(() => storeAuth.user?.tipo || '')
 
 onMounted(() => {
   if (!storeTurno.turnos.length) storeTurno.fetchTurnosByFecha()
@@ -70,6 +67,16 @@ function completar(id: number) {
 
 function cancelar(id: number) {
   const response = TurnoService.cancel(id).then(() => {
+    storeTurno.fetchTurnosByFecha()
+  }).catch((error) => {
+    console.error("Error al confirmar el turno", error)
+  })
+
+  console.log("Confirmar turno", id)
+}
+
+function confirmar(id: number) {
+  const response = TurnoService.confirm(id).then(() => {
     storeTurno.fetchTurnosByFecha()
   }).catch((error) => {
     console.error("Error al confirmar el turno", error)

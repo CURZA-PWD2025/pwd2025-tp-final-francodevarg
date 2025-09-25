@@ -8,17 +8,25 @@ class TurnoModel:
     """
     SQL_SELECT_BY_USER = """
         SELECT 
-            t.id AS turno_id, t.fecha, t.hora, t.estado, t.motivo,
-            m.id AS mascota_id, m.nombre AS mascota_nombre, m.especie AS mascota_especie,
-            v.id AS veterinario_id, v.nombre AS veterinario_nombre, v.especialidad AS veterinario_especialidad
+            t.id AS turno_id, 
+            t.fecha, 
+            t.hora, 
+            t.estado, 
+            t.motivo,
+            m.id AS mascota_id, 
+            m.nombre AS mascota_nombre, 
+            m.especie AS mascota_especie,
+            v.id AS veterinario_id, 
+            v.nombre AS veterinario_nombre, 
+            v.especialidad AS veterinario_especialidad
         FROM turnos t
         INNER JOIN mascotas m ON m.id = t.mascota_id
         INNER JOIN veterinarios v ON v.id = t.veterinario_id
         WHERE m.usuario_id = %s
-        AND (t.fecha > CURRENT_DATE 
-            OR (t.fecha = CURRENT_DATE AND t.hora >= CURRENT_TIME))
-        ORDER BY t.fecha ASC, t.hora ASC
-    """
+        AND TIMESTAMP(t.fecha, t.hora) >= CONVERT_TZ(NOW(), 'UTC', 'America/Argentina/Buenos_Aires')
+        ORDER BY t.fecha ASC, t.hora ASC;
+
+            """
 
     SQL_UPDATE_ESTADO = """
         UPDATE turnos 

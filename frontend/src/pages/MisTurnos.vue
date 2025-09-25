@@ -39,8 +39,8 @@
           v-for="t in storeTurno.turnosFiltrados"
           :key="t.id"
           :turno="t"
+          :roleUser="'cliente'"
           @cancelar="cancelar"
-          @confirmar="confirmar"
         />
       </div>
 
@@ -85,16 +85,5 @@ async function cancelar(id: number) {
   }).catch((error) => {
     console.error("Error al cancelar el turno", error)
   })
-}
-
-function confirmar(id: number) {
-
-  const response = TurnoService.confirm(id).then(() => {
-    storeTurno.fetchTurnos(storeAuth.user!.id)
-  }).catch((error) => {
-    console.error("Error al confirmar el turno", error)
-  })
-
-  console.log("Confirmar turno", id)
 }
 </script>

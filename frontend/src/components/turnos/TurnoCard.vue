@@ -45,29 +45,32 @@
           >
             <XCircle class="w-4 h-4 mr-1" /> Cancelar
           </Button>
+        </template>
+        
+        <template v-if="accionVisible && roleUser === 'admin'">
+
           <Button
             class="h-8 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
             @click.stop="onConfirmar"
           >
             <Check class="w-4 h-4 mr-1" /> Confirmar
           </Button>
-        </template>
-
-        <template v-if="accionVisible && roleUser === 'admin'">
-
-          <Button
-            class="h-8 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
-            @click.stop="onCompletar"
-          >
-            <Check class="w-4 h-4 mr-1" /> Completar
-          </Button>
-
                     <Button
             variant="outline"
             class="h-8 rounded-lg border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
             @click.stop="onCancelar"
-          >
+            >
             <XCircle class="w-4 h-4 mr-1" /> Cancelar
+          </Button>
+        </template>
+
+        <template v-if="accionVisibleCompletar && roleUser === 'admin'">
+                    
+          <Button
+          class="h-8 rounded-lg bg-blue-500 hover:bg-blue-600 text-white"
+            @click.stop="onCompletar"
+            >
+            <Check class="w-4 h-4 mr-1" /> Completar
           </Button>
         </template>
 
@@ -210,7 +213,7 @@ const mascotaNombre = (props.turno as any)?.mascota?.nombre ?? '—'
 const baseAccionVisible = computed(() => props.turno.estado === 'Pendiente')
 const localForcedHidden = ref(false)
 const accionVisible = computed(() => baseAccionVisible.value && !localForcedHidden.value)
-const acconVisibleAdmin = computed(() => props.turno.estado === 'Confirmado' && !localForcedHidden.value)
+const accionVisibleCompletar = computed(() => props.turno.estado === 'Confirmado' && !localForcedHidden.value)
 watch(baseAccionVisible, (v) => { if (!v) localForcedHidden.value = false })
 
 function estadoLabel(e: Turno['estado']) {

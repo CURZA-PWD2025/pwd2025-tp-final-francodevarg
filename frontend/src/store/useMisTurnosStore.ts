@@ -59,5 +59,12 @@ export const useMisTurnos = defineStore('misTurnos', {
         this.loading = false
       }
     },
+
+    clearTurnos() {
+      this.turnos = []
+      this.filtroEstado = 'todos'
+      this.loading = false
+      this.error = null
+    }
   },
 })
