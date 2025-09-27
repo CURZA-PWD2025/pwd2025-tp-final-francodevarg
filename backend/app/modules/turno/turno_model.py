@@ -1,5 +1,7 @@
-from typing import TYPE_CHECKING
 from app.database.connect_db import ConnectDB
+from app.modules.mascota.mascota_model import MascotaModel
+from app.modules.veterinario.veterinario_model import VeterinarioModel
+
 
 class TurnoModel:
     SQL_INSERT = """
@@ -27,14 +29,12 @@ class TurnoModel:
         ORDER BY t.fecha ASC, t.hora ASC;
 
             """
-
     SQL_UPDATE_ESTADO = """
         UPDATE turnos 
         SET estado = %s
         WHERE id = %s
     """
-
-    SQL_SELECT_BY_FECHA = """
+    SQL_SELECT_TURNOS_HOY = """
         SELECT 
             t.id AS turno_id, t.fecha, t.hora, t.estado, t.motivo,
             m.id AS mascota_id, m.nombre AS mascota_nombre, m.especie AS mascota_especie,
@@ -42,10 +42,11 @@ class TurnoModel:
         FROM turnos t
         INNER JOIN mascotas m ON m.id = t.mascota_id
         INNER JOIN veterinarios v ON v.id = t.veterinario_id
-        WHERE t.fecha = %s
+        WHERE t.fecha = CONVERT_TZ(CURDATE(), 'UTC', 'America/Argentina/Buenos_Aires')
+        AND TIMESTAMP(t.fecha, t.hora) >= CONVERT_TZ(NOW(), 'UTC', 'America/Argentina/Buenos_Aires')
         ORDER BY t.hora ASC
     """
-
+    
     def __init__(
         self,
         mascota: "MascotaModel",
@@ -88,8 +89,6 @@ class TurnoModel:
     
     @staticmethod
     def get_by_user(user_id: int) -> list[dict]:
-        from app.modules.mascota.mascota_model import MascotaModel
-        from app.modules.veterinario.veterinario_model import VeterinarioModel
         rows = ConnectDB.read(TurnoModel.SQL_SELECT_BY_USER, (user_id,))
         if not rows:
             return []
@@ -125,18 +124,8 @@ class TurnoModel:
         return bool(updated)
     
     @staticmethod
-    def get_by_fecha(fecha_str: str) -> list[dict]:
-        from datetime import datetime
-        from app.modules.mascota.mascota_model import MascotaModel
-        from app.modules.veterinario.veterinario_model import VeterinarioModel
-
-        # convertir string DD-MM-YYYY a objeto date
-        try:
-            fecha = datetime.strptime(fecha_str, "%d-%m-%Y").date()
-        except ValueError:
-            return []
-
-        rows = ConnectDB.read(TurnoModel.SQL_SELECT_BY_FECHA, (fecha,))
+    def get_turnos_today() -> list[dict]:
+        rows = ConnectDB.read(TurnoModel.SQL_SELECT_TURNOS_HOY, ())
         if not rows:
             return []
 

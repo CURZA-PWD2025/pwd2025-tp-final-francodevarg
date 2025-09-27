@@ -1,5 +1,4 @@
 from app.modules.turno.turno_model import TurnoModel
-from app.modules.turno.turno_model import TurnoModel
 from app.modules.veterinario.veterinario_model import VeterinarioModel
 from app.modules.mascota.mascota_model import MascotaModel
 
@@ -97,14 +96,14 @@ class TurnoController:
         return {"mensaje": "Turno cancelado correctamente"}, 200
     
     @staticmethod
-    def get_by_fecha(fecha_str: str):
+    def get_turnos_today():
         try:
-            turnos = TurnoModel.get_by_fecha(fecha_str)
+            turnos = TurnoModel.get_turnos_today()
 
             if not turnos:
-                return {"mensaje": "No hay turnos en esa fecha"}, 404
+                return {"mensaje": "No hay turnos para la fecha de hoy."}, 400
 
             result = [t for t in turnos]
             return result, 200
-        except ValueError:
-            return {"error": "Formato de fecha inválido, use DD-MM-YYYY"}, 400
+        except Exception as e:
+            return {"error": str(e)}, 400

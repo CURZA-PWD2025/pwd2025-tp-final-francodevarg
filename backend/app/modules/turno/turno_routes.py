@@ -39,8 +39,8 @@ def confirmar_turno(turno_id):
     return jsonify(response), status    
 
 
-@turno_bp.route("/fecha/<string:fecha>", methods=["GET"])
+@turno_bp.route("/fechahoy", methods=["GET"])
 @role_required('admin')
-def get_turnos_by_fecha(fecha):
-    response,status = TurnoController.get_by_fecha(fecha)
+def get_turnos_by_fecha():
+    response,status = TurnoController.get_turnos_today()
     return jsonify(response), status    
