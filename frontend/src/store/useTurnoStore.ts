@@ -11,8 +11,8 @@ interface HorarioDisponible {
 }
 
 const initialTurno: Turno = {
-  veterinario_id: null,
-  mascota_id: null,
+  veterinario_id: 0,
+  mascota_id: 0,
   fecha: '',
   hora: '',
   motivo: '',

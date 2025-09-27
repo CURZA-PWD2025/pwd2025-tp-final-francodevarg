@@ -36,13 +36,13 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
     value: veterinario_id,
     errorMessage: veterinarioIdError,
     meta: veterinarioIdMeta
-  } = useField<Number>('veterinario_id')
+  } = useField<number>('veterinario_id')
 
   const {
     value: mascota_id,
     errorMessage: mascotaIdError,
     meta: mascotaIdMeta
-  } = useField<Number>('mascota_id')
+  } = useField<number>('mascota_id')
 
   const {
     value: fecha,
@@ -123,13 +123,15 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
     setFieldTouched('motivo', true)
     setFieldTouched('mascota_id', true)
 
-    const motivoValido = await validateField('motivo')
-    const mascotaValida = await validateField('mascota_id')
+    const motivoResult = await validateField('motivo')
+    const mascotaResult = await validateField('mascota_id')
 
-    if (!motivoValido || !mascotaValida) return null
+    if (!motivoResult.valid || !mascotaResult.valid) {
+      return null
+    }
 
     const payload: Partial<Turno> = {
-      mascota_id: Number(mascota_id.value),
+      mascota_id: Number(mascota_id.value) || 0,
       motivo: motivo.value,
       estado: "Pendiente"
     }
@@ -151,8 +153,8 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
     }
 
     const payload: Turno = {
-      veterinario_id: Number(veterinario_id.value) || null,
-      mascota_id: Number(mascota_id.value) || null,
+      veterinario_id: Number(veterinario_id.value) || 0,
+      mascota_id: Number(mascota_id.value) || 0,
       fecha: fecha.value?.toString() ?? '',
       hora: hora.value,
       motivo: motivo.value,

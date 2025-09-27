@@ -1,15 +1,23 @@
 import { z } from 'zod'
 import type { DateValue } from '@internationalized/date'
 
+
+const toSafeNumber = (v: unknown) => {
+  if (v === "" || v === null || v === undefined) return 0;
+  const n = Number(v as any);
+  return Number.isFinite(n) ? n : 0;
+};
+
+
 export const makeTurnoFormSchema = () =>
   z.object({
     veterinario_id: z.preprocess(
-      (val) => Number(val),
-      z.number().min(1, 'Seleccioná un veterinario')
+      toSafeNumber,
+      z.number().int().min(1, { message: "Debe seleccionar un veterinario" })
     ),
     mascota_id: z.preprocess(
-      (val) => Number(val),
-      z.number().min(1, 'Seleccioná una mascota')
+      toSafeNumber,
+      z.number().int().min(1, { message: "Debe seleccionar una mascota" })
     ),
     fecha: z.any().refine(
       (val): val is DateValue =>
