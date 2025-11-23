@@ -1,30 +1,18 @@
 import { ref, computed } from 'vue'
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import { z } from 'zod'
 import { useAuthStore } from '@/store/useAuthStore'
 import type { AuthFormValues } from '@/types/Auth'
+import { loginSchema, registerSchema } from '@/schemas/authFormSchema'
 
 export function useAuthForm(emit: (event: 'success', user: any) => void) {
   const authStore = useAuthStore()
-  const mode = ref<'login' | 'register'>('login')
+  const selectedSchema = ref<'login' | 'register'>('login')
   const backendError = ref<string | null>(null)
 
-  const loginSchema = z.object({
-    email: z.string().email('Email inválido'),
-    password: z.string().min(4, 'La contraseña debe tener al menos 4 caracteres')
-  })
-
-  const registerSchema = loginSchema.extend({
-    nombre: z.string().min(1, 'Nombre requerido'),
-    passwordConfirm: z.string().min(4, 'Confirmación requerida')
-  }).refine((data) => data.password === data.passwordConfirm, {
-    message: 'Las contraseñas no coinciden',
-    path: ['passwordConfirm']
-  })
-
-  const schema = computed(() =>
-    mode.value === 'login'
+  //Selected by User
+  const currentSchema = computed(() =>
+    selectedSchema.value === 'login'
       ? toTypedSchema(loginSchema)
       : toTypedSchema(registerSchema)
   )
@@ -37,7 +25,7 @@ export function useAuthForm(emit: (event: 'success', user: any) => void) {
   }
 
   const { handleSubmit, errors, values, resetForm } = useForm<AuthFormValues>({
-    validationSchema: schema,
+    validationSchema: currentSchema,
     initialValues,
     validateOnBlur: true,
     validateOnChange: true,
@@ -49,18 +37,17 @@ export function useAuthForm(emit: (event: 'success', user: any) => void) {
   const onSubmit = handleSubmit(async (formValues) => {
     backendError.value = null
     try {
-      if (mode.value === 'login') {
+      if (selectedSchema.value === 'login') {
         await authStore.login(formValues.email, formValues.password)
-      } else { // mode.value === 'register'
+      } else { // selectedSchema.value === 'register'
         //Solo registro usuarios tipo clientes
-        await authStore.register(
+        await authStore.registerClient(
           formValues.email,
           formValues.nombre,
-          formValues.password,
-          'cliente'
+          formValues.password
         )
       }
-      emit('success', authStore.user)
+      emit('success', authStore.getUser)
       resetForm({ values: initialValues })
     } catch (err: any) {
       console.log("err", err)
@@ -76,12 +63,12 @@ export function useAuthForm(emit: (event: 'success', user: any) => void) {
   const isFormValid = computed(() => Object.keys(errors.value).length === 0)
 
   function toggleMode() {
-    mode.value = mode.value === 'login' ? 'register' : 'login'
+    selectedSchema.value = selectedSchema.value === 'login' ? 'register' : 'login'
     resetForm({ values: initialValues })
   }
 
   return {
-    mode,
+    selectedSchema,
     values,
     errors,
     backendError,

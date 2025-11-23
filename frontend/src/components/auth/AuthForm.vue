@@ -7,19 +7,19 @@ import { useAuthForm } from '@/composables/useAuthForm'
 
 const emit = defineEmits(['success'])
 
-const { mode, backendError, isFormValid, onSubmit, toggleMode } = useAuthForm(emit)
+const { selectedSchema, backendError, isFormValid, onSubmit, toggleMode } = useAuthForm(emit)
 </script>
 
 <template>
   <AuthCard
-    :title="mode === 'login' ? 'Iniciar sesión' : 'Registrarse'"
-    :subtitle="mode === 'login'
+    :title="selectedSchema === 'login' ? 'Iniciar sesión' : 'Registrarse'"
+    :subtitle="selectedSchema === 'login'
       ? 'Ingresá tus credenciales para continuar'
       : 'Completá tus datos para crear una cuenta'"
   >
     <form @submit.prevent="onSubmit" class="space-y-5">
       <AuthInput
-        v-if="mode === 'register'"
+        v-if="selectedSchema === 'register'"
         id="nombre"
         name="nombre"
         label="Nombre"
@@ -45,7 +45,7 @@ const { mode, backendError, isFormValid, onSubmit, toggleMode } = useAuthForm(em
       />
 
       <AuthInput
-        v-if="mode === 'register'"
+        v-if="selectedSchema === 'register'"
         id="passwordConfirm"
         name="passwordConfirm"
         label="Confirmar contraseña"
@@ -74,22 +74,22 @@ const { mode, backendError, isFormValid, onSubmit, toggleMode } = useAuthForm(em
 
       <div class="space-y-3">
         <Button
-          type="submit"
+          type="submit" 
           class="login-btn w-full"
           :disabled="!isFormValid"
         >
           <Loader2 v-if="false" class="mr-2 h-4 w-4 animate-spin" />
-          {{ mode === 'login' ? 'Iniciar sesión' : 'Registrarse' }}
+          {{ selectedSchema === 'login' ? 'Iniciar sesión' : 'Registrarse' }}
         </Button>
 
         <p class="text-center text-sm text-slate-600">
-          {{ mode === 'login' ? '¿No tenés cuenta?' : '¿Ya tenés cuenta?' }}
+          {{ selectedSchema === 'login' ? '¿No tenés cuenta?' : '¿Ya tenés cuenta?' }}
           <button
             type="button"
             class="font-medium text-teal-700 hover:text-teal-800 underline-offset-4 hover:underline focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500 rounded-sm"
             @click="toggleMode"
           >
-            {{ mode === 'login' ? 'Registrate' : 'Iniciá sesión' }}
+            {{ selectedSchema === 'login' ? 'Registrate' : 'Iniciá sesión' }}
           </button>
         </p>
       </div>

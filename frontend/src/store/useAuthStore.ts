@@ -125,8 +125,8 @@ export const useAuthStore = defineStore('auth', {
       await this.loadUserData()
     },
 
-    async register(email: string, nombre: string, password: string, tipo: 'cliente' | 'admin' = 'cliente') {
-      const data = await AuthService.register({ email, nombre, password, tipo })
+    async registerClient(email: string, nombre: string, password: string) {
+      const data = await AuthService.register({ email, nombre, password, tipo: "cliente" })
 
       this.setUserFromResponse(data)
       this.setAuthToken(data.token)
@@ -182,5 +182,10 @@ export const useAuthStore = defineStore('auth', {
         this.clearAuthState()
       }
     }
+  },
+  getters: {
+    isAuthenticated: (state) => !!state.token,
+    getUser: (state) => state.user,
+    getToken: (state) => state.token
   }
 })
