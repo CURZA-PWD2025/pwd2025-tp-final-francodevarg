@@ -13,18 +13,22 @@ class AuthService {
     return data
   }
 
-  async logout(token:string): Promise<AxiosResponse<{ message: string }>>{
-    return await axios.post('auth/logout',null,{
+  async logout(token: string): Promise<AxiosResponse<{ message: string }>> {
+    return await axios.post('auth/logout', null, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     })
   }
 
-  async profile(): Promise<Usuario> {
-    const { data } = await axios.get<Usuario>('auth/profile')
-    return data
-  }
+  // async profile(): Promise<Usuario> {
+  //   const { data } = await axios.get<Usuario>('auth/profile', {
+  //     headers: {
+  //       Authorization: `Bearer ${this.token}`
+  //     }
+  //   })
+  //   return data
+  // }
 
 }
 

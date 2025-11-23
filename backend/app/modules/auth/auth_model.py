@@ -18,7 +18,10 @@ class AuthModel:
 
         jwt = create_access_token(
             identity=usuario.email,
-            additional_claims={'tipo': usuario.tipo, 'user_id': usuario.id}
+            additional_claims={'tipo': usuario.tipo, 
+            'user_id': usuario.id,
+            'nombre': usuario.nombre,
+            'email': usuario.email}
         )
         return {
             **usuario.serializar(),

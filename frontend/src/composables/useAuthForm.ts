@@ -9,7 +9,7 @@ export function useAuthForm(emit: (event: 'success', user: any) => void) {
   const authStore = useAuthStore()
   const mode = ref<'login' | 'register'>('login')
   const backendError = ref<string | null>(null)
-  
+
   const loginSchema = z.object({
     email: z.string().email('Email inválido'),
     password: z.string().min(4, 'La contraseña debe tener al menos 4 caracteres')
@@ -46,30 +46,31 @@ export function useAuthForm(emit: (event: 'success', user: any) => void) {
   })
 
   // Submit
-    const onSubmit = handleSubmit(async (formValues) => {
+  const onSubmit = handleSubmit(async (formValues) => {
     backendError.value = null
     try {
-        if (mode.value === 'login') {
+      if (mode.value === 'login') {
         await authStore.login(formValues.email, formValues.password)
-        } else {
+      } else { // mode.value === 'register'
+        //Solo registro usuarios tipo clientes
         await authStore.register(
-            formValues.email,
-            formValues.nombre,
-            formValues.password,
-            'cliente'
+          formValues.email,
+          formValues.nombre,
+          formValues.password,
+          'cliente'
         )
-        }
-        emit('success', authStore.user)
-        resetForm({ values: initialValues })
+      }
+      emit('success', authStore.user)
+      resetForm({ values: initialValues })
     } catch (err: any) {
-        console.log("err",err);
-        if (err?.response?.data?.mensaje) {
+      console.log("err", err)
+      if (err?.response?.data?.mensaje) {
         backendError.value = err.response.data.mensaje
-        } else {
+      } else {
         backendError.value = 'Ocurrió un error inesperado. Intentalo más tarde.'
-        }
+      }
     }
-    })
+  })
 
 
   const isFormValid = computed(() => Object.keys(errors.value).length === 0)

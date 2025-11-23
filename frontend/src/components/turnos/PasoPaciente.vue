@@ -136,9 +136,7 @@ import { storeToRefs } from 'pinia'
 import HeaderPaciente from './HeaderPaciente.vue'
 import AuthForm from '@/components/auth/AuthForm.vue'
 import MascotaSelect from '@/components/mascotas/MascotaSelect.vue'
-
 import { useTurnoStore } from '@/store/useTurnoStore'
-import { useAuthEffects } from '@/composables/useAuthEffects'
 import { useAuthStore } from '@/store/useAuthStore'
 import type { Mascota } from '@/types/Mascota'
 
@@ -155,7 +153,6 @@ import {
 
 const emit = defineEmits<{ (e: 'prev'): void; (e: 'next'): void }>()
 
-useAuthEffects()
 
 import { useTurnoForm } from '@/composables/useTurnoForm'
 const { motivo, motivoError, mascota_id, mascotaIdError, submitStep2 } = useTurnoForm()
@@ -203,7 +200,7 @@ onMounted(() => {
 onBeforeUnmount(stopCountdown)
 
 function onLoginSuccess() {
-  // useAuthEffects refresca el estado automáticamente
+  // Los datos se cargan automáticamente después del login
   // Si después del login no es cliente, disparar cuenta regresiva:
   if (user.value && !isCliente.value) startCountdown()
 }

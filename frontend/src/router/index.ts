@@ -66,20 +66,20 @@ const router = createRouter({
 })
 
 // Guard global
-router.beforeEach((to, _from, next) => {
+router.beforeEach(async (to, _from, next) => {
   const authStore = useAuthStore()
 
-  // restaurar sesión en caso de refresh
+  // Restaurar sesión si hay token pero no hay usuario
   if (!authStore.user && localStorage.getItem('token')) {
-    authStore.restoreSession()
+    await authStore.restoreSession()
   }
 
   // rutas públicas -> libre acceso
   if (to.meta.public) {
     // si ya está logueado, no dejar ir a login
-    if (to.name === 'login' && authStore.user) {
+    if (to.name === 'iniciar-sesion' && authStore.user) {
       return authStore.user.tipo === 'admin'
-        ? next({ name: 'admin' })
+        ? next({ name: 'administracion' })
         : next({ name: 'mis-turnos' })
     }
     return next()
@@ -87,14 +87,14 @@ router.beforeEach((to, _from, next) => {
 
   // rutas protegidas
   if (to.meta.requiresAuth && !authStore.user) {
-    return next({ name: 'login' })
+    return next({ name: 'iniciar-sesion' })
   }
 
   if (to.meta.role && authStore.user?.tipo !== to.meta.role) {
     return next(
       authStore.user?.tipo === 'admin'
-        ? { name: 'admin' }
-        : { name: 'agendar-turnos' }
+        ? { name: 'administracion' }
+        : { name: 'agendar-turno' }
     )
   }
 
