@@ -1,5 +1,4 @@
 <template>
-  <div class="min-h-[calc(100vh-64px)] bg-gradient-to-b from-emerald-50/60 via-white to-white">
     <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
       <!-- Header -->
       <header class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -51,7 +50,6 @@
         No hay turnos para el filtro seleccionado.
       </div>
     </div>
-  </div>
 </template>
 
 <script setup lang="ts">
@@ -70,7 +68,7 @@ const storeAuth = useAuthStore()
 const filtro = ref(storeTurno.filtroEstado)
 
 onMounted(() => {
-  if (!storeTurno.turnos.length) storeTurno.fetchTurnos(storeAuth.user!.id)
+  storeTurno.fetchTurnos(storeAuth.user!.id)
 })
 
 function onFiltroChange(val: typeof storeTurno.filtroEstado) {

@@ -1,5 +1,4 @@
 <template>
-  <div class="min-h-[calc(100vh-64px)] bg-gradient-to-b from-emerald-50/60 via-white to-white">
     <div class="mx-auto max-w-5xl px-4 py-8 sm:px-6 lg:px-8">
     <header class="flex justify-between items-center mb-6">
       <h1 class="text-2xl font-bold text-emerald-700 flex items-center gap-2">
@@ -36,7 +35,6 @@
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
-  </div>
   </div>
 </template>
 
