@@ -1,15 +1,14 @@
 import { instance as axios } from '@/plugins/axios'
-import type { AuthResponse, LoginCredentials, RegisterCredentials } from '@/types/Auth'
-import type { Usuario } from '@/types/Usuario'
+import type { AuthPayload, LoginCredentials, RegisterCredentials } from '@/types/Auth'
 import type { AxiosResponse } from 'axios'
 
 class AuthService {
-  async login(credentials: LoginCredentials): Promise<AuthResponse> {
+  async login(credentials: LoginCredentials): Promise<AuthPayload> {
     return (await axios.post('auth/login', credentials)).data
   }
 
-  async register(credentials: RegisterCredentials): Promise<AuthResponse> {
-    const { data } = await axios.post<AuthResponse>('auth/register', credentials)
+  async register(credentials: RegisterCredentials): Promise<AuthPayload> {
+    const { data } = await axios.post<AuthPayload>('auth/register', credentials)
     return data
   }
 

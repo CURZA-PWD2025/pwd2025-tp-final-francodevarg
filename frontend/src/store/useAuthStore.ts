@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { instance as axios } from '@/plugins/axios'
 import AuthService from '@/services/AuthService'
-import type { AuthResponse } from '@/types/Auth'
+import type { AuthPayload } from '@/types/Auth'
 import type { Usuario } from '@/types/Usuario'
 
 // Helper para decodificar JWT
@@ -101,7 +101,7 @@ export const useAuthStore = defineStore('auth', {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
     },
 
-    setUserFromResponse(data: AuthResponse) {
+    setUserFromResponse(data: AuthPayload) {
       this.user = {
         id: data.id,
         nombre: data.nombre,

@@ -2,7 +2,7 @@ import { createRouter, createWebHistory, type RouteRecordRaw } from 'vue-router'
 import { useAuthStore } from '@/store/useAuthStore'
 
 // Páginas
-const PaginaLogin = () => import('@/pages/Login.vue')
+const PaginaAutenticarUsuario = () => import('@/pages/AuthPage.vue')
 const PaginaAgendarTurno = () => import('@/pages/AgendarTurno.vue')
 const PaginaMisTurnos = () => import('@/pages/MisTurnos.vue')
 const PaginaAdmin = () => import('@/pages/Admin.vue')
@@ -18,9 +18,9 @@ const routes: RouteRecordRaw[] = [
     meta: { public: true }
   },
   {
-    path: '/login',
+    path: '/auth',
     name: 'iniciar-sesion',
-    component: PaginaLogin,
+    component: PaginaAutenticarUsuario,
     meta: { public: true }
   },
   {

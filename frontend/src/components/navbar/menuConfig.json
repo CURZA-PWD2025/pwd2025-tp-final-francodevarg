@@ -10,7 +10,7 @@
       "id": "iniciar-sesion",
       "label": "Iniciar Sesión",
       "icon": "LogInIcon",
-      "route": "/login"
+      "route": "/auth"
     }
   ],
   "admin": [

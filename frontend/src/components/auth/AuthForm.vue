@@ -4,8 +4,11 @@ import { Button } from '@/components/ui/button'
 import AuthCard from './AuthCard.vue'
 import AuthInput from './AuthInput.vue'
 import { useAuthForm } from '@/composables/useAuthForm'
+import type { Usuario } from '@/types/Usuario'
 
-const emit = defineEmits(['success'])
+const emit = defineEmits<{
+  (e: 'success', user: Usuario | null): void
+}>()
 
 const { selectedSchema, backendError, isFormValid, onSubmit, toggleMode } = useAuthForm(emit)
 </script>
