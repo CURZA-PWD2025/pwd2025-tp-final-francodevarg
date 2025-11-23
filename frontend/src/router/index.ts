@@ -9,6 +9,7 @@ const PaginaAdmin = () => import('@/pages/Admin.vue')
 const PaginaTurnosDia = () => import('@/pages/TurnosDia.vue')
 const PaginaPerfil = () => import('@/pages/Perfil.vue')
 const PaginaMascotas = () => import('@/pages/Mascotas.vue')
+const PaginaNoEncontrada = () => import('@/pages/NotFound.vue')
 
 const routes: RouteRecordRaw[] = [
   {
@@ -55,7 +56,8 @@ const routes: RouteRecordRaw[] = [
   },
   {
     path: '/:pathMatch(.*)*',
-    redirect: { name: 'agendar-turno' }
+    name: 'not-found',
+    component: PaginaNoEncontrada
   }
 ]
 
