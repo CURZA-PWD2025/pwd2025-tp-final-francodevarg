@@ -62,26 +62,34 @@ import { CalendarDays, CalendarX } from 'lucide-vue-next'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useAuthStore } from '@/store/useAuthStore'
 import TurnoService from '@/services/TurnoService'
+import type { FiltroTurno } from '@/types/Turno'
+import type { AcceptableValue } from 'reka-ui'
 
 const storeTurno = useMisTurnos()
 const storeAuth = useAuthStore()
-const filtro = ref(storeTurno.filtroEstado)
+const filtro = ref<AcceptableValue>("todos")
+
+function onFiltroChange(val: AcceptableValue) {
+  if (val === undefined) return
+
+  let filtro: FiltroTurno = val as FiltroTurno
+  storeTurno.setFiltro(filtro)
+}
 
 onMounted(() => {
   storeTurno.fetchTurnos(storeAuth.user!.id)
 })
 
-function onFiltroChange(val: typeof storeTurno.filtroEstado) {
-  storeTurno.setFiltro(val)
-}
 
 async function cancelar(id: number) {
   console.log("Cancelar turno", id)
 
-  const response = TurnoService.cancel(id).then(() => {
-    storeTurno.fetchTurnos(storeAuth.user!.id)
-  }).catch((error) => {
-    console.error("Error al cancelar el turno", error)
-  })
+  TurnoService.cancel(id)
+    .then(() => {
+      storeTurno.fetchTurnos(storeAuth.user!.id)
+    })
+    .catch((error) => {
+      console.error("Error al cancelar el turno", error)
+    })
 }
 </script>

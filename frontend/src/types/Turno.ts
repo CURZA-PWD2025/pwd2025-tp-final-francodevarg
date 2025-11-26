@@ -1,4 +1,6 @@
 export type EstadoTurno = 'Pendiente' | 'Confirmado' | 'Cancelado'
+export type FiltroTurno = 'todos' | EstadoTurno
+
 
 export interface Turno {
   id?: number

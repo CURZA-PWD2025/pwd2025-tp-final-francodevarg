@@ -45,7 +45,7 @@ import { CalendarDays, CalendarX } from 'lucide-vue-next'
 import TurnoService from '@/services/TurnoService'
 
 const storeTurno = useMisTurnos()
-const filtro = ref(storeTurno.filtroEstado)
+ref(storeTurno.filtroEstado)
 
 onMounted(() => {
   if (!storeTurno.turnos.length) storeTurno.fetchTurnosByFecha()
@@ -53,7 +53,7 @@ onMounted(() => {
 
 
 function completar(id: number) {
-  const response = TurnoService.complete(id).then(() => {
+  TurnoService.complete(id).then(() => {
     storeTurno.fetchTurnosByFecha()
   }).catch((error) => {
     console.error("Error al confirmar el turno", error)
@@ -64,7 +64,7 @@ function completar(id: number) {
 
 
 function cancelar(id: number) {
-  const response = TurnoService.cancel(id).then(() => {
+  TurnoService.cancel(id).then(() => {
     storeTurno.fetchTurnosByFecha()
   }).catch((error) => {
     console.error("Error al confirmar el turno", error)
@@ -74,7 +74,7 @@ function cancelar(id: number) {
 }
 
 function confirmar(id: number) {
-  const response = TurnoService.confirm(id).then(() => {
+  TurnoService.confirm(id).then(() => {
     storeTurno.fetchTurnosByFecha()
   }).catch((error) => {
     console.error("Error al confirmar el turno", error)

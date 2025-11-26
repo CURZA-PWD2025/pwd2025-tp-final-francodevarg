@@ -1,5 +1,5 @@
 <template>
-  <FormField name="veterinario_id" v-slot="{ componentField }">
+  <FormField name="veterinario_id">
     <FormItem>
       <FormLabel><User class="mr-2 h-4 w-4" />
         Veterinario *</FormLabel>
@@ -64,12 +64,12 @@ const emit = defineEmits<{
   (e: 'seleccionar', id: number | null): void
 }>()
 
-const props = defineProps<{
+  defineProps<{
   modelValue: number | null
 }>()
 
-function onChange(val: string | undefined) {
-  const num = val ? parseInt(val) : null
+function onChange(val: unknown) {
+  const num = (typeof val === 'string' || typeof val === 'number') ? Number(val) : null
   emit('update:modelValue', num)
   emit('seleccionar', num)
 }

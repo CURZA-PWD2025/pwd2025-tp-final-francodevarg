@@ -7,6 +7,11 @@ export interface Horario {
   disponible?: boolean
 }
 
+export interface HorariosSelect {
+  hora: string
+  disponible: boolean
+}
+
 export interface HorarioDisponible extends Horario {
   disponible: boolean
 }

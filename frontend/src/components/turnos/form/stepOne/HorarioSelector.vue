@@ -35,11 +35,11 @@
   import { Clock } from 'lucide-vue-next';
   import Button from '@/components/ui/button/Button.vue';
   import { cn } from '@/lib/utils';
-  import type { HorarioDisponible } from '@/types/Veterinario';
+  import type { HorariosSelect } from '@/types/Veterinario';
 
   const props = defineProps<{
     modelValue: string
-    horarios: HorarioDisponible[]
+    horarios: HorariosSelect[]
     error?: string
   }>()
   defineEmits(['update:modelValue'])
@@ -49,7 +49,7 @@
     return h * 60 + m
   }
 
-  const horariosOrdenados = computed((): HorarioDisponible[] =>
+  const horariosOrdenados = computed((): HorariosSelect[] =>
     [...props.horarios].sort((a, b) => parseMinutes(a.hora) - parseMinutes(b.hora))
   )
   const hayDisponibles = computed(():boolean => props.horarios.some(h => h.disponible))

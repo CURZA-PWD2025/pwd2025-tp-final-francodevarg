@@ -28,7 +28,7 @@
   import menuConfig from './menuConfig.json'
 import { useAuthStore } from '@/store/useAuthStore';
   
-  const props = defineProps<{
+  defineProps<{
     currentPage: string
     isAdmin: Boolean ,
   }>()

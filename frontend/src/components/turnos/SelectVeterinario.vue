@@ -1,7 +1,7 @@
 <template>
     <div class="form-group">
       <label for="veterinario_id">Veterinario</label>
-      <select :value="modelValue" @change="$emit('update:modelValue', $event.target.value)" id="veterinario_id">
+      <select :value="modelValue" @change="handleChange" id="veterinario_id">
         <option value="">Selecciona un veterinario</option>
         <option v-for="vet in veterinarios" :key="vet.id" :value="vet.id.toString()">
           {{ vet.nombre }} - {{ vet.especialidad }}
@@ -17,6 +17,14 @@
     error?: string
     veterinarios: { id: number; nombre: string; especialidad: string }[]
   }>()
+  const emit = defineEmits<{
+    (e: 'update:modelValue', value: string): void
+  }>()
+
+  const handleChange = (event: Event) => {
+    const target = event.target as HTMLSelectElement
+    emit('update:modelValue', target.value)
+  }
   </script>
   
   <style scoped>

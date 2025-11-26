@@ -9,7 +9,17 @@ import type { Turno } from '@/types/Turno'
 // Gestiona y valida los campos del formulario de turno,
 // y si son válidos, guarda los datos tipados en el store (useTurnoStore).
 
-export function useTurnoForm(initialValues?: Partial<Turno>) {
+// Tipo para los valores iniciales del formulario
+type TurnoFormInitialValues = {
+  veterinario_id?: number | null
+  mascota_id?: number | null
+  fecha?: string | DateValue
+  hora?: string
+  motivo?: string
+  estado?: Turno['estado']
+}
+
+export function useTurnoForm(initialValues?: TurnoFormInitialValues) {
 
   function parseFechaInput(fecha: unknown): DateValue | null {
     if (typeof fecha === 'string') return parseDate(fecha)
@@ -141,7 +151,7 @@ export function useTurnoForm(initialValues?: Partial<Turno>) {
   // === Enviar ===
   async function validarYEnviarTurno(): Promise<Turno | null> {
     const { valid } = await validate()
-    console.log("valid",valid)
+    console.log("valid", valid)
     if (!valid) {
       setFieldTouched('veterinario_id', true)
       setFieldTouched('mascota_id', true)

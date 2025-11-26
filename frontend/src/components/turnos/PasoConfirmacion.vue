@@ -140,7 +140,6 @@ import {
   Calendar as CalendarIcon,
   CalendarDays,
   Check,
-  Clock,
   Dog,
   User,
   Stethoscope
