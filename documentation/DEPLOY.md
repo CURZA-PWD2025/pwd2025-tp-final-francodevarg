@@ -15,16 +15,20 @@
 - **Docker** >= v25.2.0
 - **Docker Compose** >= v2.25.2
 
-//TODO: en construcción
+1. Acceder al directorio del deploy:
+   ```bash
+   cd deploy
+   ```
 
-//TODO: en construcción
+2. Asignar permisos al script:
+   ```bash
+   chmod +x deploy.sh
+   ```
 
-//TODO: en construcción
-
-//TODO: en construcción
-
-//TODO: en construcción
-
+3. Ejecutar el despliegue:
+   ```bash
+   ./deploy.sh
+   ```
 
 
 ## **Despliegue Manual**

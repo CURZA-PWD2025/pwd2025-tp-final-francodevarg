@@ -10,19 +10,6 @@ Este proyecto corresponde al trabajo final de la asignatura **Programación Web 
 
 La aplicación desarrollada es un **Sistema de Gestión de Turnos para una Veterinaria**, cuyo objetivo es facilitar la organización y administración de citas entre los clientes, sus mascotas y los veterinarios.
 
-## ✨ Casos de Uso
-
-- **Gestión de Clientes**
-   Los Usuarios Cliente se registran para obtener un Turno.
-
-- **Gestión de Turnos**
-   Los Usuarios Cliente pueden consultar, agendar y cancelar Turnos.
-
-- **Gestión de Mascotas**
-   Los Usuarios Cliente pueden registrar las Mascotas asociando a cada una información relevante como nombre, especie, raza y edad.
-
-- **Gestión de Veterinarios**
-   Los Usuarios Admin pueden registrar los Veterinarios que prestan los servicios, con detalles sobre sus especialidades y Horarios de atención.
 
 ## 📚 Documentación
 
