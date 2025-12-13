@@ -84,14 +84,73 @@
         </ul>
       </section>
 
-      <!-- Selector de mascota -->
+      <!-- Selección o Creación de Mascota -->
       <section>
-        <h2 class="text-lg font-semibold text-slate-800 mb-2">Seleccioná tu mascota</h2>
-        <MascotaSelect
-          v-model="mascota_id"
-          @mascotaSeleccionada="setMascota"
-        />
-        <span v-if="mascotaIdError" class="text-sm text-red-500">{{ mascotaIdError }}</span>
+        <div v-if="hasMascotas">
+          <h2 class="text-lg font-semibold text-slate-800 mb-2">Seleccioná tu mascota</h2>
+          <MascotaSelect
+            v-model="mascota_id"
+            @mascotaSeleccionada="setMascota"
+          />
+          <span v-if="mascotaIdError" class="text-sm text-red-500">{{ mascotaIdError }}</span>
+        </div>
+
+        <!-- Formulario de creación de mascota si no hay mascotas registradas -->
+        <div v-else class="space-y-4 p-4 border rounded-md bg-slate-50">
+          <h2 class="text-lg font-semibold text-slate-800 mb-2">Registrá tu mascota</h2>
+          <p class="text-sm text-slate-600 mb-4">No tenés mascotas registradas. Completá los datos para continuar.</p>
+          
+          <div class="space-y-3">
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Nombre</label>
+              <input
+                v-model="newMascota.nombre"
+                type="text"
+                class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="Nombre de tu mascota"
+              />
+              <span v-if="errors.nombre" class="text-xs text-red-500">{{ errors.nombre }}</span>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Especie</label>
+                <select
+                  v-model="newMascota.especie"
+                  class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                >
+                  <option value="">Seleccionar...</option>
+                  <option value="Perro">Perro</option>
+                  <option value="Gato">Gato</option>
+                  <option value="Otro">Otro</option>
+                </select>
+                <span v-if="errors.especie" class="text-xs text-red-500">{{ errors.especie }}</span>
+              </div>
+              
+              <div>
+                <label class="block text-sm font-medium text-slate-700 mb-1">Edad (años)</label>
+                <input
+                  v-model.number="newMascota.edad"
+                  type="number"
+                  min="0"
+                  class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                />
+                <span v-if="errors.edad" class="text-xs text-red-500">{{ errors.edad }}</span>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-slate-700 mb-1">Raza</label>
+              <input
+                v-model="newMascota.raza"
+                type="text"
+                class="w-full border border-slate-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                placeholder="Ej: Caniche, Mestizo..."
+              />
+               <span v-if="errors.raza" class="text-xs text-red-500">{{ errors.raza }}</span>
+            </div>
+          </div>
+        </div>
       </section>
 
       <!-- Input motivo -->
@@ -121,8 +180,10 @@
         <button
           @click="submit"
           class="px-4 py-2 bg-emerald-500 text-white rounded hover:bg-green-700"
+          :disabled="isSubmitting"
         >
-          Siguiente
+          <span v-if="isSubmitting">Procesando...</span>
+          <span v-else>Siguiente</span>
         </button>
       </div>
     </div>
@@ -138,7 +199,9 @@ import AuthForm from '@/components/auth/AuthForm.vue'
 import MascotaSelect from '@/components/mascotas/MascotaSelect.vue'
 import { useTurnoStore } from '@/store/useTurnoStore'
 import { useAuthStore } from '@/store/useAuthStore'
+import { useMascotaStore } from '@/store/useMascotaStore'
 import type { Mascota } from '@/types/Mascota'
+import { useMascotaForm } from '@/composables/useMascotaForm'
 
 import {
   User,
@@ -153,19 +216,28 @@ import {
 
 const emit = defineEmits<{ (e: 'prev'): void; (e: 'next'): void }>()
 
-
 import { useTurnoForm } from '@/composables/useTurnoForm'
 const { motivo, motivoError, mascota_id, mascotaIdError, submitStep2 } = useTurnoForm()
 
+// Composable de Mascota
+const { newMascota, errors,isSubmitting, crearMascota } = useMascotaForm()
+
 const turnoStore = useTurnoStore()
 const authStore = useAuthStore()
+const mascotaStore = useMascotaStore()
 const router = useRouter()
 
 const { turno, mascota, veterinario } = storeToRefs(turnoStore)
 const { user } = storeToRefs(authStore)
+const { items: mascotas } = storeToRefs(mascotaStore)
 
 /** --- Guardia de rol --- */
 const isCliente = computed(() => user.value?.tipo === 'cliente')
+
+/** --- Lógica de Mascotas --- */
+const hasMascotas = computed(() => mascotas.value.length > 0)
+
+// Estado de carga local del componente (para el botón Siguiente)
 
 /** --- Redirección automática para no-cliente (admin, veterinario, etc.) --- */
 const countdown = ref(3)
@@ -212,15 +284,42 @@ function setMascota(mascotaemited: Mascota) {
 async function submit() {
   // Guardia adicional por si alguien manipula el DOM
   if (!isCliente.value) {
-    // feedback rápido; igual se redirige por el contador
     alert('Solo los clientes pueden solicitar un turno.')
     return
   }
 
-  const turnoFinal = await submitStep2()
-  if (turnoFinal) {
-    turnoStore.setTurnoDatos(turnoFinal)
-    emit('next')
+  isSubmitting.value = true
+  try {
+    // Si NO tiene mascotas, primero creamos la mascota
+    if (!hasMascotas.value) {
+      if (!user.value?.id) {
+         isSubmitting.value = false
+         return
+      }
+      
+      const createdMascota = await crearMascota(user.value.id)
+      if (!createdMascota) {
+        // Falló validación o creación
+        isSubmitting.value = false
+        return 
+      }
+
+      // Asignamos la nueva mascota al formulario
+      mascota_id.value = createdMascota.id || 0
+      mascota.value = createdMascota
+    }
+
+    // Proseguir con validación y envío (Step 2)
+    const turnoFinal = await submitStep2()
+    if (turnoFinal) {
+      turnoStore.setTurnoDatos(turnoFinal)
+      emit('next')
+    }
+    
+  } catch (e) {
+    console.error("Error en submit", e)
+  } finally {
+    isSubmitting.value = false
   }
 }
 </script>
