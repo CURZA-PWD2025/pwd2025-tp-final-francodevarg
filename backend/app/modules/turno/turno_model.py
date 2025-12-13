@@ -34,7 +34,7 @@ class TurnoModel:
         SET estado = %s
         WHERE id = %s
     """
-    SQL_SELECT_TURNOS_HOY = """
+    SQL_SELECT_BY_DATE_RANGE = """
         SELECT 
             t.id AS turno_id, t.fecha, t.hora, t.estado, t.motivo,
             m.id AS mascota_id, m.nombre AS mascota_nombre, m.especie AS mascota_especie,
@@ -42,9 +42,8 @@ class TurnoModel:
         FROM turnos t
         INNER JOIN mascotas m ON m.id = t.mascota_id
         INNER JOIN veterinarios v ON v.id = t.veterinario_id
-        WHERE t.fecha = CONVERT_TZ(CURDATE(), 'UTC', 'America/Argentina/Buenos_Aires')
-        AND TIMESTAMP(t.fecha, t.hora) >= CONVERT_TZ(NOW(), 'UTC', 'America/Argentina/Buenos_Aires')
-        ORDER BY t.hora ASC
+        WHERE t.fecha BETWEEN %s AND %s
+        ORDER BY t.fecha ASC, t.hora ASC
     """
     
     def __init__(
@@ -124,8 +123,8 @@ class TurnoModel:
         return bool(updated)
     
     @staticmethod
-    def get_turnos_today() -> list[dict]:
-        rows = ConnectDB.read(TurnoModel.SQL_SELECT_TURNOS_HOY, ())
+    def get_turnos_by_date_range(fecha_inicio: str, fecha_fin: str) -> list[dict]:
+        rows = ConnectDB.read(TurnoModel.SQL_SELECT_BY_DATE_RANGE, (fecha_inicio, fecha_fin))
         if not rows:
             return []
 

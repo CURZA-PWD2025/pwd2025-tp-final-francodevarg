@@ -39,8 +39,14 @@ def confirmar_turno(turno_id):
     return jsonify(response), status    
 
 
-@turno_bp.route("/fechahoy", methods=["GET"])
+@turno_bp.route("/veterinaria", methods=["GET"])
 @role_required('admin')
 def get_turnos_by_fecha():
-    response,status = TurnoController.get_turnos_today()
+    fecha_inicio = request.args.get('fecha_inicio')
+    fecha_fin = request.args.get('fecha_fin')
+
+    if not fecha_inicio or not fecha_fin:
+        return "Ambas fechas (inicio y fin) son obligatorias", 400
+
+    response,status = TurnoController.get_turnos_by_date_range(fecha_inicio, fecha_fin)
     return jsonify(response), status    

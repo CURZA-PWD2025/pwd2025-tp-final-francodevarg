@@ -96,12 +96,13 @@ class TurnoController:
         return {"mensaje": "Turno cancelado correctamente"}, 200
     
     @staticmethod
-    def get_turnos_today():
+    def get_turnos_by_date_range(fecha_inicio: str = None, fecha_fin: str = None):
         try:
-            turnos = TurnoModel.get_turnos_today()
+
+            turnos = TurnoModel.get_turnos_by_date_range(fecha_inicio, fecha_fin)
 
             if not turnos:
-                return {"mensaje": "No hay turnos para la fecha de hoy."}, 400
+                return {"mensaje": f"No hay turnos entre {fecha_inicio} y {fecha_fin}."}, 400
 
             result = [t for t in turnos]
             return result, 200
