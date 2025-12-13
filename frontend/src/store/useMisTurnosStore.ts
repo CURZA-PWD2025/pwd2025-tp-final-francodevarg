@@ -47,14 +47,15 @@ export const useMisTurnos = defineStore('misTurnos', {
       }
     },
 
-    async fetchTurnosByFecha() {
+    async fetchTurnosByFecha(fechaInicio?: string, fechaFin?: string) {
       this.loading = true
       this.error = null
       try {
-        const data = await TurnoService.getByFechaHoy()
+        const data = await TurnoService.getByDateRange(fechaInicio, fechaFin)
         this.turnos = data
       } catch (err: any) {
         this.error = err.message || 'Error cargando turnos'
+        this.turnos = []
       } finally {
         this.loading = false
       }

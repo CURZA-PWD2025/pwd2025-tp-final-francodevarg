@@ -14,9 +14,19 @@ export default {
     return res.data
   },
 
-  async getByFechaHoy(): Promise<TurnoDetail[]> {
+  async getByDateRange(fechaInicio?: string, fechaFin?: string): Promise<TurnoDetail[]> {
+    let url = `${baseUrl}veterinaria`
+    const params = new URLSearchParams()
+
+    if (fechaInicio) params.append('fecha_inicio', fechaInicio)
+    if (fechaFin) params.append('fecha_fin', fechaFin)
+
+    if (params.toString()) {
+      url += `?${params.toString()}`
+    }
+
     const res: AxiosResponse<TurnoDetail[]> = await ApiService.getAll<TurnoDetail>(
-      `${baseUrl}fechahoy`,
+      url,
       true
     )
     return res.data
