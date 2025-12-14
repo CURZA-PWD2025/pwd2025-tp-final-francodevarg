@@ -1,0 +1,630 @@
+{
+	"info": {
+		"_postman_id": "269ca2ae-b681-4963-9957-0255dc2483dd",
+		"name": "Veterinaria - Turnos: Final PWD",
+		"description": "Colección para login y registro de usuarios",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "47281129",
+		"_collection_link": "https://francodigo-contacto-5069517.postman.co/workspace/Franco-Dev's-Workspace~e4ae4d9d-dae8-4aba-8b2e-1eda6684cad3/collection/47281129-269ca2ae-b681-4963-9957-0255dc2483dd?action=share&source=collection_link&creator=47281129"
+	},
+	"item": [
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Login de Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"carlos@cliente.com\",\n  \"password\": \"1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://127.0.0.1:5000/auth/login",
+							"protocol": "http",
+							"host": [
+								"127",
+								"0",
+								"0",
+								"1"
+							],
+							"port": "5000",
+							"path": [
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout  de Usuario",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1NjA2MjAyMiwianRpIjoiNTdjOTE1NzAtMjMyNC00ZmU2LTkzMTAtZTk2YjVlYTA4NjkzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImNhcmxvc0BjbGllbnRlLmNvbSIsIm5iZiI6MTc1NjA2MjAyMiwiY3NyZiI6IjUyN2MxNjhlLTM0NzMtNDgyZi1iOTcxLTJkY2FkOGZmNTk4NiIsImV4cCI6MTc1NjA2NTYyMiwidGlwbyI6ImNsaWVudGUiLCJ1c2VyX2lkIjoyfQ.PZECai_yjfRYa4r1lotkL7YkA7SI0UOOrcCRww2rBUk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"carlos@cliente.com\",\n  \"password\": \"1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/auth/logout",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"auth",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Registro de Usuario",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"nombre\": \"Juan\",\n  \"email\": \"admin1@vet.com\",\n  \"password\": \"1234\",\n  \"tipo\": \"admin\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/auth/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"auth",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Profile",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1NjA2MjAyMiwianRpIjoiNTdjOTE1NzAtMjMyNC00ZmU2LTkzMTAtZTk2YjVlYTA4NjkzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImNhcmxvc0BjbGllbnRlLmNvbSIsIm5iZiI6MTc1NjA2MjAyMiwiY3NyZiI6IjUyN2MxNjhlLTM0NzMtNDgyZi1iOTcxLTJkY2FkOGZmNTk4NiIsImV4cCI6MTc1NjA2NTYyMiwidGlwbyI6ImNsaWVudGUiLCJ1c2VyX2lkIjoyfQ.PZECai_yjfRYa4r1lotkL7YkA7SI0UOOrcCRww2rBUk",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/auth/profile/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"auth",
+								"profile",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Veterinarios",
+			"item": [
+				{
+					"name": "Veterinarios",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/veterinarios",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"veterinarios"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Veterinarios GET by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1NzAzNDUwNiwianRpIjoiMjEwMDUzMzItZTRhMi00ZDNlLTkxNDgtNDA1NjY2MDFlNDBlIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImNhcmxvc0BjbGllbnRlLmNvbSIsIm5iZiI6MTc1NzAzNDUwNiwiY3NyZiI6IjM4ODE1NGMzLWI1ZWEtNGNlNy05MDAxLWE5NGI0MjQ3MmUxMCIsImV4cCI6MTc1NzAzODEwNiwidGlwbyI6ImNsaWVudGUiLCJ1c2VyX2lkIjoyfQ.MkATfOoEJ4xyGCt5lh2XfDoYuFUVBR7ygNa-8MepXM4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/veterinarios/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"veterinarios",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Veterinarios Turnos Disponibles",
+					"request": {
+						"auth": {
+							"type": "bearer"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/veterinarios/disponibilidad?veterinario_id=1&fecha=2025-08-04",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"veterinarios",
+								"disponibilidad"
+							],
+							"query": [
+								{
+									"key": "veterinario_id",
+									"value": "1"
+								},
+								{
+									"key": "fecha",
+									"value": "2025-08-04"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Veterinarios DELETE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1NDI1NzU2MywianRpIjoiMTk5MGFlZWItYzFkOC00ODBjLWI4ODItOTUxMzI3ZDIwNmQ3IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFkbWluMUB2ZXQuY29tIiwibmJmIjoxNzU0MjU3NTYzLCJjc3JmIjoiNzEzMzVmNWMtOWZhYy00ZDRiLTk5NDAtYWM1Y2I0ZWJkYmZjIiwiZXhwIjoxNzU0MjYxMTYzLCJ0aXBvIjoiYWRtaW4iLCJ1c2VyX2lkIjoxfQ.XA7He-9jU36qDcOnolMYSS3qXQN7cSHUJtaIpULsFaI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "text"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/veterinarios/16",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"veterinarios",
+								"16"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Veterinarios UPDATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1NDM0Nzk4NywianRpIjoiYjA2ZDQ5MGQtZjhjZC00YzRhLTgyNDEtYzRjY2JhNGRiNzEzIiwidHlwZSI6ImFjY2VzcyIsInN1YiI6Imp1YW5AZW1haWwuY29tIiwibmJmIjoxNzU0MzQ3OTg3LCJjc3JmIjoiOGRiZTlmMWQtZWRmMi00NzljLTlmZWEtYTlkYzBhYmQ4YzE3IiwiZXhwIjoxNzU0MzUxNTg3LCJ0aXBvIjoiY2xpZW50ZSIsInVzZXJfaWQiOjN9.ppUctvLmDmSuqYTMAmo6pKG09nGAvGA5thUgNdWmOIA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1NDI0OTQ0MiwianRpIjoiYTlkNjNkNmQtZDEzMy00Nzg2LTlkMDctZDdhYWNkODBiMzI5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFkbWluMUB2ZXQuY29tIiwibmJmIjoxNzU0MjQ5NDQyLCJjc3JmIjoiYjc4MjdlYTItODVmZC00MzRjLTg5YzgtZDFlM2NhM2U2N2RmIiwiZXhwIjoxNzU0MjUzMDQyLCJ0aXBvIjoiYWRtaW4iLCJ1c2VyX2lkIjoxfQ.Vi_Ofv18duY-KHe8K1rRmkIOjBFW_IquT_RkCL-IPIU",
+								"name": "authorization",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Content-Length",
+								"value": "0",
+								"name": "content-length",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"veterinario\": {\n    \"nombre\": \"Victor Manueel Frankeeeel\",\n    \"especialidad\": \"Reuma\",\n    \"email\": \"luis2@vet.com\",\n    \"telefono\": \"23213122\"\n  },\n  \"horarios\":{\n      \"Lunes\":[\"14:00\",\"15:00\"],\n      \"Martes\":[\"17:00\"]\n  }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/veterinarios/3",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"veterinarios",
+								"3"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Veterinarios CREATE",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1NDI0OTczOCwianRpIjoiOWQwYTViMmQtOWFiNi00Y2Q3LWJkYmItMmIzYWJhZjE4MDU1IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFkbWluMUB2ZXQuY29tIiwibmJmIjoxNzU0MjQ5NzM4LCJjc3JmIjoiZDZmMDg4YTMtNDZmMi00ZmJjLWI5OTItYThiM2VkODUwYWU2IiwiZXhwIjoxNzU0MjUzMzM4LCJ0aXBvIjoiYWRtaW4iLCJ1c2VyX2lkIjoxfQ._KHQrl1UQ2JxrtWvBv7kpFr3MCpWjr3gumD7JjzmrLo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1NDI0OTQ0MiwianRpIjoiYTlkNjNkNmQtZDEzMy00Nzg2LTlkMDctZDdhYWNkODBiMzI5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImFkbWluMUB2ZXQuY29tIiwibmJmIjoxNzU0MjQ5NDQyLCJjc3JmIjoiYjc4MjdlYTItODVmZC00MzRjLTg5YzgtZDFlM2NhM2U2N2RmIiwiZXhwIjoxNzU0MjUzMDQyLCJ0aXBvIjoiYWRtaW4iLCJ1c2VyX2lkIjoxfQ.Vi_Ofv18duY-KHe8K1rRmkIOjBFW_IquT_RkCL-IPIU",
+								"name": "authorization",
+								"type": "text"
+							},
+							{
+								"key": "Cache-Control",
+								"value": "no-cache",
+								"name": "cache-control",
+								"type": "text"
+							},
+							{
+								"key": "Postman-Token",
+								"value": "<calculated when request is sent>",
+								"name": "postman-token",
+								"type": "text"
+							},
+							{
+								"key": "Content-Length",
+								"value": "0",
+								"name": "content-length",
+								"type": "text"
+							},
+							{
+								"key": "Host",
+								"value": "<calculated when request is sent>",
+								"name": "host",
+								"type": "text"
+							},
+							{
+								"key": "User-Agent",
+								"value": "PostmanRuntime/7.39.1",
+								"name": "user-agent",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "*/*",
+								"name": "accept",
+								"type": "text"
+							},
+							{
+								"key": "Accept-Encoding",
+								"value": "gzip, deflate, br",
+								"name": "accept-encoding",
+								"type": "text"
+							},
+							{
+								"key": "Connection",
+								"value": "keep-alive",
+								"name": "connection",
+								"type": "text"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"veterinario\": {\n    \"nombre\": \"Victor Frankel\",\n    \"especialidad\": \"Reuma\",\n    \"email\": \"victors22@gmail.com\",\n    \"telefono\": \"23213122\"\n  },\n  \"horarios\":{\n      \"Lunes\":[\"09:00\"]\n  }\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/veterinarios/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"veterinarios",
+								""
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Mascotas",
+			"item": [
+				{
+					"name": "Get Mascota",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1Njc1Nzk2NywianRpIjoiYWIwNzE3MDgtNjcwYi00NmU5LTkyMDItMDNmZjAxYjEyMmI5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImNhcmxvc0BjbGllbnRlLmNvbSIsIm5iZiI6MTc1Njc1Nzk2NywiY3NyZiI6ImE3MTU3Yjc1LTQ4ZWMtNDg2Mi05NDI2LTJiZWRhMmNmMGI3NiIsImV4cCI6MTc1Njc2MTU2NywidGlwbyI6ImNsaWVudGUiLCJ1c2VyX2lkIjoyfQ.YNObLXOnAUyzaJhU_bUV8i4IoMF7ffa0qXsKtUGQ-mQ",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5000/mascotas/usuario/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"mascotas",
+								"usuario",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Turnos",
+			"item": [
+				{
+					"name": "Turno Confirmar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1ODQ4NDI2OCwianRpIjoiMDBlNjU0MzYtMDlmNS00MjllLWI2NDctZjc1OTY5ZmFlMmI5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImNhcmxvc0BjbGllbnRlLmNvbSIsIm5iZiI6MTc1ODQ4NDI2OCwiY3NyZiI6ImIzYjdiY2RhLTE1NWMtNDQwZC04ZmMyLTkyYmIyNmIxNmM3ZSIsImV4cCI6MTc1ODQ4Nzg2OCwidGlwbyI6ImNsaWVudGUiLCJ1c2VyX2lkIjoyfQ.T2yyWqIlUTvuIY6TAd_7j1LjbZ3r9vHo-0c5qkokyWo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/turnos/3/confirmar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"turnos",
+								"3",
+								"confirmar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Turno Cancelar",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJmcmVzaCI6ZmFsc2UsImlhdCI6MTc1ODQ4NDI2OCwianRpIjoiMDBlNjU0MzYtMDlmNS00MjllLWI2NDctZjc1OTY5ZmFlMmI5IiwidHlwZSI6ImFjY2VzcyIsInN1YiI6ImNhcmxvc0BjbGllbnRlLmNvbSIsIm5iZiI6MTc1ODQ4NDI2OCwiY3NyZiI6ImIzYjdiY2RhLTE1NWMtNDQwZC04ZmMyLTkyYmIyNmIxNmM3ZSIsImV4cCI6MTc1ODQ4Nzg2OCwidGlwbyI6ImNsaWVudGUiLCJ1c2VyX2lkIjoyfQ.T2yyWqIlUTvuIY6TAd_7j1LjbZ3r9vHo-0c5qkokyWo",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/turnos/3/confirmar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"turnos",
+								"3",
+								"confirmar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Turnos Veterinaria",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/turnos/veterinaria?fecha_inicio=2025-07-01&fecha_fin=2025-07-30",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"turnos",
+								"veterinaria"
+							],
+							"query": [
+								{
+									"key": "fecha_inicio",
+									"value": "2025-07-01"
+								},
+								{
+									"key": "fecha_fin",
+									"value": "2025-07-30"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
