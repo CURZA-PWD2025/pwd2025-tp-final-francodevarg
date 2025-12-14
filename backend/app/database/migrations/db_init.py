@@ -120,15 +120,15 @@ SEEDS['horarios_laborales'] = (
     "INSERT INTO horarios_laborales (veterinario_id, dia_semana, hora) VALUES (%s, %s, %s)",
     [
         # Ana (1) - Lunes y Miércoles (09:00 - 13:00)
-        (1, 'Lunes', '09:00'), (1, 'Lunes', '10:00'), (1, 'Lunes', '11:00'), (1, 'Lunes', '12:00'), (1, 'Lunes', '13:00'),
-        (1, 'Miércoles', '09:00'), (1, 'Miércoles', '10:00'), (1, 'Miércoles', '11:00'), (1, 'Miércoles', '12:00'), (1, 'Miércoles', '13:00'),
+        (1, 'Lunes', '09:00'), (1, 'Lunes', '10:00'), (1, 'Lunes', '11:00'), (1, 'Lunes', '12:00'), (1, 'Lunes', '14:00'),
+        (1, 'Miércoles', '09:00'), (1, 'Miércoles', '10:00'), (1, 'Miércoles', '11:00'), (1, 'Miércoles', '12:00'), (1, 'Miércoles', '14:00'),
         
         # Luis (2) - Martes y Jueves (14:00 - 18:00)
         (2, 'Martes', '14:00'), (2, 'Martes', '15:00'), (2, 'Martes', '16:00'), (2, 'Martes', '17:00'), (2, 'Martes', '18:00'),
         (2, 'Jueves', '14:00'), (2, 'Jueves', '15:00'), (2, 'Jueves', '16:00'), (2, 'Jueves', '17:00'), (2, 'Jueves', '18:00'),
 
-        # Jorge (3) - Viernes (09:00 - 13:00)
-        (3, 'Viernes', '09:00'), (3, 'Viernes', '10:00'), (3, 'Viernes', '11:00'), (3, 'Viernes', '12:00'), (3, 'Viernes', '13:00'),
+        # Jorge (3) - Viernes (09:00 - 14:00)
+        (3, 'Viernes', '09:00'), (3, 'Viernes', '10:00'), (3, 'Viernes', '11:00'), (3, 'Viernes', '12:00'), (3, 'Viernes', '14:00'),
 
         # Sofia (4) - Lunes y Viernes (16:00 - 20:00)
         (4, 'Lunes', '16:00'), (4, 'Lunes', '17:00'), (4, 'Lunes', '18:00'), (4, 'Lunes', '19:00'),
